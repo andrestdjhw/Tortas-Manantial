@@ -74,6 +74,29 @@ export function IconMail({ size = 18 }) {
   );
 }
 
+/** Bolsa de pedido, para el canal directo. */
+export function IconBag({ size = 18 }) {
+  return (
+    <svg viewBox="0 0 24 24" width={size} height={size} {...base}>
+      <path d="M5.4 8h13.2l-1 11.2a2 2 0 0 1-2 1.8H8.4a2 2 0 0 1-2-1.8z" />
+      <path d="M8.8 8V6.4a3.2 3.2 0 0 1 6.4 0V8" />
+    </svg>
+  );
+}
+
+/** Moto de reparto, para el canal de terceros. */
+export function IconMoped({ size = 18 }) {
+  return (
+    <svg viewBox="0 0 24 24" width={size} height={size} {...base}>
+      <circle cx="6" cy="17.5" r="2.6" />
+      <circle cx="18" cy="17.5" r="2.6" />
+      <path d="M8.6 17.5h6.8" />
+      <path d="M18 14.9V9.4a2 2 0 0 0-2-2h-1.6" />
+      <path d="M3.6 6h2.2a3 3 0 0 1 3 3v5.4" />
+    </svg>
+  );
+}
+
 /* ------------------------------------------------------------------ */
 /*  Marcas sociales                                                    */
 /*  Instagram y Facebook son fieles al glifo oficial.                  */

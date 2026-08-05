@@ -11,20 +11,26 @@
 
 /**
  * Datos de la marca, no de un local en particular.
- * El correo y las redes viven aqui porque el navbar, el footer y las paginas
- * de contacto los van a necesitar igual.
+ *
+ * La fuente de verdad es tm_brand() en functions.php, porque el schema
+ * Organization del footer los necesita en el HTML inicial. Aqui solo se leen
+ * de lo que PHP inyecta en window.tmData. Si no llega nada, se devuelve la
+ * forma vacia y cada consumidor omite lo que falte.
  */
-export const BRAND = {
-  // TODO: correo publico de contacto. Si queda vacio, el navbar no lo pinta.
-  email: "",
+function readBrand() {
+  const source =
+    (typeof window !== "undefined" &&
+      window.tmData &&
+      window.tmData.brand) ||
+    {};
 
-  social: {
-    // Tomados del sitio actual, pendientes de confirmar con el cliente.
-    yelp: "https://www.yelp.com/biz/tortas-manantial-avondale-3",
-    facebook: "https://www.facebook.com/tortasmanantial/",
-    instagram: "https://www.instagram.com/tortasmanantial",
-  },
-};
+  return {
+    email: source.email || "",
+    social: source.social || {},
+  };
+}
+
+export const BRAND = readBrand();
 
 export const LOCATIONS = [
   {
@@ -39,6 +45,9 @@ export const LOCATIONS = [
     phoneLabel: "(602) 555-0000",
     orderUrl:
       "https://order.toasttab.com/online/tortas-manantial-phoenix-5950-west-mcdowell-road/",
+    // TODO: verificar
+    uberUrl:
+      "https://www.ubereats.com/store/tortas-manantial/QmSpagP0XnuilVUt3Scqvg",
     directionsUrl: "https://g.page/tortasmanantial-phoenix",
     pageUrl: "/locations/phoenix-mcdowell",
     hours: { open: "07:00", close: "23:00" },
@@ -55,6 +64,9 @@ export const LOCATIONS = [
     phoneLabel: "(623) 555-0000",
     orderUrl:
       "https://order.toasttab.com/online/tortas-manantial-indian-school-rd-10665-west-indian-school-road/",
+    // TODO: verificar
+    uberUrl:
+      "https://www.ubereats.com/store/tortas-manantial/kPb19xCRXEOPrwa4B7G-VA",
     directionsUrl: "https://g.page/manantial-avondale107th",
     pageUrl: "/locations/avondale-indian-school",
     hours: { open: "08:00", close: "22:00" },
@@ -71,6 +83,9 @@ export const LOCATIONS = [
     phoneLabel: "(623) 555-0001",
     orderUrl:
       "https://order.toasttab.com/online/tortas-manantial-buckeye-rd-11435-west-buckeye-road/",
+    // TODO: verificar
+    uberUrl:
+      "https://www.order.store/store/tortas-manantial/C406Hme-VCGz7xJerlFQQA",
     directionsUrl: "https://g.page/tortasmanantial-avondaleblvd",
     pageUrl: "/locations/avondale-buckeye",
     hours: { open: "08:00", close: "22:00" },
@@ -87,6 +102,9 @@ export const LOCATIONS = [
     phoneLabel: "(602) 555-0001",
     orderUrl:
       "https://order.toasttab.com/online/tortas-manantial-laveen-5185-west-baseline-road/",
+    // TODO: verificar
+    uberUrl:
+      "https://www.ubereats.com/store/tortas-manantial/n7AHrZzhUWa48cZKy4Kcng",
     directionsUrl: "https://goo.gl/maps/6FRrsVQ5JSqksro26",
     pageUrl: "/locations/laveen",
     hours: { open: "08:00", close: "22:00" },

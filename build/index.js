@@ -2,6 +2,431 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
+/***/ "./src/scripts/Footer.js"
+/*!*******************************!*\
+  !*** ./src/scripts/Footer.js ***!
+  \*******************************/
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ Footer)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _locations__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./locations */ "./src/scripts/locations.js");
+/* harmony import */ var _icons__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./icons */ "./src/scripts/icons.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__);
+
+
+
+
+/* ------------------------------------------------------------------ */
+/*  Copy                                                               */
+/*  Bloque 12 del Copy & Brief de la homepage.                         */
+/* ------------------------------------------------------------------ */
+
+const COPY = {
+  en: {
+    locations: "Locations",
+    explore: "Explore",
+    club: "Tortas Club",
+    follow: "Follow",
+    links: [{
+      label: "Menu",
+      href: "/menu"
+    }, {
+      label: "Our Story",
+      href: "/our-story"
+    }, {
+      label: "Tortas Club",
+      href: "/tortas-club"
+    }, {
+      label: "Careers",
+      href: "/careers"
+    }, {
+      label: "Contact",
+      href: "/contact"
+    }],
+    clubPitch: "Deals, points and a free torta on your birthday. Free to join.",
+    emailLabel: "Email address",
+    emailPlaceholder: "you@email.com",
+    join: "Join",
+    joining: "Joining",
+    success: "You are in. Check your email for your welcome reward.",
+    invalid: "That email does not look right. Check it and try again.",
+    failed: "Something went wrong on our end. Try again in a moment.",
+    tagline: "Family owned in Phoenix since 2000.",
+    legal: [{
+      label: "Privacy Policy",
+      href: "/privacy"
+    }, {
+      label: "Terms",
+      href: "/terms"
+    }, {
+      label: "SMS Terms",
+      href: "/sms-terms"
+    }, {
+      label: "Accessibility",
+      href: "/accessibility"
+    }],
+    rights: "All rights reserved.",
+    siteBy: "Site by",
+    yelp: "Tortas Manantial on Yelp",
+    facebook: "Tortas Manantial on Facebook",
+    instagram: "Tortas Manantial on Instagram",
+    emailUs: "Email us"
+  },
+  es: {
+    locations: "Ubicaciones",
+    explore: "Explora",
+    club: "Tortas Club",
+    follow: "Síguenos",
+    links: [{
+      label: "Menú",
+      href: "/menu"
+    }, {
+      label: "Nuestra Historia",
+      href: "/our-story"
+    }, {
+      label: "Tortas Club",
+      href: "/tortas-club"
+    }, {
+      label: "Trabaja con Nosotros",
+      href: "/careers"
+    }, {
+      label: "Contacto",
+      href: "/contact"
+    }],
+    clubPitch: "Promociones, puntos y una torta gratis en tu cumpleaños. Es gratis.",
+    emailLabel: "Correo electrónico",
+    emailPlaceholder: "tu@correo.com",
+    join: "Únete",
+    joining: "Enviando",
+    success: "Ya quedaste. Revisa tu correo para tu recompensa de bienvenida.",
+    invalid: "Ese correo no se ve bien. Revísalo e inténtalo otra vez.",
+    failed: "Algo falló de nuestro lado. Inténtalo en un momento.",
+    tagline: "Negocio de familia en Phoenix desde el 2000.",
+    legal: [{
+      label: "Aviso de Privacidad",
+      href: "/privacy"
+    }, {
+      label: "Términos",
+      href: "/terms"
+    }, {
+      label: "Términos SMS",
+      href: "/sms-terms"
+    }, {
+      label: "Accesibilidad",
+      href: "/accessibility"
+    }],
+    rights: "Todos los derechos reservados.",
+    siteBy: "Sitio por",
+    yelp: "Tortas Manantial en Yelp",
+    facebook: "Tortas Manantial en Facebook",
+    instagram: "Tortas Manantial en Instagram",
+    emailUs: "Escríbenos"
+  }
+};
+const AGENCY = {
+  name: "828 Marketing Solutions",
+  url: "https://www.828marketingsolutions.com"
+};
+function getConfig() {
+  const cfg = typeof window !== "undefined" ? window.tmData || {} : {};
+  return {
+    lang: cfg.lang === "es" ? "es" : "en",
+    restUrl: cfg.restUrl || "",
+    nonce: cfg.nonce || ""
+  };
+}
+function getBrand() {
+  const source = _locations__WEBPACK_IMPORTED_MODULE_1__.BRAND || {};
+  return {
+    email: source.email || "",
+    social: source.social || {}
+  };
+}
+
+/* ------------------------------------------------------------------ */
+/*  Columna colapsable                                                 */
+/*  Acordeon en movil, siempre abierta desde lg.                       */
+/* ------------------------------------------------------------------ */
+
+function Column({
+  title,
+  id,
+  children
+}) {
+  const [open, setOpen] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+    className: "border-b border-white/10 lg:border-0",
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("button", {
+      type: "button",
+      onClick: () => setOpen(value => !value),
+      "aria-expanded": open,
+      "aria-controls": id,
+      className: "flex w-full items-center justify-between py-4 text-left lg:cursor-default lg:py-0",
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("span", {
+        className: "tm-eyebrow text-maiz-300",
+        children: title
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("span", {
+        className: `text-carbon-200 transition-transform lg:hidden ${open ? "rotate-180" : ""}`,
+        "aria-hidden": "true",
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_icons__WEBPACK_IMPORTED_MODULE_2__.IconChevron, {
+          size: 18
+        })
+      })]
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
+      id: id,
+      className: `pb-5 lg:block lg:pb-0 lg:pt-4 ${open ? "block" : "hidden"}`,
+      children: children
+    })]
+  });
+}
+
+/* ------------------------------------------------------------------ */
+/*  Alta al Tortas Club                                                */
+/*  Un solo campo. La version completa, con celular y local, vive en   */
+/*  el bloque 07 de la home y en /tortas-club.                         */
+/* ------------------------------------------------------------------ */
+
+function ClubSignup({
+  t,
+  cfg
+}) {
+  const [email, setEmail] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("");
+  const [status, setStatus] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("idle");
+  const isValid = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email.trim());
+  async function handleSubmit(event) {
+    event.preventDefault();
+    if (!isValid) {
+      setStatus("invalid");
+      return;
+    }
+    setStatus("loading");
+    try {
+      const response = await fetch(`${cfg.restUrl}club`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-WP-Nonce": cfg.nonce
+        },
+        body: JSON.stringify({
+          email: email.trim(),
+          source: "footer"
+        })
+      });
+      if (!response.ok) throw new Error("request failed");
+      setStatus("success");
+      setEmail("");
+    } catch (error) {
+      setStatus("failed");
+    }
+  }
+  if (status === "success") {
+    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("p", {
+      className: "text-sm text-olivo-200",
+      role: "status",
+      children: t.success
+    });
+  }
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("form", {
+    onSubmit: handleSubmit,
+    noValidate: true,
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("p", {
+      className: "mb-3 text-sm text-carbon-200",
+      children: t.clubPitch
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("label", {
+      htmlFor: "tm-club-email",
+      className: "sr-only",
+      children: t.emailLabel
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+      className: "flex gap-2",
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("input", {
+        id: "tm-club-email",
+        type: "email",
+        name: "email",
+        autoComplete: "email",
+        value: email,
+        onChange: event => {
+          setEmail(event.target.value);
+          if (status !== "idle") setStatus("idle");
+        },
+        placeholder: t.emailPlaceholder,
+        "aria-invalid": status === "invalid",
+        "aria-describedby": status === "invalid" ? "tm-club-error" : undefined,
+        className: `min-w-0 flex-1 rounded-lg border-2 bg-carbon-500 px-3 py-2.5 text-sm text-hueso-100 placeholder:text-carbon-300 ${status === "invalid" ? "border-olivo-400" : "border-carbon-300"}`
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("button", {
+        type: "submit",
+        disabled: status === "loading",
+        className: "tm-btn tm-btn-relief tm-btn-primary tm-btn-primary-on-dark shrink-0 text-sm disabled:opacity-70",
+        children: [status === "loading" ? t.joining : t.join, /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_icons__WEBPACK_IMPORTED_MODULE_2__.IconArrow, {
+          size: 16
+        })]
+      })]
+    }), (status === "invalid" || status === "failed") && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("p", {
+      id: "tm-club-error",
+      className: "mt-2 text-sm text-carbon-200",
+      role: "alert",
+      children: status === "invalid" ? t.invalid : t.failed
+    })]
+  });
+}
+
+/* ------------------------------------------------------------------ */
+/*  Footer                                                             */
+/* ------------------------------------------------------------------ */
+
+function Footer() {
+  const cfg = getConfig();
+  const brand = getBrand();
+  const t = {
+    ...COPY[cfg.lang],
+    langKey: cfg.lang
+  };
+  const socialLinks = [{
+    key: "instagram",
+    href: brand.social.instagram,
+    label: t.instagram,
+    Icon: _icons__WEBPACK_IMPORTED_MODULE_2__.IconInstagram
+  }, {
+    key: "facebook",
+    href: brand.social.facebook,
+    label: t.facebook,
+    Icon: _icons__WEBPACK_IMPORTED_MODULE_2__.IconFacebook
+  }, {
+    key: "yelp",
+    href: brand.social.yelp,
+    label: t.yelp,
+    Icon: _icons__WEBPACK_IMPORTED_MODULE_2__.IconYelp
+  }].filter(item => Boolean(item.href));
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("footer", {
+    className: "bg-carbon-400 text-hueso-100",
+    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+      className: "mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:py-16",
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+        className: "grid gap-0 lg:grid-cols-4 lg:gap-10",
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(Column, {
+          title: t.locations,
+          id: "tm-footer-locations",
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("ul", {
+            className: "flex flex-col gap-3",
+            children: _locations__WEBPACK_IMPORTED_MODULE_1__.LOCATIONS.map(location => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("li", {
+              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("a", {
+                href: location.pageUrl,
+                className: "group block text-sm transition-colors hover:text-maiz-300",
+                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("span", {
+                  className: "font-semibold",
+                  children: location.name[t.langKey]
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("span", {
+                  className: "block text-carbon-200 group-hover:text-carbon-100",
+                  children: location.street
+                })]
+              })
+            }, location.id))
+          })
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(Column, {
+          title: t.explore,
+          id: "tm-footer-explore",
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("ul", {
+            className: "flex flex-col gap-3",
+            children: t.links.map(link => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("li", {
+              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("a", {
+                href: link.href,
+                className: "text-sm transition-colors hover:text-maiz-300",
+                children: link.label
+              })
+            }, link.href))
+          })
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(Column, {
+          title: t.club,
+          id: "tm-footer-club",
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(ClubSignup, {
+            t: t,
+            cfg: cfg
+          })
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(Column, {
+          title: t.follow,
+          id: "tm-footer-follow",
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("ul", {
+            className: "flex flex-col gap-3",
+            children: [socialLinks.map(item => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("li", {
+              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("a", {
+                href: item.href,
+                target: "_blank",
+                rel: "noopener",
+                className: "flex items-center gap-2.5 text-sm transition-colors hover:text-maiz-300",
+                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(item.Icon, {
+                  size: 18
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("span", {
+                  className: "capitalize",
+                  children: item.key
+                })]
+              })
+            }, item.key)), brand.email && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("li", {
+              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("a", {
+                href: `mailto:${brand.email}`,
+                className: "flex items-center gap-2.5 text-sm transition-colors hover:text-maiz-300",
+                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_icons__WEBPACK_IMPORTED_MODULE_2__.IconMail, {
+                  size: 18
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("span", {
+                  children: brand.email
+                })]
+              })
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("li", {
+              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("a", {
+                href: `tel:${_locations__WEBPACK_IMPORTED_MODULE_1__.LOCATIONS[0].phone}`,
+                "data-tm-phone": _locations__WEBPACK_IMPORTED_MODULE_1__.LOCATIONS[0].id,
+                className: "flex items-center gap-2.5 text-sm transition-colors hover:text-maiz-300",
+                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_icons__WEBPACK_IMPORTED_MODULE_2__.IconPhone, {
+                  size: 18
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("span", {
+                  children: _locations__WEBPACK_IMPORTED_MODULE_1__.LOCATIONS[0].phoneLabel
+                })]
+              })
+            })]
+          })
+        })]
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+        className: "mt-10 border-t border-white/10 pt-6 lg:mt-14",
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("p", {
+          className: "font-serif text-lg text-maiz-300",
+          children: t.tagline
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+          className: "mt-5 flex flex-col gap-4 text-xs text-carbon-200 lg:flex-row lg:items-center lg:justify-between",
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("ul", {
+            className: "flex flex-wrap gap-x-5 gap-y-2",
+            children: t.legal.map(item => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("li", {
+              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("a", {
+                href: item.href,
+                className: "transition-colors hover:text-hueso-100",
+                children: item.label
+              })
+            }, item.href))
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+            className: "flex flex-col gap-1.5 sm:flex-row sm:items-center sm:gap-4",
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("p", {
+              children: ["\xA9 ", new Date().getFullYear(), " Tortas Manantial. ", t.rights]
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("p", {
+              children: [t.siteBy, " ", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("a", {
+                href: AGENCY.url,
+                target: "_blank",
+                rel: "noopener",
+                className: "font-semibold text-carbon-100 transition-colors hover:text-maiz-300",
+                children: AGENCY.name
+              })]
+            })]
+          })]
+        })]
+      })]
+    })
+  });
+}
+
+/***/ },
+
 /***/ "./src/scripts/Navbar.js"
 /*!*******************************!*\
   !*** ./src/scripts/Navbar.js ***!
@@ -51,6 +476,8 @@ const COPY = {
     openUntil: h => `Open until ${h}`,
     opensAt: h => `Closed now, opens at ${h}`,
     order: "Order",
+    orderDirect: "Order direct",
+    noFees: "Direct orders skip the app fees.",
     utility: (name, h) => `Open until ${h} at ${name}`,
     call: "Call",
     openMenu: "Open menu",
@@ -87,8 +514,10 @@ const COPY = {
     openUntil: h => `Abierto hasta las ${h}`,
     opensAt: h => `Ahora cerrado, abre a las ${h}`,
     order: "Ordena",
+    orderDirect: "Ordena directo",
+    noFees: "Ordenar directo evita las comisiones de la app.",
     utility: (name, h) => `Abierto hasta las ${h} en ${name}`,
-    call: "Llama",
+    call: "Llamar",
     openMenu: "Abrir menú",
     closeMenu: "Cerrar menú",
     tagline: "Negocio de familia en Phoenix desde el 2000.",
@@ -249,26 +678,46 @@ function LocationPanel({
                 children: status.isOpen ? t.openUntil(status.closesAt) : t.opensAt(status.opensAt)
               })]
             }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
-              className: "mt-3 flex items-center gap-2",
+              className: "mt-3 grid grid-cols-3 gap-2",
               children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("a", {
                 ref: isNearest || location.id === locations[0].id ? firstLinkRef : null,
                 href: location.orderUrl,
                 target: "_blank",
                 rel: "noopener",
                 "data-tm-order": location.id,
-                className: "tm-btn tm-btn-primary tm-btn-primary-on-dark flex-1 text-sm",
-                children: [t.order, /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_icons__WEBPACK_IMPORTED_MODULE_2__.IconArrow, {
-                  size: 16
+                "data-tm-channel": "toast",
+                className: "tm-btn tm-btn-relief tm-btn-primary tm-btn-primary-on-dark flex-col gap-1 px-2 py-2.5 text-[11px] leading-tight",
+                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_icons__WEBPACK_IMPORTED_MODULE_2__.IconBag, {
+                  size: 18
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("span", {
+                  children: t.orderDirect
                 })]
-              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("a", {
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("a", {
+                href: location.uberUrl,
+                target: "_blank",
+                rel: "noopener",
+                "data-tm-order": location.id,
+                "data-tm-channel": "ubereats",
+                className: "tm-btn tm-btn-relief tm-btn-relief-on-dark tm-btn-fresh flex-col gap-1 px-2 py-2.5 text-[11px] leading-tight",
+                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_icons__WEBPACK_IMPORTED_MODULE_2__.IconMoped, {
+                  size: 18
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("span", {
+                  children: "Uber Eats"
+                })]
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("a", {
                 href: `tel:${location.phone}`,
                 "data-tm-phone": location.id,
-                className: "tm-btn border-2 border-carbon-300 px-3 text-sm text-hueso-100 transition-colors hover:border-hueso-100",
+                className: "tm-btn tm-btn-relief tm-btn-relief-on-dark tm-btn-muted flex-col gap-1 px-2 py-2.5 text-[11px] leading-tight",
                 "aria-label": `${t.call} ${location.name[t.langKey]}`,
-                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_icons__WEBPACK_IMPORTED_MODULE_2__.IconPhone, {
-                  size: 16
-                })
+                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_icons__WEBPACK_IMPORTED_MODULE_2__.IconPhone, {
+                  size: 18
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("span", {
+                  children: t.call
+                })]
               })]
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("p", {
+              className: "mt-2 text-center text-[11px] text-carbon-200",
+              children: t.noFees
             })]
           })
         }, location.id);
@@ -485,7 +934,7 @@ function Navbar({
             onClick: () => panelOpen ? setPanelOpen(false) : openPanel(),
             "aria-expanded": panelOpen,
             "aria-haspopup": "dialog",
-            className: "tm-btn tm-btn-primary tm-btn-primary-on-dark text-sm",
+            className: "tm-btn tm-btn-relief tm-btn-primary tm-btn-primary-on-dark text-sm",
             children: t.cta
           }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("button", {
             type: "button",
@@ -552,12 +1001,14 @@ function Navbar({
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   IconArrow: () => (/* binding */ IconArrow),
+/* harmony export */   IconBag: () => (/* binding */ IconBag),
 /* harmony export */   IconChevron: () => (/* binding */ IconChevron),
 /* harmony export */   IconClose: () => (/* binding */ IconClose),
 /* harmony export */   IconFacebook: () => (/* binding */ IconFacebook),
 /* harmony export */   IconInstagram: () => (/* binding */ IconInstagram),
 /* harmony export */   IconMail: () => (/* binding */ IconMail),
 /* harmony export */   IconMenu: () => (/* binding */ IconMenu),
+/* harmony export */   IconMoped: () => (/* binding */ IconMoped),
 /* harmony export */   IconPhone: () => (/* binding */ IconPhone),
 /* harmony export */   IconPin: () => (/* binding */ IconPin),
 /* harmony export */   IconYelp: () => (/* binding */ IconYelp)
@@ -685,6 +1136,50 @@ function IconMail({
   });
 }
 
+/** Bolsa de pedido, para el canal directo. */
+function IconBag({
+  size = 18
+}) {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("svg", {
+    viewBox: "0 0 24 24",
+    width: size,
+    height: size,
+    ...base,
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("path", {
+      d: "M5.4 8h13.2l-1 11.2a2 2 0 0 1-2 1.8H8.4a2 2 0 0 1-2-1.8z"
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("path", {
+      d: "M8.8 8V6.4a3.2 3.2 0 0 1 6.4 0V8"
+    })]
+  });
+}
+
+/** Moto de reparto, para el canal de terceros. */
+function IconMoped({
+  size = 18
+}) {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("svg", {
+    viewBox: "0 0 24 24",
+    width: size,
+    height: size,
+    ...base,
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("circle", {
+      cx: "6",
+      cy: "17.5",
+      r: "2.6"
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("circle", {
+      cx: "18",
+      cy: "17.5",
+      r: "2.6"
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("path", {
+      d: "M8.6 17.5h6.8"
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("path", {
+      d: "M18 14.9V9.4a2 2 0 0 0-2-2h-1.6"
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("path", {
+      d: "M3.6 6h2.2a3 3 0 0 1 3 3v5.4"
+    })]
+  });
+}
+
 /* ------------------------------------------------------------------ */
 /*  Marcas sociales                                                    */
 /*  Instagram y Facebook son fieles al glifo oficial.                  */
@@ -788,19 +1283,20 @@ __webpack_require__.r(__webpack_exports__);
 
 /**
  * Datos de la marca, no de un local en particular.
- * El correo y las redes viven aqui porque el navbar, el footer y las paginas
- * de contacto los van a necesitar igual.
+ *
+ * La fuente de verdad es tm_brand() en functions.php, porque el schema
+ * Organization del footer los necesita en el HTML inicial. Aqui solo se leen
+ * de lo que PHP inyecta en window.tmData. Si no llega nada, se devuelve la
+ * forma vacia y cada consumidor omite lo que falte.
  */
-const BRAND = {
-  // TODO: correo publico de contacto. Si queda vacio, el navbar no lo pinta.
-  email: "",
-  social: {
-    // Tomados del sitio actual, pendientes de confirmar con el cliente.
-    yelp: "https://www.yelp.com/biz/tortas-manantial-avondale-3",
-    facebook: "https://www.facebook.com/tortasmanantial/",
-    instagram: "https://www.instagram.com/tortasmanantial"
-  }
-};
+function readBrand() {
+  const source = typeof window !== "undefined" && window.tmData && window.tmData.brand || {};
+  return {
+    email: source.email || "",
+    social: source.social || {}
+  };
+}
+const BRAND = readBrand();
 const LOCATIONS = [{
   id: "mcdowell",
   name: {
@@ -815,6 +1311,8 @@ const LOCATIONS = [{
   phone: "+16025550000",
   phoneLabel: "(602) 555-0000",
   orderUrl: "https://order.toasttab.com/online/tortas-manantial-phoenix-5950-west-mcdowell-road/",
+  // TODO: verificar
+  uberUrl: "https://www.ubereats.com/store/tortas-manantial/QmSpagP0XnuilVUt3Scqvg",
   directionsUrl: "https://g.page/tortasmanantial-phoenix",
   pageUrl: "/locations/phoenix-mcdowell",
   hours: {
@@ -835,6 +1333,8 @@ const LOCATIONS = [{
   phone: "+16235550000",
   phoneLabel: "(623) 555-0000",
   orderUrl: "https://order.toasttab.com/online/tortas-manantial-indian-school-rd-10665-west-indian-school-road/",
+  // TODO: verificar
+  uberUrl: "https://www.ubereats.com/store/tortas-manantial/kPb19xCRXEOPrwa4B7G-VA",
   directionsUrl: "https://g.page/manantial-avondale107th",
   pageUrl: "/locations/avondale-indian-school",
   hours: {
@@ -855,6 +1355,8 @@ const LOCATIONS = [{
   phone: "+16235550001",
   phoneLabel: "(623) 555-0001",
   orderUrl: "https://order.toasttab.com/online/tortas-manantial-buckeye-rd-11435-west-buckeye-road/",
+  // TODO: verificar
+  uberUrl: "https://www.order.store/store/tortas-manantial/C406Hme-VCGz7xJerlFQQA",
   directionsUrl: "https://g.page/tortasmanantial-avondaleblvd",
   pageUrl: "/locations/avondale-buckeye",
   hours: {
@@ -875,6 +1377,8 @@ const LOCATIONS = [{
   phone: "+16025550001",
   phoneLabel: "(602) 555-0001",
   orderUrl: "https://order.toasttab.com/online/tortas-manantial-laveen-5185-west-baseline-road/",
+  // TODO: verificar
+  uberUrl: "https://www.ubereats.com/store/tortas-manantial/n7AHrZzhUWa48cZKy4Kcng",
   directionsUrl: "https://goo.gl/maps/6FRrsVQ5JSqksro26",
   pageUrl: "/locations/laveen",
   hours: {
@@ -1077,24 +1581,30 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react_dom_client__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-dom/client */ "react-dom/client");
 /* harmony import */ var react_dom_client__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react_dom_client__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _scripts_Navbar__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./scripts/Navbar */ "./src/scripts/Navbar.js");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _scripts_Footer__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./scripts/Footer */ "./src/scripts/Footer.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__);
+
 
 
 
 
 /**
  * Montaje de los componentes React del tema.
- * Por ahora solo el Navbar. Footer, ContactForm y Chatbot entran aqui despues.
+ * Faltan ContactForm y Chatbot.
  */
 
 const navbarMount = document.querySelector("#tm-navbar");
 if (navbarMount) {
-  // data-transparent lo pone header.php: true solo en la home, sobre el video del hero.
+  // data-transparent lo pone header.php: true solo donde hay hero a sangre.
   const transparent = navbarMount.dataset.transparent === "true";
-  react_dom_client__WEBPACK_IMPORTED_MODULE_1___default().createRoot(navbarMount).render(/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_scripts_Navbar__WEBPACK_IMPORTED_MODULE_2__["default"], {
+  react_dom_client__WEBPACK_IMPORTED_MODULE_1___default().createRoot(navbarMount).render(/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_scripts_Navbar__WEBPACK_IMPORTED_MODULE_2__["default"], {
     transparent: transparent
   }));
+}
+const footerMount = document.querySelector("#tm-footer");
+if (footerMount) {
+  react_dom_client__WEBPACK_IMPORTED_MODULE_1___default().createRoot(footerMount).render(/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_scripts_Footer__WEBPACK_IMPORTED_MODULE_3__["default"], {}));
 }
 })();
 

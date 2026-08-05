@@ -135,9 +135,9 @@
     }
   }
 
-  /* Boton primario con la mecanica de relieve del brief:
-     sombra solida desplazada 3px que se reduce a 1px al presionar. */
+  /* Boton base */
   .tm-btn {
+    position: relative;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -147,35 +147,128 @@
     line-height: 1;
     padding: 0.8125rem 1.25rem;
     border-radius: 0.5rem;
+    overflow: hidden;
     transition:
-      transform 120ms ease,
-      box-shadow 120ms ease,
-      background-color 120ms ease,
-      color 120ms ease;
+      transform 120ms ease-out,
+      box-shadow 120ms ease-out,
+      background-color 120ms ease-out,
+      color 120ms ease-out;
   }
 
+  /* El contenido va por encima del barrido de brillo */
+  .tm-btn > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Mecanica de relieve compartida.
+     Cada variante solo define su color de sombra en --tm-relief.
+     En reposo la pieza esta apoyada, al hover se levanta, al presionar se
+     hunde al ras. El desplazamiento y la sombra se mueven juntos, asi que la
+     esquina inferior derecha no se mueve y el boton no empuja el layout. */
+  .tm-btn-relief {
+    --tm-relief: var(--color-carbon-400);
+    box-shadow: 3px 3px 0 0 var(--tm-relief);
+  }
+
+  .tm-btn-relief:hover {
+    transform: translate(-3px, -3px);
+    box-shadow: 6px 6px 0 0 var(--tm-relief);
+  }
+
+  .tm-btn-relief:active {
+    transform: translate(3px, 3px);
+    box-shadow: 0 0 0 0 var(--tm-relief);
+  }
+
+  /* Primario: maiz con tinta carbon. El unico que lleva barrido de brillo. */
   .tm-btn-primary {
     background-color: var(--color-accent);
     color: var(--color-ink);
-    box-shadow: 3px 3px 0 0 var(--color-carbon-400);
   }
 
   .tm-btn-primary:hover {
     background-color: var(--color-accent-hover);
   }
 
-  .tm-btn-primary:active {
-    transform: translate(2px, 2px);
-    box-shadow: 1px 1px 0 0 var(--color-carbon-400);
+  /* Secundario de accion: olivo. Se usa el paso 400 y no el 300 porque el
+     texto en hueso sobre olivo-300 da 3.4:1 y no aprueba AA. */
+  .tm-btn-fresh {
+    background-color: var(--color-olivo-400);
+    color: var(--color-ink-inverse);
   }
 
-  /* Sobre fondo oscuro el relieve va en hueso, si no se pierde */
+  .tm-btn-fresh:hover {
+    background-color: var(--color-olivo-300);
+    color: var(--color-carbon-500);
+  }
+
+  /* Terciario de accion: gris. Para llamar. */
+  .tm-btn-muted {
+    background-color: var(--color-carbon-300);
+    color: var(--color-ink-inverse);
+  }
+
+  .tm-btn-muted:hover {
+    background-color: var(--color-carbon-200);
+    color: var(--color-carbon-500);
+  }
+
+  /* Sobre fondo oscuro el relieve va en claro, si no se pierde.
+     Hueso para el primario, carbon-200 para los secundarios: tres sombras
+     blancas juntas gritan demasiado. */
   .tm-btn-primary-on-dark {
-    box-shadow: 3px 3px 0 0 var(--color-hueso-100);
+    --tm-relief: var(--color-hueso-100);
   }
 
-  .tm-btn-primary-on-dark:active {
-    box-shadow: 1px 1px 0 0 var(--color-hueso-100);
+  .tm-btn-relief-on-dark {
+    --tm-relief: var(--color-carbon-200);
+  }
+
+  /* Barrido de brillo. Lo llevan los tres botones con relieve.
+     Corre una sola vez por hover, no en bucle. */
+  .tm-btn-relief::before {
+    content: "";
+    position: absolute;
+    inset-block: 0;
+    left: -120%;
+    width: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgb(255 255 255 / 0.6),
+      transparent
+    );
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .tm-btn-relief:hover::before {
+    opacity: 1;
+    animation: tm-sweep 700ms ease-out forwards;
+  }
+
+  @keyframes tm-sweep {
+    from {
+      left: -120%;
+    }
+    to {
+      left: 120%;
+    }
+  }
+
+  /* Sin movimiento: se conservan color y sombra de reposo, se retiran el
+     desplazamiento y el barrido. */
+  @media (prefers-reduced-motion: reduce) {
+    .tm-btn-relief:hover,
+    .tm-btn-relief:active {
+      transform: none;
+    }
+
+    .tm-btn-relief:hover::before {
+      animation: none;
+      opacity: 0;
+    }
   }
 
   .tm-btn-ghost-light {

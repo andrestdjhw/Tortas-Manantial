@@ -6,12 +6,13 @@ import {
   sortByProximity,
 } from "./locations";
 import {
-  IconArrow,
+  IconBag,
   IconClose,
   IconFacebook,
   IconInstagram,
   IconMail,
   IconMenu,
+  IconMoped,
   IconPhone,
   IconPin,
   IconYelp,
@@ -39,6 +40,8 @@ const COPY = {
     openUntil: (h) => `Open until ${h}`,
     opensAt: (h) => `Closed now, opens at ${h}`,
     order: "Order",
+    orderDirect: "Order direct",
+    noFees: "Direct orders skip the app fees.",
     utility: (name, h) => `Open until ${h} at ${name}`,
     call: "Call",
     openMenu: "Open menu",
@@ -68,8 +71,10 @@ const COPY = {
     openUntil: (h) => `Abierto hasta las ${h}`,
     opensAt: (h) => `Ahora cerrado, abre a las ${h}`,
     order: "Ordena",
+    orderDirect: "Ordena directo",
+    noFees: "Ordenar directo evita las comisiones de la app.",
     utility: (name, h) => `Abierto hasta las ${h} en ${name}`,
-    call: "Llama",
+    call: "Llamar",
     openMenu: "Abrir menú",
     closeMenu: "Cerrar menú",
     tagline: "Negocio de familia en Phoenix desde el 2000.",
@@ -241,27 +246,46 @@ function LocationPanel({ t, locations, nearestId, onClose, triggerRef }) {
                   </span>
                 </p>
 
-                <div className="mt-3 flex items-center gap-2">
+                <div className="mt-3 grid grid-cols-3 gap-2">
                   <a
                     ref={isNearest || location.id === locations[0].id ? firstLinkRef : null}
                     href={location.orderUrl}
                     target="_blank"
                     rel="noopener"
                     data-tm-order={location.id}
-                    className="tm-btn tm-btn-primary tm-btn-primary-on-dark flex-1 text-sm"
+                    data-tm-channel="toast"
+                    className="tm-btn tm-btn-relief tm-btn-primary tm-btn-primary-on-dark flex-col gap-1 px-2 py-2.5 text-[11px] leading-tight"
                   >
-                    {t.order}
-                    <IconArrow size={16} />
+                    <IconBag size={18} />
+                    <span>{t.orderDirect}</span>
                   </a>
+
+                  <a
+                    href={location.uberUrl}
+                    target="_blank"
+                    rel="noopener"
+                    data-tm-order={location.id}
+                    data-tm-channel="ubereats"
+                    className="tm-btn tm-btn-relief tm-btn-relief-on-dark tm-btn-fresh flex-col gap-1 px-2 py-2.5 text-[11px] leading-tight"
+                  >
+                    <IconMoped size={18} />
+                    <span>Uber Eats</span>
+                  </a>
+
                   <a
                     href={`tel:${location.phone}`}
                     data-tm-phone={location.id}
-                    className="tm-btn border-2 border-carbon-300 px-3 text-sm text-hueso-100 transition-colors hover:border-hueso-100"
+                    className="tm-btn tm-btn-relief tm-btn-relief-on-dark tm-btn-muted flex-col gap-1 px-2 py-2.5 text-[11px] leading-tight"
                     aria-label={`${t.call} ${location.name[t.langKey]}`}
                   >
-                    <IconPhone size={16} />
+                    <IconPhone size={18} />
+                    <span>{t.call}</span>
                   </a>
                 </div>
+
+                <p className="mt-2 text-center text-[11px] text-carbon-200">
+                  {t.noFees}
+                </p>
               </div>
             </li>
           );
@@ -529,7 +553,7 @@ export default function Navbar({ transparent = false }) {
               onClick={() => (panelOpen ? setPanelOpen(false) : openPanel())}
               aria-expanded={panelOpen}
               aria-haspopup="dialog"
-              className="tm-btn tm-btn-primary tm-btn-primary-on-dark text-sm"
+              className="tm-btn tm-btn-relief tm-btn-primary tm-btn-primary-on-dark text-sm"
             >
               {t.cta}
             </button>
