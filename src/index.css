@@ -1,2 +1,198 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
+
+@theme {
+  /* ---------- Paleta oficial Tortas Manantial ---------- */
+  --color-maiz-100: #faf6de;
+  --color-maiz-200: #f1e7a8;
+  --color-maiz-300: #e4d568; /* color de marca */
+  --color-maiz-400: #c4b348;
+
+  --color-olivo-100: #eef2e4;
+  --color-olivo-200: #c9d6ae;
+  --color-olivo-300: #77964b; /* color de marca */
+  --color-olivo-400: #4e6330;
+
+  --color-carbon-100: #ededed;
+  --color-carbon-200: #b8b8b8;
+  --color-carbon-300: #6e6e6e;
+  --color-carbon-400: #4b4b4b; /* color de marca */
+  --color-carbon-500: #2b2b2b;
+
+  --color-hueso-100: #ffffff; /* color de marca */
+  --color-hueso-200: #faf8f2;
+  --color-hueso-300: #f2efe7;
+  --color-hueso-400: #e3ded2;
+
+  /* ---------- Alias semanticos ----------
+     Las plantillas .php usan SOLO estos alias.
+     Asi un cambio de paleta no obliga a tocar el markup. */
+  --color-surface: var(--color-hueso-100);
+  --color-surface-alt: var(--color-hueso-200);
+  --color-surface-warm: var(--color-hueso-300);
+  --color-surface-dark: var(--color-carbon-400);
+  --color-surface-darker: var(--color-carbon-500);
+
+  --color-ink: var(--color-carbon-400);
+  --color-ink-soft: var(--color-carbon-300);
+  --color-ink-inverse: var(--color-hueso-100);
+
+  --color-accent: var(--color-maiz-300);
+  --color-accent-hover: var(--color-maiz-400);
+  --color-accent-soft: var(--color-maiz-100);
+
+  --color-fresh: var(--color-olivo-300);
+  --color-fresh-text: var(--color-olivo-400);
+  --color-fresh-soft: var(--color-olivo-100);
+
+  --color-rule: var(--color-hueso-400);
+
+  /* ---------- Medidas del navbar ---------- */
+  --tm-bar-h: 4.5rem; /* 72px */
+  --tm-utility-h: 2.25rem; /* 36px */
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* ---------- Offset de la admin bar de WordPress ----------
+     La admin bar es fixed con z-index 99999, asi que no se le puede ganar
+     por z-index: hay que bajar nuestro header. WordPress ya pone la clase
+     .admin-bar en el body cuando la barra esta visible.
+
+     Alturas reales de la admin bar:
+       >= 783px  ->  32px, fixed
+       601-782px ->  46px, fixed
+       <= 600px  ->  46px, pero ABSOLUTE, o sea se va con el scroll.
+                     Por eso ahi el offset vuelve a 0. */
+  :root {
+    --tm-admin-h: 0px;
+  }
+
+  .admin-bar {
+    --tm-admin-h: 32px;
+  }
+
+  @media screen and (max-width: 782px) {
+    .admin-bar {
+      --tm-admin-h: 46px;
+    }
+  }
+
+  @media screen and (max-width: 600px) {
+    .admin-bar {
+      --tm-admin-h: 0px;
+    }
+  }
+
+  body {
+    background-color: var(--color-surface);
+    color: var(--color-ink);
+  }
+
+  /* Foco visible en todo el sitio, requisito del brief */
+  :focus-visible {
+    outline: 3px solid var(--color-accent);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@layer components {
+  /* Las tres capas fijas del navbar arrancan justo debajo de la admin bar.
+     Con la barra oculta, --tm-admin-h vale 0 y quedan pegadas arriba. */
+  .tm-header {
+    top: var(--tm-admin-h);
+  }
+
+  .tm-mobile-menu {
+    top: var(--tm-admin-h);
+  }
+
+  .tm-location-panel {
+    top: calc(var(--tm-admin-h) + 5rem);
+  }
+
+  @media (min-width: 640px) {
+    /* Desde sm el panel cuelga del CTA, asi que se posiciona solo. */
+    .tm-location-panel {
+      top: calc(100% + 0.75rem);
+    }
+  }
+
+  /* Boton primario con la mecanica de relieve del brief:
+     sombra solida desplazada 3px que se reduce a 1px al presionar. */
+  .tm-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    line-height: 1;
+    padding: 0.8125rem 1.25rem;
+    border-radius: 0.5rem;
+    transition:
+      transform 120ms ease,
+      box-shadow 120ms ease,
+      background-color 120ms ease,
+      color 120ms ease;
+  }
+
+  .tm-btn-primary {
+    background-color: var(--color-accent);
+    color: var(--color-ink);
+    box-shadow: 3px 3px 0 0 var(--color-carbon-400);
+  }
+
+  .tm-btn-primary:hover {
+    background-color: var(--color-accent-hover);
+  }
+
+  .tm-btn-primary:active {
+    transform: translate(2px, 2px);
+    box-shadow: 1px 1px 0 0 var(--color-carbon-400);
+  }
+
+  /* Sobre fondo oscuro el relieve va en hueso, si no se pierde */
+  .tm-btn-primary-on-dark {
+    box-shadow: 3px 3px 0 0 var(--color-hueso-100);
+  }
+
+  .tm-btn-primary-on-dark:active {
+    box-shadow: 1px 1px 0 0 var(--color-hueso-100);
+  }
+
+  .tm-btn-ghost-light {
+    border: 2px solid var(--color-ink-inverse);
+    color: var(--color-ink-inverse);
+  }
+
+  .tm-btn-ghost-light:hover {
+    background-color: var(--color-ink-inverse);
+    color: var(--color-ink);
+  }
+
+  /* Eyebrow del sistema: 12px, mayusculas, tracking amplio */
+  .tm-eyebrow {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+}

@@ -1,10 +1,17 @@
-import Person from "./scripts/Person"
-import ExampleReactComponent from "./scripts/ExampleReactComponent"
-import React from "react"
-import ReactDOM from "react-dom/client"
+import React from "react";
+import ReactDOM from "react-dom/client";
+import Navbar from "./scripts/Navbar";
 
-const person1 = new Person("Brad")
-if (document.querySelector("#render-react-example-here")) {
-  const root = ReactDOM.createRoot(document.querySelector("#render-react-example-here"))
-  root.render(<ExampleReactComponent />)
+/**
+ * Montaje de los componentes React del tema.
+ * Por ahora solo el Navbar. Footer, ContactForm y Chatbot entran aqui despues.
+ */
+
+const navbarMount = document.querySelector("#tm-navbar");
+
+if (navbarMount) {
+  // data-transparent lo pone header.php: true solo en la home, sobre el video del hero.
+  const transparent = navbarMount.dataset.transparent === "true";
+
+  ReactDOM.createRoot(navbarMount).render(<Navbar transparent={transparent} />);
 }
