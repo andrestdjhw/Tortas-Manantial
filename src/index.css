@@ -313,6 +313,25 @@
 
 
   /* ------------------------------------------------------------------
+     Resplandor
+     Port del snippet de Uiverse a la paleta. Degradado radial anclado
+     arriba al centro: blanco en el nucleo y un tinte de marca hacia los
+     bordes. Va como background del propio bloque, sin la capa absoluta
+     con z-index negativo del original, que aqui sobra.
+
+     El color del borde se pisa por bloque con --tm-glow-color.
+     ------------------------------------------------------------------ */
+  .tm-glow {
+    --tm-glow-color: var(--color-olivo-200);
+
+    background: radial-gradient(
+      125% 125% at 50% 10%,
+      var(--color-hueso-100) 40%,
+      var(--tm-glow-color) 100%
+    );
+  }
+
+  /* ------------------------------------------------------------------
      Insignia del logo
      Mismo lenguaje de relieve que los botones, pero con tres capas:
      el disco en carbon, un aro en hueso y el maiz al borde, desplazados en
@@ -541,60 +560,71 @@
      lineales: cero nodos en el DOM, todo en una sola capa.
 
      Tres capas superpuestas:
-       1. base, rombos grandes en carbon-500 sobre el fondo de la seccion
-       2. ::after, retícula diagonal fina en olivo
+       1. base, rombos grandes sobre el fondo de la seccion
+       2. ::after, retícula diagonal fina
        3. ::before, brillo horizontal con perspectiva, da profundidad
 
-     El acento va en olivo y no en maiz a proposito: el maiz esta
-     reservado para la conversion, y usarlo de textura le quita fuerza
-     al boton que vive encima.
+     Cuatro variables para que el mismo patron sirva en cualquier fondo:
+       --tm-facet-bg     color de fondo
+       --tm-facet-shape  rombos grandes
+       --tm-facet-line   retícula fina y lineas de acento
+       --tm-facet-glow   brillo del ::before
+
+     Por defecto viene en carbon con acento olivo. El acento no va en maiz
+     a proposito: el maiz esta reservado para la conversion y usarlo de
+     textura le quita fuerza al boton que vive encima.
      ------------------------------------------------------------------ */
   .tm-facets {
+    --tm-facet-bg: var(--color-carbon-400);
+    --tm-facet-shape: var(--color-carbon-500);
+    --tm-facet-line: color-mix(in srgb, var(--color-olivo-300) 20%, transparent);
+    --tm-facet-glow: color-mix(in srgb, var(--color-maiz-300) 6%, transparent);
+
     position: absolute;
     inset: 0;
     overflow: hidden;
     pointer-events: none;
-    background-color: var(--color-carbon-400);
+    background-color: var(--tm-facet-bg);
     background-image:
       linear-gradient(
         30deg,
-        var(--color-carbon-500) 12%,
+        var(--tm-facet-shape) 12%,
         transparent 12.5%,
         transparent 87.5%,
-        var(--color-carbon-500) 87.5%,
-        var(--color-carbon-500)
+        var(--tm-facet-shape) 87.5%,
+        var(--tm-facet-shape)
       ),
       linear-gradient(
         150deg,
-        var(--color-carbon-500) 12%,
+        var(--tm-facet-shape) 12%,
         transparent 12.5%,
         transparent 87.5%,
-        var(--color-carbon-500) 87.5%,
-        var(--color-carbon-500)
+        var(--tm-facet-shape) 87.5%,
+        var(--tm-facet-shape)
       ),
       linear-gradient(
         30deg,
-        var(--color-carbon-500) 12%,
+        var(--tm-facet-shape) 12%,
         transparent 12.5%,
         transparent 87.5%,
-        var(--color-carbon-500) 87.5%,
-        var(--color-carbon-500)
+        var(--tm-facet-shape) 87.5%,
+        var(--tm-facet-shape)
       ),
       linear-gradient(
         150deg,
-        var(--color-carbon-500) 12%,
+        var(--tm-facet-shape) 12%,
         transparent 12.5%,
         transparent 87.5%,
-        var(--color-carbon-500) 87.5%,
-        var(--color-carbon-500)
+        var(--tm-facet-shape) 87.5%,
+        var(--tm-facet-shape)
       ),
       linear-gradient(
         60deg,
-        color-mix(in srgb, var(--color-olivo-300) 20%, transparent) 25%,
+        var(--tm-facet-line) 25%,
         transparent 25.5%,
         transparent 75%,
-        color-mix(in srgb, var(--color-olivo-300) 20%, transparent) 75%,
-        color-mix(in srgb, var(--color-olivo-300) 20%, transparent)
+        var(--tm-facet-line) 75%,
+        var(--tm-facet-line)
       );
     background-size: 80px 140px;
     background-position:
@@ -613,24 +643,22 @@
       linear-gradient(
         45deg,
         transparent 45%,
-        color-mix(in srgb, var(--color-olivo-300) 10%, transparent) 45%,
-        color-mix(in srgb, var(--color-olivo-300) 10%, transparent) 55%,
+        var(--tm-facet-line) 45%,
+        var(--tm-facet-line) 55%,
         transparent 55%
       ),
       linear-gradient(
         -45deg,
         transparent 45%,
-        color-mix(in srgb, var(--color-olivo-300) 10%, transparent) 45%,
-        color-mix(in srgb, var(--color-olivo-300) 10%, transparent) 55%,
+        var(--tm-facet-line) 45%,
+        var(--tm-facet-line) 55%,
         transparent 55%
       );
     background-size: 40px 40px;
     background-position:
       0 0,
       20px 20px;
-    filter: drop-shadow(
-      0 0 2px color-mix(in srgb, var(--color-olivo-300) 30%, transparent)
-    );
+    opacity: 0.5;
   }
 
   .tm-facets::before {
@@ -640,7 +668,7 @@
     background: linear-gradient(
       0deg,
       transparent 0%,
-      color-mix(in srgb, var(--color-maiz-300) 6%, transparent) 50%,
+      var(--tm-facet-glow) 50%,
       transparent 100%
     );
     transform: perspective(500px) rotateX(30deg);

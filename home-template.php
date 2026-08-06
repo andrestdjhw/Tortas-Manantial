@@ -190,7 +190,7 @@ get_header(); ?>
       <?php endif; ?>
     </div>
 
-    <div class="flex items-center px-4 py-16 sm:px-10 lg:py-24">
+    <div class="tm-glow flex items-center px-4 py-16 sm:px-10 lg:py-24">
       <div class="max-w-lg">
         <h2 class="font-display text-3xl leading-tight text-carbon-400 sm:text-4xl">
           Every order made fresh
@@ -214,7 +214,7 @@ get_header(); ?>
 <section class="bg-hueso-300">
   <div class="grid lg:grid-cols-2">
     <!-- Texto a la izquierda -->
-    <div class="flex items-center px-4 py-16 sm:px-10 lg:py-24">
+    <div class="tm-glow flex items-center px-4 py-16 [--tm-glow-color:var(--color-maiz-200)] sm:px-10 lg:py-24">
       <div class="max-w-lg">
         <p class="tm-eyebrow text-olivo-400">Since 2000</p>
         <h2 class="mt-4 font-display text-3xl leading-tight text-carbon-400 sm:text-4xl">
@@ -341,8 +341,16 @@ get_header(); ?>
      TODO: el campo de celular no se publica hasta cerrar el registro
      A2P 10DLC (pendiente del brief).
      ============================================================ -->
-<section class="bg-maiz-300 py-16 text-carbon-400 lg:py-24">
-  <div class="mx-auto grid max-w-7xl gap-10 px-4 sm:px-6 lg:grid-cols-2 lg:items-center">
+<section class="relative isolate overflow-hidden bg-maiz-300 py-16 text-carbon-400 lg:py-24">
+  <!-- Mismas facetas que la seccion de cierre, en version clara.
+       Los rombos van en maiz-400, un paso sobre el fondo, y las lineas de
+       acento en carbon con alfa baja: sobre amarillo el olivo se ensucia. -->
+  <div
+    class="tm-facets [--tm-facet-bg:var(--color-maiz-300)] [--tm-facet-glow:color-mix(in_srgb,var(--color-hueso-100)_25%,transparent)] [--tm-facet-line:color-mix(in_srgb,var(--color-carbon-400)_8%,transparent)] [--tm-facet-shape:var(--color-maiz-400)]"
+    aria-hidden="true"
+  ></div>
+
+  <div class="relative z-10 mx-auto grid max-w-7xl gap-10 px-4 sm:px-6 lg:grid-cols-2 lg:items-center">
     <div>
       <p class="tm-eyebrow">Tortas Club</p>
       <h2 class="mt-4 font-display text-3xl leading-tight sm:text-4xl">
