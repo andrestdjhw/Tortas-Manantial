@@ -34,6 +34,7 @@ const COPY = {
       { label: "Tortas Club", href: "/tortas-club" },
     ],
     cta: "Order Direct",
+    ctaShort: "Order",
     panelTitle: "Where are you eating today?",
     panelClose: "Close",
     closest: "Closest to you",
@@ -65,6 +66,7 @@ const COPY = {
       { label: "Tortas Club", href: "/tortas-club" },
     ],
     cta: "Ordena Directo",
+    ctaShort: "Ordena",
     panelTitle: "¿Dónde comes hoy?",
     panelClose: "Cerrar",
     closest: "El más cerca de ti",
@@ -499,7 +501,7 @@ export default function Navbar({ transparent = false }) {
                   className="h-14 w-auto sm:h-16"
                 />
               ) : (
-                <span className="font-serif text-lg font-bold leading-none text-hueso-100 sm:text-xl">
+                <span className="font-display text-lg font-bold leading-none text-hueso-100 sm:text-xl">
                   Tortas Manantial
                 </span>
               )}
@@ -541,7 +543,7 @@ export default function Navbar({ transparent = false }) {
           {utilityLocation ? (
             <a
               href={utilityLocation.pageUrl}
-              className="flex min-w-0 items-center gap-1.5 text-xs text-hueso-100 transition-colors hover:text-maiz-300 sm:text-sm"
+              className="col-start-1 flex min-w-0 items-center gap-1.5 text-xs text-hueso-100 transition-colors hover:text-maiz-300 sm:text-sm"
             >
               <IconPin size={15} />
 
@@ -576,7 +578,7 @@ export default function Navbar({ transparent = false }) {
               baja la insignia al hacer scroll. El hueco se abre y se cierra
               con ella, asi que sin scroll los links quedan juntos. */}
           <nav
-            className="hidden lg:flex lg:items-center"
+            className="hidden lg:col-start-2 lg:flex lg:items-center lg:justify-self-center"
             aria-label={t.langKey === "es" ? "Principal" : "Primary"}
           >
             {/* Mitad izquierda, anclada a la derecha de su columna */}
@@ -618,34 +620,47 @@ export default function Navbar({ transparent = false }) {
             </ul>
           </nav>
 
-          {/* CTA y hamburguesa */}
-          <div className="relative flex shrink-0 items-center justify-self-end gap-2 sm:gap-3">
+          {/* CTA. En movil ocupa la columna del centro, que es la que en
+              desktop usan los links. Envuelto en un div relativo porque de
+              ahi cuelga el panel de local desde sm. */}
+          <div className="relative col-start-2 justify-self-center lg:col-start-3 lg:justify-self-end">
             <button
               ref={ctaRef}
               type="button"
               onClick={() => (panelOpen ? setPanelOpen(false) : openPanel())}
               aria-expanded={panelOpen}
               aria-haspopup="dialog"
-              className="tm-btn tm-btn-relief tm-btn-primary tm-btn-primary-on-dark text-sm"
+              className="tm-btn tm-btn-relief tm-btn-primary tm-btn-primary-on-dark px-6 py-3.5 text-base sm:px-5 sm:py-3 sm:text-sm"
             >
-              {t.cta}
+              <span className="sm:hidden">{t.ctaShort}</span>
+              <span className="hidden sm:inline">{t.cta}</span>
             </button>
 
-            <button
-              type="button"
-              onClick={() => {
-                setPanelOpen(false);
-                setMenuOpen((open) => !open);
-              }}
-              aria-expanded={menuOpen}
-              aria-controls="tm-mobile-menu"
-              aria-label={menuOpen ? t.closeMenu : t.openMenu}
-              className="-mr-2 rounded-lg p-2 text-hueso-100 lg:hidden"
-            >
-              {menuOpen ? <IconClose /> : <IconMenu />}
-            </button>
+            {panelOpen && (
+              <LocationPanel
+                t={t}
+                locations={ordered}
+                nearestId={nearestId}
+                onClose={() => setPanelOpen(false)}
+                triggerRef={ctaRef}
+              />
+            )}
           </div>
 
+          {/* Hamburguesa, pegada al borde derecho */}
+          <button
+            type="button"
+            onClick={() => {
+              setPanelOpen(false);
+              setMenuOpen((open) => !open);
+            }}
+            aria-expanded={menuOpen}
+            aria-controls="tm-mobile-menu"
+            aria-label={menuOpen ? t.closeMenu : t.openMenu}
+            className="col-start-3 -mr-2 justify-self-end rounded-lg p-2 text-hueso-100 lg:hidden"
+          >
+            {menuOpen ? <IconClose /> : <IconMenu />}
+          </button>
 
           {/* ------------------------------------------------------------
               Insignia. Al hacer scroll el logo se encierra en un circulo
@@ -662,7 +677,7 @@ export default function Navbar({ transparent = false }) {
             aria-label={t.home}
             aria-hidden={!scrolled}
             tabIndex={scrolled ? 0 : -1}
-            className={`tm-logo-badge absolute left-1/2 top-0 z-10 flex h-24 w-24 -translate-x-1/2 items-center justify-center rounded-full bg-carbon-400 p-3.5 shadow-xl ring-1 ring-white/15 transition-all duration-300 ${
+            className={`tm-logo-badge absolute left-1/2 top-0 z-10 hidden h-24 w-24 -translate-x-1/2 items-center justify-center rounded-full bg-carbon-400 p-3.5 lg:flex ${
               scrolled
                 ? "pointer-events-auto scale-100 opacity-100"
                 : "pointer-events-none scale-90 opacity-0"
@@ -677,24 +692,12 @@ export default function Navbar({ transparent = false }) {
                 className="h-auto w-full"
               />
             ) : (
-              <span className="text-center font-serif text-xs font-bold leading-none text-hueso-100">
+              <span className="text-center font-display text-xs font-bold leading-none text-hueso-100">
                 TM
               </span>
             )}
           </a>
-
-          {panelOpen && (
-            <LocationPanel
-              t={t}
-              locations={ordered}
-              nearestId={nearestId}
-              onClose={() => setPanelOpen(false)}
-              triggerRef={ctaRef}
-            />
-          )}
         </div>
-
-
       </header>
 
       {/* Menu movil a pantalla completa */}
@@ -713,7 +716,7 @@ export default function Navbar({ transparent = false }) {
                   <a
                     href={link.href}
                     onClick={() => setMenuOpen(false)}
-                    className="block py-5 font-serif text-2xl text-hueso-100 transition-colors hover:text-maiz-300"
+                    className="block py-5 font-display text-2xl text-hueso-100 transition-colors hover:text-maiz-300"
                   >
                     {link.label}
                   </a>
@@ -723,7 +726,7 @@ export default function Navbar({ transparent = false }) {
                 <a
                   href="/careers"
                   onClick={() => setMenuOpen(false)}
-                  className="block py-5 font-serif text-2xl text-hueso-100 transition-colors hover:text-maiz-300"
+                  className="block py-5 font-display text-2xl text-hueso-100 transition-colors hover:text-maiz-300"
                 >
                   {t.langKey === "es" ? "Trabaja con Nosotros" : "Careers"}
                 </a>

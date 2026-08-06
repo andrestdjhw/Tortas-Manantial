@@ -128,6 +128,22 @@ function tm_locations() {
   );
 }
 
+
+/**
+ * URL del mapa embebido de un local.
+ *
+ * Se arma con la direccion y no con lat/lng: la direccion viene del sitio
+ * actual y es dato verificado, mientras que las coordenadas de tm_locations()
+ * son aproximadas y solo se usan para ordenar por cercania.
+ *
+ * El parametro output=embed no necesita API key.
+ */
+function tm_map_embed($location) {
+  $query = $location['street'] . ', ' . $location['city'];
+
+  return 'https://www.google.com/maps?q=' . rawurlencode($query) . '&z=15&output=embed';
+}
+
 /**
  * Hora corta: "07:00" -> "7am", "22:00" -> "10pm".
  */
@@ -165,6 +181,44 @@ function tm_location_status($location) {
     'closesAt' => tm_format_hour($location['hours']['close']),
   );
 }
+
+
+/* ==========================================================================
+   TIPOGRAFIA
+   La fuente se encola aqui y no con @import dentro de index.css: un @import
+   encadena dos peticiones, porque el navegador tiene que descargar y parsear
+   el CSS antes de descubrir que necesita otra hoja.
+
+   Los preconnect van con prioridad 0 en wp_head para que el handshake con
+   gstatic empiece antes de que se pida el archivo.
+   ========================================================================== */
+
+function tm_font_preconnect() {
+  echo '<link rel="preconnect" href="https://fonts.googleapis.com">' . "\n";
+  echo '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>' . "\n";
+}
+
+add_action('wp_head', 'tm_font_preconnect', 0);
+
+function tm_load_fonts() {
+  wp_enqueue_style(
+    'tm-fonts',
+    /**
+     * TODO: esta URL carga cuatro familias y todos los pesos de Lato y
+     * Arimo. Son bastantes kilobytes de fuente para un sitio que se abre
+     * en el telefono. Cuando se cierre la eleccion tipografica, recortar
+     * a lo que se use de verdad. Por ejemplo, solo Boogaloo mas Lato en
+     * 400 y 700:
+     *
+     * https://fonts.googleapis.com/css2?family=Boogaloo&family=Lato:wght@400;700&display=swap
+     */
+    'https://fonts.googleapis.com/css2?family=Arimo:ital,wght@0,400..700;1,400..700&family=Boogaloo&family=Electrolize&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap',
+    array(),
+    null
+  );
+}
+
+add_action('wp_enqueue_scripts', 'tm_load_fonts');
 
 /**
  * Version basada en filemtime, para que el navegador no sirva assets viejos

@@ -601,7 +601,7 @@ function Footer() {
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
         className: "mt-10 border-t border-white/10 pt-6 lg:mt-14",
         children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("p", {
-          className: "font-serif text-lg text-maiz-300",
+          className: "font-display text-lg text-maiz-300",
           children: t.tagline
         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
           className: "mt-5 flex flex-col gap-4 text-xs text-carbon-200 lg:flex-row lg:items-center lg:justify-between",
@@ -679,6 +679,7 @@ const COPY = {
       href: "/tortas-club"
     }],
     cta: "Order Direct",
+    ctaShort: "Order",
     panelTitle: "Where are you eating today?",
     panelClose: "Close",
     closest: "Closest to you",
@@ -717,6 +718,7 @@ const COPY = {
       href: "/tortas-club"
     }],
     cta: "Ordena Directo",
+    ctaShort: "Ordena",
     panelTitle: "¿Dónde comes hoy?",
     panelClose: "Cerrar",
     closest: "El más cerca de ti",
@@ -1109,7 +1111,7 @@ function Navbar({
               height: "60",
               className: "h-14 w-auto sm:h-16"
             }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("span", {
-              className: "font-serif text-lg font-bold leading-none text-hueso-100 sm:text-xl",
+              className: "font-display text-lg font-bold leading-none text-hueso-100 sm:text-xl",
               children: "Tortas Manantial"
             })
           }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("ul", {
@@ -1134,7 +1136,7 @@ function Navbar({
         className: "relative mx-auto grid h-16 max-w-7xl grid-cols-[1fr_auto_1fr] items-center gap-4 px-4 sm:px-6",
         children: [utilityLocation ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("a", {
           href: utilityLocation.pageUrl,
-          className: "flex min-w-0 items-center gap-1.5 text-xs text-hueso-100 transition-colors hover:text-maiz-300 sm:text-sm",
+          className: "col-start-1 flex min-w-0 items-center gap-1.5 text-xs text-hueso-100 transition-colors hover:text-maiz-300 sm:text-sm",
           children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_icons__WEBPACK_IMPORTED_MODULE_2__.IconPin, {
             size: 15
           }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("span", {
@@ -1148,7 +1150,7 @@ function Navbar({
             "aria-hidden": "true"
           })]
         }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("span", {}), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("nav", {
-          className: "hidden lg:flex lg:items-center",
+          className: "hidden lg:col-start-2 lg:flex lg:items-center lg:justify-self-center",
           "aria-label": t.langKey === "es" ? "Principal" : "Primary",
           children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("ul", {
             className: "flex w-52 items-center justify-end gap-7",
@@ -1173,33 +1175,45 @@ function Navbar({
             }, link.href))
           })]
         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
-          className: "relative flex shrink-0 items-center justify-self-end gap-2 sm:gap-3",
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("button", {
+          className: "relative col-start-2 justify-self-center lg:col-start-3 lg:justify-self-end",
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("button", {
             ref: ctaRef,
             type: "button",
             onClick: () => panelOpen ? setPanelOpen(false) : openPanel(),
             "aria-expanded": panelOpen,
             "aria-haspopup": "dialog",
-            className: "tm-btn tm-btn-relief tm-btn-primary tm-btn-primary-on-dark text-sm",
-            children: t.cta
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("button", {
-            type: "button",
-            onClick: () => {
-              setPanelOpen(false);
-              setMenuOpen(open => !open);
-            },
-            "aria-expanded": menuOpen,
-            "aria-controls": "tm-mobile-menu",
-            "aria-label": menuOpen ? t.closeMenu : t.openMenu,
-            className: "-mr-2 rounded-lg p-2 text-hueso-100 lg:hidden",
-            children: menuOpen ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_icons__WEBPACK_IMPORTED_MODULE_2__.IconClose, {}) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_icons__WEBPACK_IMPORTED_MODULE_2__.IconMenu, {})
+            className: "tm-btn tm-btn-relief tm-btn-primary tm-btn-primary-on-dark px-6 py-3.5 text-base sm:px-5 sm:py-3 sm:text-sm",
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("span", {
+              className: "sm:hidden",
+              children: t.ctaShort
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("span", {
+              className: "hidden sm:inline",
+              children: t.cta
+            })]
+          }), panelOpen && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(LocationPanel, {
+            t: t,
+            locations: ordered,
+            nearestId: nearestId,
+            onClose: () => setPanelOpen(false),
+            triggerRef: ctaRef
           })]
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("button", {
+          type: "button",
+          onClick: () => {
+            setPanelOpen(false);
+            setMenuOpen(open => !open);
+          },
+          "aria-expanded": menuOpen,
+          "aria-controls": "tm-mobile-menu",
+          "aria-label": menuOpen ? t.closeMenu : t.openMenu,
+          className: "col-start-3 -mr-2 justify-self-end rounded-lg p-2 text-hueso-100 lg:hidden",
+          children: menuOpen ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_icons__WEBPACK_IMPORTED_MODULE_2__.IconClose, {}) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_icons__WEBPACK_IMPORTED_MODULE_2__.IconMenu, {})
         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("a", {
           href: cfg.homeUrl,
           "aria-label": t.home,
           "aria-hidden": !scrolled,
           tabIndex: scrolled ? 0 : -1,
-          className: `tm-logo-badge absolute left-1/2 top-0 z-10 flex h-24 w-24 -translate-x-1/2 items-center justify-center rounded-full bg-carbon-400 p-3.5 shadow-xl ring-1 ring-white/15 transition-all duration-300 ${scrolled ? "pointer-events-auto scale-100 opacity-100" : "pointer-events-none scale-90 opacity-0"}`,
+          className: `tm-logo-badge absolute left-1/2 top-0 z-10 hidden h-24 w-24 -translate-x-1/2 items-center justify-center rounded-full bg-carbon-400 p-3.5 lg:flex ${scrolled ? "pointer-events-auto scale-100 opacity-100" : "pointer-events-none scale-90 opacity-0"}`,
           children: cfg.logoLight ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("img", {
             src: cfg.logoLight,
             alt: "",
@@ -1207,15 +1221,9 @@ function Navbar({
             height: "60",
             className: "h-auto w-full"
           }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("span", {
-            className: "text-center font-serif text-xs font-bold leading-none text-hueso-100",
+            className: "text-center font-display text-xs font-bold leading-none text-hueso-100",
             children: "TM"
           })
-        }), panelOpen && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(LocationPanel, {
-          t: t,
-          locations: ordered,
-          nearestId: nearestId,
-          onClose: () => setPanelOpen(false),
-          triggerRef: ctaRef
         })]
       })]
     }), menuOpen && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
@@ -1231,7 +1239,7 @@ function Navbar({
             children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("a", {
               href: link.href,
               onClick: () => setMenuOpen(false),
-              className: "block py-5 font-serif text-2xl text-hueso-100 transition-colors hover:text-maiz-300",
+              className: "block py-5 font-display text-2xl text-hueso-100 transition-colors hover:text-maiz-300",
               children: link.label
             })
           }, link.href)), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("li", {
@@ -1239,7 +1247,7 @@ function Navbar({
             children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("a", {
               href: "/careers",
               onClick: () => setMenuOpen(false),
-              className: "block py-5 font-serif text-2xl text-hueso-100 transition-colors hover:text-maiz-300",
+              className: "block py-5 font-display text-2xl text-hueso-100 transition-colors hover:text-maiz-300",
               children: t.langKey === "es" ? "Trabaja con Nosotros" : "Careers"
             })
           })]

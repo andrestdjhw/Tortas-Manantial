@@ -349,7 +349,7 @@ export default function Footer() {
 
         {/* Cierre */}
         <div className="mt-10 border-t border-white/10 pt-6 lg:mt-14">
-          <p className="font-serif text-lg text-maiz-300">{t.tagline}</p>
+          <p className="font-display text-lg text-maiz-300">{t.tagline}</p>
 
           <div className="mt-5 flex flex-col gap-4 text-xs text-carbon-200 lg:flex-row lg:items-center lg:justify-between">
             <ul className="flex flex-wrap gap-x-5 gap-y-2">

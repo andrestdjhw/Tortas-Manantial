@@ -1,7 +1,26 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
+/* Archivos donde Tailwind busca clases.
+   La deteccion automatica arranca desde la carpeta de este CSS, asi que
+   sin esto puede no alcanzar las plantillas .php de la raiz del tema y las
+   clases usadas solo ahi no se generan nunca. */
+@source "../*.php";
+@source "../src/**/*.js";
+
 @theme {
+  /* ---------- Tipografia ----------
+     --font-sans pisa la sans por defecto de Tailwind, asi que todo el
+     cuerpo del sitio cambia sin tocar el markup.
+     --font-display se usa en titulares con la utilidad font-display.
+
+     Boogaloo y Electrolize traen un solo peso (400). No usarlas con
+     font-bold: el navegador sintetiza la negrita y se ve embarrado. */
+  --font-sans: "Lato", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Boogaloo", ui-sans-serif, system-ui, sans-serif;
+  --font-alt: "Arimo", ui-sans-serif, system-ui, sans-serif;
+  --font-tech: "Electrolize", ui-sans-serif, system-ui, sans-serif;
+
   /* ---------- Paleta oficial Tortas Manantial ---------- */
   --color-maiz-100: #faf6de;
   --color-maiz-200: #f1e7a8;
@@ -264,6 +283,11 @@
       transition-property: opacity;
     }
 
+    .tm-logo-badge:hover,
+    .tm-logo-badge:active {
+      transform: none;
+    }
+
     .tm-btn-relief:hover,
     .tm-btn-relief:active {
       transform: none;
@@ -287,6 +311,128 @@
     color: var(--color-ink-inverse);
   }
 
+
+  /* ------------------------------------------------------------------
+     Insignia del logo
+     Mismo lenguaje de relieve que los botones, pero con tres capas:
+     el disco en carbon, un aro en hueso y el maiz al borde, desplazados en
+     diagonal. Las sombras solidas siguen el border-radius, asi que los
+     aros salen circulares sin nodos extra.
+
+     El desplazamiento va en transform y no en translate: las utilidades
+     de Tailwind 4 (-translate-x-1/2, scale-*) usan las propiedades
+     translate y scale, asi que transform queda libre y las tres se
+     componen sin pisarse.
+     ------------------------------------------------------------------ */
+  .tm-logo-badge {
+    box-shadow:
+      3px 3px 0 0 var(--color-hueso-100),
+      6px 6px 0 0 var(--color-maiz-300);
+    transition:
+      transform 150ms ease-out,
+      box-shadow 150ms ease-out,
+      opacity 300ms ease-out,
+      scale 300ms ease-out;
+  }
+
+  @media (hover: hover) {
+    .tm-logo-badge:hover,
+    .tm-logo-badge:focus-visible {
+      transform: translate(-3px, -3px);
+      box-shadow:
+        5px 5px 0 0 var(--color-hueso-100),
+        10px 10px 0 0 var(--color-maiz-300);
+    }
+
+    .tm-logo-badge:active {
+      transform: translate(3px, 3px);
+      box-shadow:
+        0 0 0 0 var(--color-hueso-100),
+        0 0 0 0 var(--color-maiz-300);
+    }
+  }
+
+  /* ------------------------------------------------------------------
+     Tarjeta con inclinacion 3D
+     La perspectiva vive en el contenedor de la lista, no en la tarjeta:
+     asi todas comparten un mismo punto de fuga y el conjunto se lee como
+     una escena, no como cuatro piezas cada una con su propia camara.
+
+     La tarjeta se inclina, el titulo se despega hacia adelante con
+     translateZ y un brillo diagonal cruza la superficie. Todo con
+     transform y opacity, que son las dos propiedades que el navegador
+     anima sin recalcular layout.
+     ------------------------------------------------------------------ */
+  .tm-cards-3d {
+    perspective: 1200px;
+  }
+
+  .tm-card-3d {
+    transform-style: preserve-3d;
+    transition:
+      transform 400ms cubic-bezier(0.2, 0.7, 0.3, 1),
+      box-shadow 400ms cubic-bezier(0.2, 0.7, 0.3, 1);
+  }
+
+  .tm-card-3d__lift {
+    transition: transform 400ms cubic-bezier(0.2, 0.7, 0.3, 1);
+  }
+
+  /* Brillo diagonal, apagado en reposo */
+  .tm-card-3d::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    opacity: 0;
+    background: linear-gradient(
+      110deg,
+      transparent 35%,
+      rgb(255 255 255 / 0.35) 50%,
+      transparent 65%
+    );
+    background-size: 250% 100%;
+    background-position: 150% 0;
+    transition:
+      opacity 300ms ease-out,
+      background-position 700ms ease-out;
+  }
+
+  /* Solo en dispositivos con puntero: en tactil el hover se queda pegado
+     despues del toque y la tarjeta se ve torcida sin motivo. */
+  @media (hover: hover) {
+    .tm-card-3d:hover,
+    .tm-card-3d:focus-visible {
+      transform: rotateX(3deg) rotateY(-5deg) translateY(-10px) scale(1.02);
+      box-shadow:
+        0 22px 45px -18px rgb(0 0 0 / 0.45),
+        0 6px 14px -8px rgb(0 0 0 / 0.25);
+    }
+
+    .tm-card-3d:hover .tm-card-3d__lift,
+    .tm-card-3d:focus-visible .tm-card-3d__lift {
+      transform: translateZ(45px);
+    }
+
+    .tm-card-3d:hover::after,
+    .tm-card-3d:focus-visible::after {
+      opacity: 1;
+      background-position: -50% 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .tm-card-3d:hover,
+    .tm-card-3d:focus-visible,
+    .tm-card-3d:hover .tm-card-3d__lift {
+      transform: none;
+    }
+
+    .tm-card-3d:hover::after {
+      opacity: 0;
+    }
+  }
 
   /* ------------------------------------------------------------------
      Trama

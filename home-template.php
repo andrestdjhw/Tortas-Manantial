@@ -15,12 +15,12 @@
 $tm_img_hero_video   = tm_upload('2026/08/TortasManantialHeroCompressed.mp4');
 $tm_img_hero_poster  = ''; // TODO: primer frame del video. Sin el, el hero se
                            // ve en carbon plano hasta que el video empieza.
-$tm_img_fav_torta    = ''; // TODO: 4:5 vertical
-$tm_img_fav_nachos   = ''; // TODO: 4:5 vertical
-$tm_img_fav_agua     = ''; // TODO: 4:5 vertical
-$tm_img_fav_licuado  = ''; // TODO: 4:5 vertical
-$tm_img_fresh        = ''; // TODO: foto de proceso, pan en el comal
-$tm_img_story        = ''; // TODO: foto de familia o de local
+$tm_img_fav_torta    = tm_upload('2026/08/TortasTM.jpg');
+$tm_img_fav_nachos   = tm_upload('2026/08/NachosTM.jpg');
+$tm_img_fav_agua     = tm_upload('2026/08/AguasM.webp');
+$tm_img_fav_licuado  = tm_upload('2026/08/LicuadoM.webp');
+$tm_img_fresh        = tm_upload('2026/08/Tortas.webp');
+$tm_img_story        = tm_upload('2026/08/TMFachada.webp');
 $tm_img_ig_1         = ''; // TODO
 $tm_img_ig_2         = ''; // TODO
 $tm_img_ig_3         = ''; // TODO
@@ -75,7 +75,7 @@ get_header(); ?>
     <div class="max-w-2xl">
       <p class="tm-eyebrow text-maiz-300">Family owned in Phoenix since 2000</p>
 
-      <h1 class="mt-4 font-serif text-4xl leading-[1.05] text-hueso-100 sm:text-5xl lg:text-6xl">
+      <h1 class="mt-4 font-display text-[2rem] leading-[1.08] text-hueso-100 sm:text-5xl lg:text-6xl">
         The torta that tastes <span class="whitespace-nowrap">like home</span>
       </h1>
 
@@ -121,14 +121,14 @@ get_header(); ?>
      ============================================================ -->
 <section class="tm-tiles min-h-svh py-16 lg:py-24">
   <div class="mx-auto max-w-7xl px-4 sm:px-6">
-    <h2 class="max-w-2xl font-serif text-3xl leading-tight text-carbon-400 sm:text-4xl">
+    <h2 class="max-w-2xl font-display text-3xl leading-tight text-carbon-400 sm:text-4xl">
       The ones everybody comes back for
     </h2>
     <p class="mt-3 max-w-xl text-carbon-300">
       Twenty five years of the same recipe, made fresh every single order.
     </p>
 
-    <ul class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+    <ul class="tm-cards-3d mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
       <?php
         $tm_favorites = array(
           array('Tortas',       'Toasted bread, layered high, the way it is done at home.', $tm_img_fav_torta,   '#tortas'),
@@ -142,9 +142,9 @@ get_header(); ?>
         <li>
           <a
             href="/menu<?php echo esc_attr($tm_anchor); ?>"
-            class="group flex h-full flex-col overflow-hidden rounded-xl border border-hueso-400 bg-hueso-100 shadow-sm transition-shadow hover:shadow-md"
+            class="tm-card-3d group relative flex h-full flex-col overflow-hidden rounded-xl border border-hueso-400 bg-hueso-100 shadow-sm"
           >
-            <div class="tm-placeholder aspect-4/5 overflow-hidden">
+            <div class="tm-placeholder aspect-square overflow-hidden sm:aspect-4/5">
               <?php if ($tm_image) : ?>
                 <img
                   src="<?php echo esc_url($tm_image); ?>"
@@ -159,8 +159,8 @@ get_header(); ?>
               <?php endif; ?>
             </div>
 
-            <div class="p-5">
-              <h3 class="font-serif text-xl text-carbon-400 group-hover:text-olivo-400">
+            <div class="tm-card-3d__lift p-5">
+              <h3 class="font-display text-xl text-carbon-400 group-hover:text-olivo-400">
                 <?php echo esc_html($tm_name); ?>
               </h3>
               <p class="mt-1.5 text-sm text-carbon-300"><?php echo esc_html($tm_desc); ?></p>
@@ -192,7 +192,7 @@ get_header(); ?>
 
     <div class="flex items-center px-4 py-16 sm:px-10 lg:py-24">
       <div class="max-w-lg">
-        <h2 class="font-serif text-3xl leading-tight text-carbon-400 sm:text-4xl">
+        <h2 class="font-display text-3xl leading-tight text-carbon-400 sm:text-4xl">
           Every order made fresh
         </h2>
         <p class="mt-5 text-lg text-carbon-300">
@@ -211,33 +211,37 @@ get_header(); ?>
      TODO: copy provisional. Se reescribe con la historia real de la
      familia (pendiente 02 del brief maestro).
      ============================================================ -->
-<section class="bg-hueso-300 py-16 lg:py-24">
-  <div class="mx-auto grid max-w-7xl gap-10 px-4 sm:px-6 lg:grid-cols-12 lg:items-center">
-    <div class="lg:col-span-5">
-      <div class="tm-placeholder aspect-3/4 overflow-hidden rounded-xl">
-        <?php if ($tm_img_story) : ?>
-          <img
-            src="<?php echo esc_url($tm_img_story); ?>"
-            alt="The family behind Tortas Manantial"
-            loading="lazy"
-            class="h-full w-full object-cover"
-          >
-        <?php endif; ?>
+<section class="bg-hueso-300">
+  <div class="grid lg:grid-cols-2">
+    <!-- Texto a la izquierda -->
+    <div class="flex items-center px-4 py-16 sm:px-10 lg:py-24">
+      <div class="max-w-lg">
+        <p class="tm-eyebrow text-olivo-400">Since 2000</p>
+        <h2 class="mt-4 font-display text-3xl leading-tight text-carbon-400 sm:text-4xl">
+          One family, one recipe, four neighborhoods
+        </h2>
+        <p class="mt-5 text-lg text-carbon-300">
+          We opened one small shop in Phoenix with a family recipe and a lot of
+          nerve. Twenty five years later there are four of us across the west
+          Valley, and the recipe has not moved an inch. What grew was the number
+          of families who call this their spot.
+        </p>
+        <a href="/our-story" class="tm-btn tm-btn-ghost-dark mt-8">Read our story</a>
       </div>
     </div>
 
-    <div class="lg:col-span-7">
-      <p class="tm-eyebrow text-olivo-400">Since 2000</p>
-      <h2 class="mt-4 font-serif text-3xl leading-tight text-carbon-400 sm:text-4xl">
-        One family, one recipe, four neighborhoods
-      </h2>
-      <p class="mt-5 max-w-xl text-lg text-carbon-300">
-        We opened one small shop in Phoenix with a family recipe and a lot of
-        nerve. Twenty five years later there are four of us across the west
-        Valley, and the recipe has not moved an inch. What grew was the number
-        of families who call this their spot.
-      </p>
-      <a href="/our-story" class="tm-btn tm-btn-ghost-dark mt-8">Read our story</a>
+    <!-- Imagen a sangre, toda la mitad derecha.
+         En movil va debajo del texto, no encima: la historia es lo que
+         justifica la foto, no al reves. -->
+    <div class="tm-placeholder order-last min-h-64 lg:min-h-[32rem]">
+      <?php if ($tm_img_story) : ?>
+        <img
+          src="<?php echo esc_url($tm_img_story); ?>"
+          alt="The family behind Tortas Manantial"
+          loading="lazy"
+          class="h-full w-full object-cover"
+        >
+      <?php endif; ?>
     </div>
   </div>
 </section>
@@ -247,7 +251,7 @@ get_header(); ?>
      ============================================================ -->
 <section id="locations" class="tm-tiles min-h-svh scroll-mt-24 py-16 lg:py-24">
   <div class="mx-auto max-w-7xl px-4 sm:px-6">
-    <h2 class="font-serif text-3xl leading-tight text-carbon-400 sm:text-4xl">
+    <h2 class="font-display text-3xl leading-tight text-carbon-400 sm:text-4xl">
       Find the one closest to you
     </h2>
     <p class="mt-3 text-carbon-300">
@@ -257,8 +261,21 @@ get_header(); ?>
     <ul class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
       <?php foreach ($tm_locations as $tm_location) :
         $tm_status = tm_location_status($tm_location); ?>
-        <li class="flex flex-col rounded-xl border border-hueso-400 bg-hueso-200 p-5">
-          <h3 class="font-serif text-xl text-carbon-400">
+        <li class="flex flex-col overflow-hidden rounded-xl border border-hueso-400 bg-hueso-200">
+          <!-- Mapa del local. loading="lazy" es obligatorio aqui: son cuatro
+               iframes de terceros en la misma pagina y sin esto se cargan
+               los cuatro antes de que nadie los vea. -->
+          <iframe
+            src="<?php echo esc_url(tm_map_embed($tm_location)); ?>"
+            title="Map of Tortas Manantial, <?php echo esc_attr($tm_location['name']['en']); ?>"
+            class="tm-placeholder aspect-4/3 w-full border-0"
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+            allowfullscreen
+          ></iframe>
+
+          <div class="flex flex-1 flex-col p-5">
+          <h3 class="font-display text-xl text-carbon-400">
             <a href="<?php echo esc_url($tm_location['pageUrl']); ?>" class="hover:text-olivo-400">
               <?php echo esc_html($tm_location['name']['en']); ?>
             </a>
@@ -308,6 +325,7 @@ get_header(); ?>
             data-tm-directions="<?php echo esc_attr($tm_location['id']); ?>"
             class="mt-3 text-sm font-semibold text-olivo-400 underline-offset-4 hover:underline"
           >Get directions</a>
+          </div>
         </li>
       <?php endforeach; ?>
     </ul>
@@ -327,7 +345,7 @@ get_header(); ?>
   <div class="mx-auto grid max-w-7xl gap-10 px-4 sm:px-6 lg:grid-cols-2 lg:items-center">
     <div>
       <p class="tm-eyebrow">Tortas Club</p>
-      <h2 class="mt-4 font-serif text-3xl leading-tight sm:text-4xl">
+      <h2 class="mt-4 font-display text-3xl leading-tight sm:text-4xl">
         Eat here often? Start getting paid for it
       </h2>
       <p class="mt-5 max-w-lg text-lg">
@@ -353,7 +371,7 @@ get_header(); ?>
      ============================================================ -->
 <section class="bg-hueso-200 py-16 lg:py-24">
   <div class="mx-auto max-w-7xl px-4 sm:px-6">
-    <h2 class="font-serif text-3xl leading-tight text-carbon-400 sm:text-4xl">
+    <h2 class="font-display text-3xl leading-tight text-carbon-400 sm:text-4xl">
       What the neighborhood says
     </h2>
     <p class="mt-3 text-carbon-300">Real reviews from our four shops.</p>
@@ -393,7 +411,7 @@ get_header(); ?>
   <div class="mx-auto max-w-7xl px-4 sm:px-6">
     <div class="sm:flex sm:items-end sm:justify-between sm:gap-6">
       <div>
-        <h2 class="font-serif text-3xl leading-tight text-carbon-400 sm:text-4xl">
+        <h2 class="font-display text-3xl leading-tight text-carbon-400 sm:text-4xl">
           Tag us, we are watching
         </h2>
         <p class="mt-3 text-carbon-300">@tortasmanantial</p>
@@ -448,7 +466,7 @@ get_header(); ?>
      ============================================================ -->
 <section class="bg-hueso-200 py-16 lg:py-24">
   <div class="mx-auto max-w-3xl px-4 sm:px-6">
-    <h2 class="font-serif text-3xl leading-tight text-carbon-400 sm:text-4xl">
+    <h2 class="font-display text-3xl leading-tight text-carbon-400 sm:text-4xl">
       Questions we get a lot
     </h2>
 
