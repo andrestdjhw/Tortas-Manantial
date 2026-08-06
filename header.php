@@ -19,6 +19,8 @@
        */
       $tm_hero_templates = array(
         'home-template.php',
+        'locations-template.php',
+        'our-story-template.php',
       );
 
       $tm_has_hero = false;
