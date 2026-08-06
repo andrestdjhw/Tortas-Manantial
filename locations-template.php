@@ -10,7 +10,18 @@
    MEDIOS DE ESTA PLANTILLA
    ========================================================================== */
 
-$tm_img_hero = ''; // TODO: foto de fachada o de mostrador, formato apaisado
+/**
+ * Imagenes del slideshow del hero. El orden manda: la primera es la que se
+ * ve al cargar, asi que conviene que sea la mas fuerte.
+ * Si cambia la cantidad hay que ajustar los delays de abajo y los
+ * porcentajes de tm-crossfade en index.css.
+ */
+$tm_hero_slides = array(
+  tm_upload('2026/08/LocationsHero1.webp'),
+  tm_upload('2026/08/LocationsHero2.webp'),
+  tm_upload('2026/08/LocationsHero3.webp'),
+  tm_upload('2026/08/LocationsHero4.webp'),
+);
 
 $tm_locations = tm_locations();
 
@@ -21,14 +32,31 @@ get_header(); ?>
      Media pantalla, imagen con scrim. El video se reserva para la home.
      ============================================================ -->
 <section data-tm-hero class="relative flex min-h-[60svh] items-end overflow-hidden bg-carbon-400">
-  <?php if ($tm_img_hero) : ?>
-    <img
-      src="<?php echo esc_url($tm_img_hero); ?>"
-      alt=""
-      class="absolute inset-0 h-full w-full object-cover"
-      fetchpriority="high"
-    >
-  <?php endif; ?>
+  <div class="tm-slideshow" aria-hidden="true">
+    <?php
+      $tm_slide_count = count($tm_hero_slides);
+      $tm_cycle       = 28; // segundos, igual que la animacion en index.css
+
+      foreach ($tm_hero_slides as $tm_index => $tm_slide) :
+        if (!$tm_slide) {
+          continue;
+        }
+
+        // Cada capa arranca un turno despues de la anterior
+        $tm_delay = ($tm_cycle / $tm_slide_count) * $tm_index; ?>
+        <img
+          src="<?php echo esc_url($tm_slide); ?>"
+          alt=""
+          class="tm-slideshow__img"
+          style="animation-delay: <?php echo esc_attr($tm_delay); ?>s;"
+          <?php if ($tm_index === 0) : ?>
+            fetchpriority="high"
+          <?php else : ?>
+            loading="lazy"
+          <?php endif; ?>
+        >
+      <?php endforeach; ?>
+  </div>
 
   <div class="absolute inset-0 bg-carbon-500/60" aria-hidden="true"></div>
 

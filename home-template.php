@@ -38,6 +38,17 @@ $tm_reviews = array();
 
 $tm_locations = tm_locations();
 
+/**
+ * Enlace de pedido de toda la pagina. Los CTA de la home van directo a Toast
+ * en vez de abrir el panel de seleccion de local.
+ *
+ * TODO: revisar. Manda a todos al local de McDowell sin importar donde esten,
+ * y los enlaces de menu salen del sitio, que es el hallazgo numero 1 de la
+ * auditoria del sitio de Wix. El panel de seleccion sigue existiendo en el
+ * componente Navbar por si se decide volver a el.
+ */
+$tm_order_url = tm_default_order_url();
+
 get_header(); ?>
 
 <!-- ============================================================
@@ -85,10 +96,15 @@ get_header(); ?>
       </p>
 
       <div class="mt-8 flex flex-wrap items-center gap-3">
-        <a href="#locations" data-tm-order-cta class="tm-btn tm-btn-relief tm-btn-primary tm-btn-primary-on-dark">
+        <a
+          href="<?php echo esc_url($tm_order_url); ?>"
+          target="_blank" rel="noopener"
+          data-tm-order="default" data-tm-channel="toast"
+          class="tm-btn tm-btn-relief tm-btn-primary tm-btn-primary-on-dark"
+        >
           Order direct
         </a>
-        <a href="/menu" class="tm-btn tm-btn-ghost-light">
+        <a href="#favorites" class="tm-btn tm-btn-ghost-light">
           See the menu
         </a>
       </div>
@@ -119,7 +135,7 @@ get_header(); ?>
 <!-- ============================================================
      03  LOS FAVORITOS
      ============================================================ -->
-<section class="tm-tiles min-h-svh py-16 lg:py-24">
+<section id="favorites" class="tm-tiles min-h-svh scroll-mt-24 py-16 lg:py-24">
   <div class="mx-auto max-w-7xl px-4 sm:px-6">
     <h2 class="max-w-2xl font-display text-3xl leading-tight text-carbon-400 sm:text-4xl">
       The ones everybody comes back for
@@ -131,17 +147,19 @@ get_header(); ?>
     <ul class="tm-cards-3d mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
       <?php
         $tm_favorites = array(
-          array('Tortas',       'Toasted bread, layered high, the way it is done at home.', $tm_img_fav_torta,   '#tortas'),
-          array('Nachos',       'Loaded, shareable, and gone in five minutes.',             $tm_img_fav_nachos,  '#nachos'),
-          array('Aguas Frescas','Real fruit, squeezed the same morning you drink it.',      $tm_img_fav_agua,    '#aguas-frescas'),
-          array('Licuados',     'Mexican milkshakes, thick, cold and worth the brain freeze.', $tm_img_fav_licuado, '#licuados'),
+          array('Tortas',       'Toasted bread, layered high, the way it is done at home.',    $tm_img_fav_torta),
+          array('Nachos',       'Loaded, shareable, and gone in five minutes.',                 $tm_img_fav_nachos),
+          array('Aguas Frescas','Real fruit, squeezed the same morning you drink it.',          $tm_img_fav_agua),
+          array('Licuados',     'Mexican milkshakes, thick, cold and worth the brain freeze.',  $tm_img_fav_licuado),
         );
 
         foreach ($tm_favorites as $tm_index => $tm_item) :
-          list($tm_name, $tm_desc, $tm_image, $tm_anchor) = $tm_item; ?>
+          list($tm_name, $tm_desc, $tm_image) = $tm_item; ?>
         <li>
           <a
-            href="/menu<?php echo esc_attr($tm_anchor); ?>"
+            href="<?php echo esc_url($tm_order_url); ?>"
+            target="_blank" rel="noopener"
+            data-tm-order="default" data-tm-channel="toast"
             class="tm-card-3d group relative flex h-full flex-col overflow-hidden rounded-xl border border-hueso-400 bg-hueso-100 shadow-sm"
           >
             <div class="tm-placeholder aspect-square overflow-hidden sm:aspect-4/5">
@@ -170,7 +188,12 @@ get_header(); ?>
       <?php endforeach; ?>
     </ul>
 
-    <a href="/menu" class="tm-btn tm-btn-ghost-dark mt-12">See the full menu</a>
+    <a
+      href="<?php echo esc_url($tm_order_url); ?>"
+      target="_blank" rel="noopener"
+      data-tm-order="default" data-tm-channel="toast"
+      class="tm-btn tm-btn-ghost-dark mt-12"
+    >See the full menu</a>
   </div>
 </section>
 
@@ -602,7 +625,12 @@ get_header(); ?>
       <p class="text-lg font-semibold">Every order earns Tortas Club points</p>
     </div>
 
-    <a href="#locations" data-tm-order-cta class="tm-btn tm-btn-relief tm-btn-primary tm-btn-primary-on-dark mt-8">
+    <a
+      href="<?php echo esc_url($tm_order_url); ?>"
+      target="_blank" rel="noopener"
+      data-tm-order="default" data-tm-channel="toast"
+      class="tm-btn tm-btn-relief tm-btn-primary tm-btn-primary-on-dark mt-8"
+    >
       Start your order
     </a>
   </div>

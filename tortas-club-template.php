@@ -15,30 +15,44 @@
    MEDIOS DE ESTA PLANTILLA
    ========================================================================== */
 
-$tm_img_hero = ''; // TODO: foto de cliente habitual o de mostrador
+$tm_img_hero = tm_upload('2026/08/Tortas.webp');
 
 get_header(); ?>
 
 <!-- ============================================================
-     C0  HERO EN MAIZ
-     Sin foto de fondo a proposito: es una de las dos paginas con hero
-     de color plano del sistema (la otra es Careers, en olivo). Sirven
-     de respiro entre paginas fotograficas.
+     C0  HERO
+     Velo de carbon al 50%, no de maiz: con el velo amarillo la foto
+     quedaba lavada. Al pasar a un scrim oscuro el texto tiene que ir en
+     hueso, porque el carbon sobre foto no aprueba contraste en ningun
+     punto.
+
+     Ahora que el hero es oscuro si lleva data-tm-hero, asi que el navbar
+     nace transparente igual que en Locations y Our Story.
+
+     El pt-44 no es decorativo: esta plantilla esta en $tm_hero_templates
+     de header.php, asi que no se imprime el espaciador y el hero sube
+     hasta el borde. Ese padding es lo que deja libre la altura del navbar.
      ============================================================ -->
-<section class="relative isolate overflow-hidden bg-maiz-300 pb-16 pt-44 text-carbon-400 lg:pb-24">
-  <div
-    class="tm-facets [--tm-facet-bg:var(--color-maiz-300)] [--tm-facet-glow:color-mix(in_srgb,var(--color-hueso-100)_25%,transparent)] [--tm-facet-line:color-mix(in_srgb,var(--color-carbon-400)_8%,transparent)] [--tm-facet-shape:var(--color-maiz-400)]"
-    aria-hidden="true"
-  ></div>
+<section data-tm-hero class="relative flex min-h-[70svh] items-end overflow-hidden bg-carbon-400 pb-16 pt-44 lg:pb-24">
+  <?php if ($tm_img_hero) : ?>
+    <img
+      src="<?php echo esc_url($tm_img_hero); ?>"
+      alt=""
+      class="absolute inset-0 h-full w-full object-cover"
+      fetchpriority="high"
+    >
+  <?php endif; ?>
 
-  <div class="relative z-10 mx-auto max-w-7xl px-4 sm:px-6">
-    <p class="tm-eyebrow">Free to join</p>
+  <div class="absolute inset-0 bg-carbon-500/50" aria-hidden="true"></div>
 
-    <h1 class="mt-4 font-display text-4xl leading-[1.05] sm:text-5xl">
+  <div class="relative z-10 mx-auto w-full max-w-7xl px-4 sm:px-6">
+    <p class="tm-eyebrow text-maiz-300">Free to join</p>
+
+    <h1 class="mt-4 font-display text-4xl leading-[1.05] text-hueso-100 sm:text-5xl">
       Tortas Club
     </h1>
 
-    <p class="mt-5 max-w-xl text-lg">
+    <p class="mt-5 max-w-xl text-lg text-hueso-100/90">
       The more you eat, the more you get back.
     </p>
   </div>

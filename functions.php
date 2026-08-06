@@ -129,6 +129,20 @@ function tm_locations() {
 }
 
 
+
+/**
+ * Enlace de pedido por defecto, el que usan el CTA del navbar y el item
+ * "Menu". Apunta a un solo local (McDowell) para todos los visitantes.
+ *
+ * TODO: revisar esta decision. El brief enruta al local mas cercano antes de
+ * mandar a Toast, porque un cliente de Laveen que llega aqui termina pidiendo
+ * pickup a 20 millas de su casa. El panel de seleccion sigue existiendo y lo
+ * abren los CTA de las plantillas; solo el del navbar va directo.
+ */
+function tm_default_order_url() {
+  return 'https://order.toasttab.com/online/tortas-manantial-phoenix-5950-west-mcdowell-road';
+}
+
 /**
  * URL del mapa embebido de un local.
  *
@@ -258,6 +272,7 @@ function tm_load_assets() {
     'logoLight'  => $tm_img['logo_neg'],
     'brand'      => tm_brand(),
     'locations'  => tm_locations(),
+    'orderUrl'   => tm_default_order_url(),
     'lang'       => substr(get_locale(), 0, 2) === 'es' ? 'es' : 'en',
     'altLangUrl' => '',
     'restUrl'    => esc_url_raw(rest_url('tm/v1/')),
@@ -318,10 +333,87 @@ function tm_register_club_lead_type() {
 
 add_action('init', 'tm_register_club_lead_type');
 
+
+/* ==========================================================================
+   SOLICITUDES DE EMPLEO
+   Cada envio del formulario de /careers se guarda como entrada privada, para
+   que nada se pierda mientras se decide a donde deben llegar.
+
+   TODO: enganchar el hook tm_careers_application al correo o al sistema que
+   el cliente confirme (pendiente del brief de paginas internas).
+   ========================================================================== */
+
+function tm_register_application_type() {
+  register_post_type('tm_application', array(
+    'label'           => 'Applications',
+    'public'          => false,
+    'show_ui'         => true,
+    'show_in_menu'    => true,
+    'menu_icon'       => 'dashicons-groups',
+    'supports'        => array('title', 'editor'),
+    'capability_type' => 'post',
+    'capabilities'    => array('create_posts' => 'do_not_allow'),
+    'map_meta_cap'    => true,
+  ));
+}
+
+add_action('init', 'tm_register_application_type');
+
+function tm_careers_application(WP_REST_Request $request) {
+  // Honeypot: si viene relleno es un bot. Se responde ok y se descarta.
+  if (!empty($request->get_param('company'))) {
+    return rest_ensure_response(array('ok' => true));
+  }
+
+  $name     = sanitize_text_field((string) $request->get_param('name'));
+  $phone    = sanitize_text_field((string) $request->get_param('phone'));
+  $email    = sanitize_email((string) $request->get_param('email'));
+  $location = sanitize_text_field((string) $request->get_param('location'));
+
+  if ($name === '' || $phone === '' || $location === '') {
+    return new WP_Error(
+      'tm_missing_fields',
+      'Name, phone and location are required.',
+      array('status' => 400)
+    );
+  }
+
+  $body = sprintf(
+    "Phone: %s\nEmail: %s\nLocation: %s\nRole: %s\nAvailability: %s\n\n%s",
+    $phone,
+    $email,
+    $location,
+    sanitize_text_field((string) $request->get_param('role')),
+    sanitize_text_field((string) $request->get_param('availability')),
+    sanitize_textarea_field((string) $request->get_param('experience'))
+  );
+
+  $application_id = wp_insert_post(array(
+    'post_type'    => 'tm_application',
+    'post_title'   => $name . ', ' . $location,
+    'post_content' => $body,
+    'post_status'  => 'private',
+  ));
+
+  /**
+   * Gancho para avisar al cliente. Cuando confirme el correo destino, aqui
+   * va el wp_mail o la llamada al ATS.
+   */
+  do_action('tm_careers_application', $application_id, $request->get_params());
+
+  return rest_ensure_response(array('ok' => true));
+}
+
 function tm_register_routes() {
   register_rest_route('tm/v1', '/club', array(
     'methods'             => 'POST',
     'callback'            => 'tm_club_signup',
+    'permission_callback' => '__return_true',
+  ));
+
+  register_rest_route('tm/v1', '/careers', array(
+    'methods'             => 'POST',
+    'callback'            => 'tm_careers_application',
     'permission_callback' => '__return_true',
   ));
 }

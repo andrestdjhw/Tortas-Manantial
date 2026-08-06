@@ -2,6 +2,280 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
+/***/ "./src/scripts/CareersForm.js"
+/*!************************************!*\
+  !*** ./src/scripts/CareersForm.js ***!
+  \************************************/
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ CareersForm)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _locations__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./locations */ "./src/scripts/locations.js");
+/* harmony import */ var _icons__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./icons */ "./src/scripts/icons.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__);
+
+
+
+
+/**
+ * Formulario de empleo. Pagina /careers.
+ *
+ * Guarda cada solicitud como entrada privada en WordPress y dispara el hook
+ * tm_careers_application. Cuando el cliente diga a que correo o a que sistema
+ * deben llegar, se engancha ahi sin tocar este componente.
+ */
+
+const COPY = {
+  en: {
+    name: "Name",
+    phone: "Phone",
+    email: "Email",
+    location: "Preferred location",
+    pick: "Pick a shop",
+    role: "Role",
+    pickRole: "Pick a role",
+    availability: "Availability",
+    availabilityHint: "Days and hours that work for you",
+    experience: "Experience, optional",
+    send: "Send application",
+    sending: "Sending",
+    success: "Got it. If there is an opening at that location we will call you within the week.",
+    invalid: "Check the highlighted fields and try again.",
+    failed: "Something went wrong on our end. Try again in a moment.",
+    roles: ["Kitchen", "Counter", "Shift lead", "Management", "Any of them"]
+  },
+  es: {
+    name: "Nombre",
+    phone: "Teléfono",
+    email: "Correo",
+    location: "Local de preferencia",
+    pick: "Elige un local",
+    role: "Puesto",
+    pickRole: "Elige un puesto",
+    availability: "Disponibilidad",
+    availabilityHint: "Días y horas que te funcionan",
+    experience: "Experiencia, opcional",
+    send: "Enviar solicitud",
+    sending: "Enviando",
+    success: "Recibido. Si hay vacante en ese local te llamamos durante la semana.",
+    invalid: "Revisa los campos marcados e inténtalo otra vez.",
+    failed: "Algo falló de nuestro lado. Inténtalo en un momento.",
+    roles: ["Cocina", "Mostrador", "Encargado de turno", "Gerencia", "Cualquiera"]
+  }
+};
+function getConfig() {
+  const cfg = typeof window !== "undefined" ? window.tmData || {} : {};
+  return {
+    lang: cfg.lang === "es" ? "es" : "en",
+    restUrl: cfg.restUrl || "",
+    nonce: cfg.nonce || ""
+  };
+}
+function CareersForm() {
+  const cfg = getConfig();
+  const t = COPY[cfg.lang];
+  const [values, setValues] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)({
+    name: "",
+    phone: "",
+    email: "",
+    location: "",
+    role: "",
+    availability: "",
+    experience: "",
+    company: "" // honeypot, ver abajo
+  });
+  const [status, setStatus] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("idle");
+
+  /* Un telefono se puede escribir de muchas formas; solo se exige que tenga
+     al menos siete digitos. Validar mas que eso rechaza numeros validos. */
+  const phoneValid = values.phone.replace(/\D/g, "").length >= 7;
+  const nameValid = values.name.trim().length > 1;
+  function update(field, value) {
+    setValues(current => ({
+      ...current,
+      [field]: value
+    }));
+    if (status !== "idle") setStatus("idle");
+  }
+  async function handleSubmit(event) {
+    event.preventDefault();
+    if (!nameValid || !phoneValid || !values.location) {
+      setStatus("invalid");
+      return;
+    }
+    setStatus("loading");
+    try {
+      const response = await fetch(`${cfg.restUrl}careers`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-WP-Nonce": cfg.nonce
+        },
+        body: JSON.stringify(values)
+      });
+      if (!response.ok) throw new Error("request failed");
+      setStatus("success");
+    } catch (error) {
+      setStatus("failed");
+    }
+  }
+  if (status === "success") {
+    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("p", {
+      className: "text-lg text-olivo-400",
+      role: "status",
+      children: t.success
+    });
+  }
+  const fieldClass = "w-full rounded-lg border-2 border-hueso-400 bg-hueso-100 px-3 py-2.5 text-sm text-carbon-400 placeholder:text-carbon-200";
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("form", {
+    onSubmit: handleSubmit,
+    noValidate: true,
+    className: "flex flex-col gap-4",
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+      className: "hidden",
+      "aria-hidden": "true",
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("label", {
+        htmlFor: "tm-careers-company",
+        children: "Company"
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("input", {
+        id: "tm-careers-company",
+        type: "text",
+        tabIndex: -1,
+        autoComplete: "off",
+        value: values.company,
+        onChange: event => update("company", event.target.value)
+      })]
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("label", {
+        htmlFor: "tm-careers-name",
+        className: "mb-1.5 block text-sm text-carbon-400",
+        children: t.name
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("input", {
+        id: "tm-careers-name",
+        type: "text",
+        autoComplete: "name",
+        value: values.name,
+        onChange: event => update("name", event.target.value),
+        "aria-invalid": status === "invalid" && !nameValid,
+        className: fieldClass
+      })]
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+      className: "grid gap-4 sm:grid-cols-2",
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("label", {
+          htmlFor: "tm-careers-phone",
+          className: "mb-1.5 block text-sm text-carbon-400",
+          children: t.phone
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("input", {
+          id: "tm-careers-phone",
+          type: "tel",
+          autoComplete: "tel",
+          value: values.phone,
+          onChange: event => update("phone", event.target.value),
+          "aria-invalid": status === "invalid" && !phoneValid,
+          className: fieldClass
+        })]
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("label", {
+          htmlFor: "tm-careers-email",
+          className: "mb-1.5 block text-sm text-carbon-400",
+          children: t.email
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("input", {
+          id: "tm-careers-email",
+          type: "email",
+          autoComplete: "email",
+          value: values.email,
+          onChange: event => update("email", event.target.value),
+          className: fieldClass
+        })]
+      })]
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+      className: "grid gap-4 sm:grid-cols-2",
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("label", {
+          htmlFor: "tm-careers-location",
+          className: "mb-1.5 block text-sm text-carbon-400",
+          children: t.location
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("select", {
+          id: "tm-careers-location",
+          value: values.location,
+          onChange: event => update("location", event.target.value),
+          "aria-invalid": status === "invalid" && !values.location,
+          className: fieldClass,
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("option", {
+            value: "",
+            children: t.pick
+          }), _locations__WEBPACK_IMPORTED_MODULE_1__.LOCATIONS.map(location => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("option", {
+            value: location.id,
+            children: location.name[cfg.lang]
+          }, location.id))]
+        })]
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("label", {
+          htmlFor: "tm-careers-role",
+          className: "mb-1.5 block text-sm text-carbon-400",
+          children: t.role
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("select", {
+          id: "tm-careers-role",
+          value: values.role,
+          onChange: event => update("role", event.target.value),
+          className: fieldClass,
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("option", {
+            value: "",
+            children: t.pickRole
+          }), t.roles.map(role => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("option", {
+            value: role,
+            children: role
+          }, role))]
+        })]
+      })]
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("label", {
+        htmlFor: "tm-careers-availability",
+        className: "mb-1.5 block text-sm text-carbon-400",
+        children: t.availability
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("input", {
+        id: "tm-careers-availability",
+        type: "text",
+        value: values.availability,
+        onChange: event => update("availability", event.target.value),
+        placeholder: t.availabilityHint,
+        className: fieldClass
+      })]
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("label", {
+        htmlFor: "tm-careers-experience",
+        className: "mb-1.5 block text-sm text-carbon-400",
+        children: t.experience
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("textarea", {
+        id: "tm-careers-experience",
+        rows: 4,
+        value: values.experience,
+        onChange: event => update("experience", event.target.value),
+        className: fieldClass
+      })]
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("button", {
+      type: "submit",
+      disabled: status === "loading",
+      className: "tm-btn tm-btn-relief tm-btn-primary mt-1 self-start disabled:opacity-70",
+      children: [status === "loading" ? t.sending : t.send, /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_icons__WEBPACK_IMPORTED_MODULE_2__.IconArrow, {
+        size: 18
+      })]
+    }), (status === "invalid" || status === "failed") && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("p", {
+      className: "text-sm text-carbon-400",
+      role: "alert",
+      children: status === "invalid" ? t.invalid : t.failed
+    })]
+  });
+}
+
+/***/ },
+
 /***/ "./src/scripts/ClubForm.js"
 /*!*********************************!*\
   !*** ./src/scripts/ClubForm.js ***!
@@ -667,7 +941,8 @@ const COPY = {
     home: "Tortas Manantial, home",
     links: [{
       label: "Menu",
-      href: "/menu"
+      href: "order",
+      external: true
     }, {
       label: "Locations",
       href: "/locations"
@@ -706,7 +981,8 @@ const COPY = {
     home: "Tortas Manantial, inicio",
     links: [{
       label: "Menú",
-      href: "/menu"
+      href: "order",
+      external: true
     }, {
       label: "Ubicaciones",
       href: "/locations"
@@ -771,7 +1047,8 @@ function getConfig() {
     logo: cfg.logo || "",
     logoLight: cfg.logoLight || cfg.logo || "",
     lang: cfg.lang === "es" ? "es" : "en",
-    altLangUrl: cfg.altLangUrl || ""
+    altLangUrl: cfg.altLangUrl || "",
+    orderUrl: cfg.orderUrl || ""
   };
 }
 
@@ -945,6 +1222,24 @@ function Navbar({
   transparent = false
 }) {
   const cfg = getConfig();
+
+  /**
+   * Los links con external: true no apuntan a una ruta del sitio sino al
+   * enlace de pedido de Toast, que llega desde PHP. Se resuelve aqui para
+   * que el copy no tenga que repetir la URL.
+   */
+  function linkProps(link) {
+    if (!link.external) return {
+      href: link.href
+    };
+    return {
+      href: cfg.orderUrl,
+      target: "_blank",
+      rel: "noopener",
+      "data-tm-order": "default",
+      "data-tm-channel": "toast"
+    };
+  }
   const brand = getBrand();
   const t = {
     ...COPY[cfg.lang],
@@ -1026,6 +1321,12 @@ function Navbar({
     document.addEventListener("click", onClick);
     return () => document.removeEventListener("click", onClick);
   }, [requestLocation]);
+
+  /**
+   * El panel ya no lo abre el CTA del navbar, que ahora va directo a Toast.
+   * Sigue vivo y lo abren los CTA de las plantillas marcados con
+   * data-tm-order-cta (hero de la home, cierre de Locations).
+   */
   function openPanel() {
     setMenuOpen(false);
     setPanelOpen(true);
@@ -1156,7 +1457,7 @@ function Navbar({
             className: "flex w-52 items-center justify-end gap-7",
             children: t.links.slice(0, Math.ceil(t.links.length / 2)).map(link => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("li", {
               children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("a", {
-                href: link.href,
+                ...linkProps(link),
                 className: "relative text-sm font-semibold text-hueso-100 transition-colors after:absolute after:-bottom-1.5 after:left-0 after:h-0.5 after:w-0 after:bg-maiz-300 after:transition-all hover:text-maiz-300 hover:after:w-full",
                 children: link.label
               })
@@ -1168,7 +1469,7 @@ function Navbar({
             className: "flex w-52 items-center justify-start gap-7",
             children: t.links.slice(Math.ceil(t.links.length / 2)).map(link => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("li", {
               children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("a", {
-                href: link.href,
+                ...linkProps(link),
                 className: "relative text-sm font-semibold text-hueso-100 transition-colors after:absolute after:-bottom-1.5 after:left-0 after:h-0.5 after:w-0 after:bg-maiz-300 after:transition-all hover:text-maiz-300 hover:after:w-full",
                 children: link.label
               })
@@ -1176,12 +1477,13 @@ function Navbar({
           })]
         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
           className: "relative col-start-2 justify-self-center lg:col-start-3 lg:justify-self-end",
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("button", {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("a", {
             ref: ctaRef,
-            type: "button",
-            onClick: () => panelOpen ? setPanelOpen(false) : openPanel(),
-            "aria-expanded": panelOpen,
-            "aria-haspopup": "dialog",
+            href: cfg.orderUrl,
+            target: "_blank",
+            rel: "noopener",
+            "data-tm-order": "default",
+            "data-tm-channel": "toast",
             className: "tm-btn tm-btn-relief tm-btn-primary tm-btn-primary-on-dark px-6 py-3.5 text-base sm:px-5 sm:py-3 sm:text-sm",
             children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("span", {
               className: "sm:hidden",
@@ -1237,7 +1539,7 @@ function Navbar({
           children: [t.links.map(link => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("li", {
             className: "border-b border-white/10",
             children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("a", {
-              href: link.href,
+              ...linkProps(link),
               onClick: () => setMenuOpen(false),
               className: "block py-5 font-display text-2xl text-hueso-100 transition-colors hover:text-maiz-300",
               children: link.label
@@ -1757,8 +2059,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _scripts_Navbar__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./scripts/Navbar */ "./src/scripts/Navbar.js");
 /* harmony import */ var _scripts_Footer__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./scripts/Footer */ "./src/scripts/Footer.js");
 /* harmony import */ var _scripts_ClubForm__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./scripts/ClubForm */ "./src/scripts/ClubForm.js");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _scripts_CareersForm__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./scripts/CareersForm */ "./src/scripts/CareersForm.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__);
+
 
 
 
@@ -1774,19 +2078,25 @@ const navbarMount = document.querySelector("#tm-navbar");
 if (navbarMount) {
   // data-transparent lo pone header.php: true solo donde hay hero a sangre.
   const transparent = navbarMount.dataset.transparent === "true";
-  react_dom_client__WEBPACK_IMPORTED_MODULE_1___default().createRoot(navbarMount).render(/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_scripts_Navbar__WEBPACK_IMPORTED_MODULE_2__["default"], {
+  react_dom_client__WEBPACK_IMPORTED_MODULE_1___default().createRoot(navbarMount).render(/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_scripts_Navbar__WEBPACK_IMPORTED_MODULE_2__["default"], {
     transparent: transparent
   }));
 }
 const footerMount = document.querySelector("#tm-footer");
 if (footerMount) {
-  react_dom_client__WEBPACK_IMPORTED_MODULE_1___default().createRoot(footerMount).render(/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_scripts_Footer__WEBPACK_IMPORTED_MODULE_3__["default"], {}));
+  react_dom_client__WEBPACK_IMPORTED_MODULE_1___default().createRoot(footerMount).render(/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_scripts_Footer__WEBPACK_IMPORTED_MODULE_3__["default"], {}));
 }
 
 // Bloque 07 de la home. Version completa del alta al Tortas Club.
 const clubMount = document.querySelector("#tm-club-form");
 if (clubMount) {
-  react_dom_client__WEBPACK_IMPORTED_MODULE_1___default().createRoot(clubMount).render(/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_scripts_ClubForm__WEBPACK_IMPORTED_MODULE_4__["default"], {}));
+  react_dom_client__WEBPACK_IMPORTED_MODULE_1___default().createRoot(clubMount).render(/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_scripts_ClubForm__WEBPACK_IMPORTED_MODULE_4__["default"], {}));
+}
+
+// Pagina /careers
+const careersMount = document.querySelector("#tm-careers-form");
+if (careersMount) {
+  react_dom_client__WEBPACK_IMPORTED_MODULE_1___default().createRoot(careersMount).render(/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_scripts_CareersForm__WEBPACK_IMPORTED_MODULE_5__["default"], {}));
 }
 })();
 

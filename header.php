@@ -10,17 +10,21 @@
 
     <?php
       /**
-       * El navbar arranca transparente SOLO donde hay hero a sangre por detras.
-       * Se ata a la plantilla, no a is_front_page(): mientras la home siga
-       * usando la plantilla por defecto, la barra nace solida y no tapa nada.
+       * Plantillas cuyo contenido sube hasta el borde superior: no se les
+       * imprime el espaciador y el hero pasa por detras del navbar.
        *
-       * Cuando entre otra plantilla con hero (por ejemplo las de ubicacion),
-       * se agrega a este arreglo y listo.
+       * Ojo, esto no obliga a que la barra sea transparente. El componente
+       * Navbar solo se vuelve transparente si encuentra [data-tm-hero] en el
+       * DOM. Una plantilla puede estar aqui y no llevar ese atributo: es lo
+       * que hay que hacer cuando el hero es claro, porque el texto del navbar
+       * va en hueso y sobre un fondo claro no aprueba contraste.
        */
       $tm_hero_templates = array(
         'home-template.php',
         'locations-template.php',
         'our-story-template.php',
+        'tortas-club-template.php',
+        'careers-template.php',
       );
 
       $tm_has_hero = false;

@@ -28,7 +28,7 @@ const COPY = {
     skip: "Skip to content",
     home: "Tortas Manantial, home",
     links: [
-      { label: "Menu", href: "/menu" },
+      { label: "Menu", href: "order", external: true },
       { label: "Locations", href: "/locations" },
       { label: "Our Story", href: "/our-story" },
       { label: "Tortas Club", href: "/tortas-club" },
@@ -60,7 +60,7 @@ const COPY = {
     skip: "Saltar al contenido",
     home: "Tortas Manantial, inicio",
     links: [
-      { label: "Menú", href: "/menu" },
+      { label: "Menú", href: "order", external: true },
       { label: "Ubicaciones", href: "/locations" },
       { label: "Nuestra Historia", href: "/our-story" },
       { label: "Tortas Club", href: "/tortas-club" },
@@ -121,6 +121,7 @@ function getConfig() {
     logoLight: cfg.logoLight || cfg.logo || "",
     lang: cfg.lang === "es" ? "es" : "en",
     altLangUrl: cfg.altLangUrl || "",
+    orderUrl: cfg.orderUrl || "",
   };
 }
 
@@ -303,6 +304,24 @@ function LocationPanel({ t, locations, nearestId, onClose, triggerRef }) {
 
 export default function Navbar({ transparent = false }) {
   const cfg = getConfig();
+
+  /**
+   * Los links con external: true no apuntan a una ruta del sitio sino al
+   * enlace de pedido de Toast, que llega desde PHP. Se resuelve aqui para
+   * que el copy no tenga que repetir la URL.
+   */
+  function linkProps(link) {
+    if (!link.external) return { href: link.href };
+
+    return {
+      href: cfg.orderUrl,
+      target: "_blank",
+      rel: "noopener",
+      "data-tm-order": "default",
+      "data-tm-channel": "toast",
+    };
+  }
+
   const brand = getBrand();
   const t = { ...COPY[cfg.lang], langKey: cfg.lang };
 
@@ -392,6 +411,11 @@ export default function Navbar({ transparent = false }) {
     return () => document.removeEventListener("click", onClick);
   }, [requestLocation]);
 
+  /**
+   * El panel ya no lo abre el CTA del navbar, que ahora va directo a Toast.
+   * Sigue vivo y lo abren los CTA de las plantillas marcados con
+   * data-tm-order-cta (hero de la home, cierre de Locations).
+   */
   function openPanel() {
     setMenuOpen(false);
     setPanelOpen(true);
@@ -586,7 +610,7 @@ export default function Navbar({ transparent = false }) {
               {t.links.slice(0, Math.ceil(t.links.length / 2)).map((link) => (
                 <li key={link.href}>
                   <a
-                    href={link.href}
+                    {...linkProps(link)}
                     className="relative text-sm font-semibold text-hueso-100 transition-colors after:absolute after:-bottom-1.5 after:left-0 after:h-0.5 after:w-0 after:bg-maiz-300 after:transition-all hover:text-maiz-300 hover:after:w-full"
                   >
                     {link.label}
@@ -610,7 +634,7 @@ export default function Navbar({ transparent = false }) {
               {t.links.slice(Math.ceil(t.links.length / 2)).map((link) => (
                 <li key={link.href}>
                   <a
-                    href={link.href}
+                    {...linkProps(link)}
                     className="relative text-sm font-semibold text-hueso-100 transition-colors after:absolute after:-bottom-1.5 after:left-0 after:h-0.5 after:w-0 after:bg-maiz-300 after:transition-all hover:text-maiz-300 hover:after:w-full"
                   >
                     {link.label}
@@ -624,17 +648,18 @@ export default function Navbar({ transparent = false }) {
               desktop usan los links. Envuelto en un div relativo porque de
               ahi cuelga el panel de local desde sm. */}
           <div className="relative col-start-2 justify-self-center lg:col-start-3 lg:justify-self-end">
-            <button
+            <a
               ref={ctaRef}
-              type="button"
-              onClick={() => (panelOpen ? setPanelOpen(false) : openPanel())}
-              aria-expanded={panelOpen}
-              aria-haspopup="dialog"
+              href={cfg.orderUrl}
+              target="_blank"
+              rel="noopener"
+              data-tm-order="default"
+              data-tm-channel="toast"
               className="tm-btn tm-btn-relief tm-btn-primary tm-btn-primary-on-dark px-6 py-3.5 text-base sm:px-5 sm:py-3 sm:text-sm"
             >
               <span className="sm:hidden">{t.ctaShort}</span>
               <span className="hidden sm:inline">{t.cta}</span>
-            </button>
+            </a>
 
             {panelOpen && (
               <LocationPanel
@@ -714,7 +739,7 @@ export default function Navbar({ transparent = false }) {
               {t.links.map((link) => (
                 <li key={link.href} className="border-b border-white/10">
                   <a
-                    href={link.href}
+                    {...linkProps(link)}
                     onClick={() => setMenuOpen(false)}
                     className="block py-5 font-display text-2xl text-hueso-100 transition-colors hover:text-maiz-300"
                   >

@@ -3,6 +3,7 @@ import ReactDOM from "react-dom/client";
 import Navbar from "./scripts/Navbar";
 import Footer from "./scripts/Footer";
 import ClubForm from "./scripts/ClubForm";
+import CareersForm from "./scripts/CareersForm";
 
 /**
  * Montaje de los componentes React del tema.
@@ -29,4 +30,11 @@ const clubMount = document.querySelector("#tm-club-form");
 
 if (clubMount) {
   ReactDOM.createRoot(clubMount).render(<ClubForm />);
+}
+
+// Pagina /careers
+const careersMount = document.querySelector("#tm-careers-form");
+
+if (careersMount) {
+  ReactDOM.createRoot(careersMount).render(<CareersForm />);
 }
