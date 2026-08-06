@@ -261,7 +261,7 @@ export default function Footer() {
   ].filter((item) => Boolean(item.href));
 
   return (
-    <footer className="bg-carbon-400 text-hueso-100">
+    <footer className="tm-weave text-hueso-100">
       <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:py-16">
         <div className="grid gap-0 lg:grid-cols-4 lg:gap-10">
           {/* Ubicaciones. Enlazan a la pagina del local, nunca a Toast:

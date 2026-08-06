@@ -48,8 +48,8 @@
   --color-rule: var(--color-hueso-400);
 
   /* ---------- Medidas del navbar ---------- */
-  --tm-bar-h: 4.5rem; /* 72px */
-  --tm-utility-h: 2.25rem; /* 36px */
+  --tm-bar-h: 4rem; /* 64px, barra principal */
+  --tm-top-h: 5rem; /* 80px, fila superior con el logo */
 }
 
 @layer base {
@@ -260,6 +260,10 @@
   /* Sin movimiento: se conservan color y sombra de reposo, se retiran el
      desplazamiento y el barrido. */
   @media (prefers-reduced-motion: reduce) {
+    .tm-logo-badge {
+      transition-property: opacity;
+    }
+
     .tm-btn-relief:hover,
     .tm-btn-relief:active {
       transform: none;
@@ -268,6 +272,260 @@
     .tm-btn-relief:hover::before {
       animation: none;
       opacity: 0;
+    }
+  }
+
+
+  /* Boton fantasma sobre fondo claro */
+  .tm-btn-ghost-dark {
+    border: 2px solid var(--color-ink);
+    color: var(--color-ink);
+  }
+
+  .tm-btn-ghost-dark:hover {
+    background-color: var(--color-ink);
+    color: var(--color-ink-inverse);
+  }
+
+
+  /* ------------------------------------------------------------------
+     Trama
+     Port del snippet de Uiverse a la paleta. Rayado diagonal de 20px
+     para las superficies en carbon: navbar solido y footer.
+
+     Las dos tintas van con color-mix y alfa baja. A 20px un patron
+     contrastado se lee como ruido detras del texto de navegacion, que
+     es justo lo que no queremos en la barra.
+     ------------------------------------------------------------------ */
+  .tm-weave {
+    --tm-weave-dark: color-mix(in srgb, var(--color-carbon-500) 55%, transparent);
+    --tm-weave-light: color-mix(in srgb, var(--color-hueso-100) 4%, transparent);
+
+    background-color: var(--color-carbon-400);
+    background-image: linear-gradient(
+      45deg,
+      var(--tm-weave-dark) 25%,
+      transparent 25%,
+      transparent 50%,
+      var(--tm-weave-dark) 50%,
+      var(--tm-weave-light) 75%,
+      transparent 75%,
+      transparent
+    );
+    background-size: 20px 20px;
+  }
+
+  /* Hueco de imagen mientras no hay foto. Rayado tenue para que se lea
+     como "aqui va algo" y no como un bloque de color perdido en el fondo.
+     Cuando la imagen exista, este fondo queda tapado. */
+  .tm-placeholder {
+    background-color: var(--color-hueso-200);
+    background-image: repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 10px,
+      var(--color-hueso-300) 10px,
+      var(--color-hueso-300) 20px
+    );
+  }
+
+  /* ------------------------------------------------------------------
+     Mosaico
+     Port del snippet de Uiverse a la paleta. Va como fondo de las
+     secciones claras, sin nodos extra: es solo background-image.
+
+     Las dos variables se pueden pisar por seccion:
+       --tm-tile-size   tamano del modulo
+       --tm-tile-color  color del dibujo
+
+     El original usa un color bastante presente. Aqui el dibujo va en
+     hueso-300 sobre hueso-100, o sea dos pasos de la misma familia: se
+     percibe como textura de papel y no compite con el texto que va
+     encima, que en estas secciones no siempre tiene tarjeta detras.
+     ------------------------------------------------------------------ */
+  .tm-tiles {
+    --tm-tile-size: 150px;
+    --tm-tile-color: var(--color-hueso-300);
+    --tm-tile-shade: color-mix(in srgb, var(--color-carbon-400) 4%, transparent);
+
+    background-color: var(--color-hueso-100);
+    background-image:
+      radial-gradient(
+        circle at 15% 30%,
+        transparent 40%,
+        var(--tm-tile-color) 41%
+      ),
+      radial-gradient(
+        circle at 85% 30%,
+        transparent 40%,
+        var(--tm-tile-color) 41%
+      ),
+      radial-gradient(
+        circle at 50% 70%,
+        transparent 40%,
+        var(--tm-tile-color) 41%
+      ),
+      radial-gradient(
+        circle at 15% 70%,
+        transparent 40%,
+        var(--tm-tile-color) 41%
+      ),
+      radial-gradient(
+        circle at 85% 70%,
+        transparent 40%,
+        var(--tm-tile-color) 41%
+      ),
+      linear-gradient(
+        45deg,
+        var(--tm-tile-color) 25%,
+        var(--tm-tile-shade) 0,
+        var(--tm-tile-shade) 50%,
+        var(--tm-tile-color) 0,
+        var(--tm-tile-color) 75%,
+        var(--tm-tile-shade) 0,
+        var(--tm-tile-shade) 100%,
+        var(--tm-tile-color) 0
+      );
+    background-size: var(--tm-tile-size) var(--tm-tile-size);
+  }
+
+  /* ------------------------------------------------------------------
+     Facetas
+     Port del snippet de Uiverse a la paleta. Es un patron de degradados
+     lineales: cero nodos en el DOM, todo en una sola capa.
+
+     Tres capas superpuestas:
+       1. base, rombos grandes en carbon-500 sobre el fondo de la seccion
+       2. ::after, retícula diagonal fina en olivo
+       3. ::before, brillo horizontal con perspectiva, da profundidad
+
+     El acento va en olivo y no en maiz a proposito: el maiz esta
+     reservado para la conversion, y usarlo de textura le quita fuerza
+     al boton que vive encima.
+     ------------------------------------------------------------------ */
+  .tm-facets {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    background-color: var(--color-carbon-400);
+    background-image:
+      linear-gradient(
+        30deg,
+        var(--color-carbon-500) 12%,
+        transparent 12.5%,
+        transparent 87.5%,
+        var(--color-carbon-500) 87.5%,
+        var(--color-carbon-500)
+      ),
+      linear-gradient(
+        150deg,
+        var(--color-carbon-500) 12%,
+        transparent 12.5%,
+        transparent 87.5%,
+        var(--color-carbon-500) 87.5%,
+        var(--color-carbon-500)
+      ),
+      linear-gradient(
+        30deg,
+        var(--color-carbon-500) 12%,
+        transparent 12.5%,
+        transparent 87.5%,
+        var(--color-carbon-500) 87.5%,
+        var(--color-carbon-500)
+      ),
+      linear-gradient(
+        150deg,
+        var(--color-carbon-500) 12%,
+        transparent 12.5%,
+        transparent 87.5%,
+        var(--color-carbon-500) 87.5%,
+        var(--color-carbon-500)
+      ),
+      linear-gradient(
+        60deg,
+        color-mix(in srgb, var(--color-olivo-300) 20%, transparent) 25%,
+        transparent 25.5%,
+        transparent 75%,
+        color-mix(in srgb, var(--color-olivo-300) 20%, transparent) 75%,
+        color-mix(in srgb, var(--color-olivo-300) 20%, transparent)
+      );
+    background-size: 80px 140px;
+    background-position:
+      0 0,
+      0 0,
+      40px 70px,
+      40px 70px,
+      0 0;
+  }
+
+  .tm-facets::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(
+        45deg,
+        transparent 45%,
+        color-mix(in srgb, var(--color-olivo-300) 10%, transparent) 45%,
+        color-mix(in srgb, var(--color-olivo-300) 10%, transparent) 55%,
+        transparent 55%
+      ),
+      linear-gradient(
+        -45deg,
+        transparent 45%,
+        color-mix(in srgb, var(--color-olivo-300) 10%, transparent) 45%,
+        color-mix(in srgb, var(--color-olivo-300) 10%, transparent) 55%,
+        transparent 55%
+      );
+    background-size: 40px 40px;
+    background-position:
+      0 0,
+      20px 20px;
+    filter: drop-shadow(
+      0 0 2px color-mix(in srgb, var(--color-olivo-300) 30%, transparent)
+    );
+  }
+
+  .tm-facets::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      0deg,
+      transparent 0%,
+      color-mix(in srgb, var(--color-maiz-300) 6%, transparent) 50%,
+      transparent 100%
+    );
+    transform: perspective(500px) rotateX(30deg);
+  }
+
+  /* Cinta marquee del bloque 04.
+     Dos pistas identicas corriendo en fila: cuando la primera termina de
+     salir, la segunda ya ocupa su lugar y el bucle no se nota. */
+  .tm-marquee {
+    display: flex;
+    overflow: hidden;
+    user-select: none;
+  }
+
+  .tm-marquee__track {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    white-space: nowrap;
+    animation: tm-marquee 40s linear infinite;
+  }
+
+  @keyframes tm-marquee {
+    to {
+      transform: translateX(-100%);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .tm-marquee__track {
+      animation: none;
     }
   }
 

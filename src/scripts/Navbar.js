@@ -364,6 +364,32 @@ export default function Navbar({ transparent = false }) {
     );
   }, [askedForLocation]);
 
+  /**
+   * Cualquier CTA de las plantillas .php marcado con data-tm-order-cta abre
+   * este panel en vez de navegar. Asi el flujo de pedido es siempre el mismo
+   * y se respeta la regla de los tres toques del brief.
+   *
+   * Va despues de requestLocation a proposito: const no se puede leer antes
+   * de su declaracion, ni siquiera en el arreglo de dependencias.
+   */
+  useEffect(() => {
+    function onClick(event) {
+      const target = event.target;
+      if (!target || typeof target.closest !== "function") return;
+
+      const trigger = target.closest("[data-tm-order-cta]");
+      if (!trigger) return;
+
+      event.preventDefault();
+      setMenuOpen(false);
+      setPanelOpen(true);
+      requestLocation();
+    }
+
+    document.addEventListener("click", onClick);
+    return () => document.removeEventListener("click", onClick);
+  }, [requestLocation]);
+
   function openPanel() {
     setMenuOpen(false);
     setPanelOpen(true);
@@ -371,17 +397,21 @@ export default function Navbar({ transparent = false }) {
   }
 
   const ordered = sortByProximity(LOCATIONS, coords);
-  const nearestId = coords ? ordered[0].id : null;
+  const hasLocations = ordered.length > 0;
+  const nearestId = coords && hasLocations ? ordered[0].id : null;
 
   /* El local de la franja de utilidad: el mas cercano si hay permiso,
      si no, el primero que este abierto ahora mismo. */
-  const utilityLocation =
-    ordered.find((location) => getStatus(location).isOpen) || ordered[0];
-  const utilityStatus = getStatus(utilityLocation);
+  const utilityLocation = hasLocations
+    ? ordered.find((location) => getStatus(location).isOpen) || ordered[0]
+    : null;
+  const utilityStatus = utilityLocation ? getStatus(utilityLocation) : null;
 
   /* Transparente solo donde hay hero, y solo hasta pasar el umbral de scroll. */
   const isTransparent = transparent && heroPresent && !scrolled && !menuOpen;
-  const showUtility = !scrolled;
+  /* La fila superior lleva el logo, asi que se muestra siempre que no haya
+     scroll, aunque falte el geotag. */
+  const showTopRow = !scrolled;
 
   /* Redes disponibles. Las que no tengan URL simplemente no aparecen. */
   const socialLinks = [
@@ -411,31 +441,35 @@ export default function Navbar({ transparent = false }) {
 
       <header
         className={`tm-header fixed inset-x-0 z-50 transition-colors duration-300 ${
-          isTransparent ? "bg-transparent" : "bg-carbon-400 shadow-lg"
+          isTransparent ? "bg-transparent" : "tm-weave shadow-lg"
         }`}
       >
-        {/* Franja de utilidad. Colapsa al hacer scroll. */}
+        {/* ------------------------------------------------------------
+            Fila superior. Telefono y correo a la izquierda, logo al centro,
+            redes a la derecha. Colapsa completa al hacer scroll.
+            ------------------------------------------------------------ */}
         <div
           className={`overflow-hidden border-b border-white/10 transition-all duration-300 ${
-            showUtility ? "h-9 opacity-100" : "h-0 opacity-0"
-          } ${isTransparent ? "border-white/20" : "bg-carbon-500"}`}
-          aria-hidden={!showUtility}
+            showTopRow ? "h-20 opacity-100" : "h-0 opacity-0"
+          } ${isTransparent ? "border-white/20" : "bg-carbon-500/55"}`}
+          aria-hidden={!showTopRow}
         >
-          <div className="mx-auto grid h-9 max-w-7xl grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 px-4 text-xs text-hueso-100 sm:gap-4 sm:px-6">
-            {/* Izquierda: telefono y correo. En movil el telefono se queda
-                solo con el icono, si no no cabe nada mas. */}
-            <div className="flex shrink-0 items-center gap-4">
-              <a
-                href={`tel:${utilityLocation.phone}`}
-                data-tm-phone={utilityLocation.id}
-                aria-label={`${t.call} ${utilityLocation.phoneLabel}`}
-                className="flex shrink-0 items-center gap-1.5 transition-colors hover:text-maiz-300"
-              >
-                <IconPhone size={14} />
-                <span className="hidden sm:inline">
-                  {utilityLocation.phoneLabel}
-                </span>
-              </a>
+          <div className="mx-auto grid h-20 max-w-7xl grid-cols-[1fr_auto_1fr] items-center gap-3 px-4 text-xs text-hueso-100 sm:gap-4 sm:px-6">
+            {/* Izquierda: telefono y correo */}
+            <div className="flex min-w-0 items-center gap-4">
+              {utilityLocation && (
+                <a
+                  href={`tel:${utilityLocation.phone}`}
+                  data-tm-phone={utilityLocation.id}
+                  aria-label={`${t.call} ${utilityLocation.phoneLabel}`}
+                  className="flex shrink-0 items-center gap-1.5 transition-colors hover:text-maiz-300"
+                >
+                  <IconPhone size={14} />
+                  <span className="hidden sm:inline">
+                    {utilityLocation.phoneLabel}
+                  </span>
+                </a>
+              )}
 
               {brand.email && (
                 <a
@@ -449,14 +483,67 @@ export default function Navbar({ transparent = false }) {
               )}
             </div>
 
-            {/* Centro: geotag del local abierto o mas cercano.
-                Es la unica columna flexible, asi que es la que trunca.
-                En movil solo cabe el nombre del local. */}
+            {/* Centro: logo en reposo */}
+            <a
+              href={cfg.homeUrl}
+              aria-label={t.home}
+              tabIndex={showTopRow ? 0 : -1}
+              className="flex shrink-0 items-center justify-center"
+            >
+              {cfg.logoLight ? (
+                <img
+                  src={cfg.logoLight}
+                  alt="Tortas Manantial"
+                  width="200"
+                  height="60"
+                  className="h-14 w-auto sm:h-16"
+                />
+              ) : (
+                <span className="font-serif text-lg font-bold leading-none text-hueso-100 sm:text-xl">
+                  Tortas Manantial
+                </span>
+              )}
+            </a>
+
+            {/* Derecha: redes. Solo se pintan las que tengan URL. */}
+            <ul
+              className="flex shrink-0 items-center justify-end gap-3"
+              aria-label={t.social}
+            >
+              {socialLinks.map((item) => (
+                <li key={item.key}>
+                  <a
+                    href={item.href}
+                    target="_blank"
+                    rel="noopener"
+                    aria-label={item.label}
+                    tabIndex={showTopRow ? 0 : -1}
+                    className="block transition-colors hover:text-maiz-300"
+                  >
+                    <item.Icon size={15} />
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+
+        {/* ------------------------------------------------------------
+            Barra principal. Geotag a la izquierda, links al centro,
+            CTA a la derecha.
+            ------------------------------------------------------------ */}
+        {/* Rejilla de tres columnas con laterales iguales (1fr cada una).
+              Con justify-between los links se corrian del centro segun lo
+              largo que fuera el geotag, y la insignia, que va en left-1/2,
+              nunca coincidia con el hueco. */}
+          <div className="relative mx-auto grid h-16 max-w-7xl grid-cols-[1fr_auto_1fr] items-center gap-4 px-4 sm:px-6">
+          {/* Geotag del local abierto o mas cercano */}
+          {utilityLocation ? (
             <a
               href={utilityLocation.pageUrl}
-              className="flex min-w-0 items-center justify-center gap-1.5 transition-colors hover:text-maiz-300"
+              className="flex min-w-0 items-center gap-1.5 text-xs text-hueso-100 transition-colors hover:text-maiz-300 sm:text-sm"
             >
-              <IconPin size={14} />
+              <IconPin size={15} />
 
               <span className="truncate sm:hidden">
                 {utilityLocation.name[t.langKey]}
@@ -480,59 +567,45 @@ export default function Navbar({ transparent = false }) {
                 aria-hidden="true"
               />
             </a>
+          ) : (
+            <span />
+          )}
 
-            {/* Derecha: redes. Solo se pintan las que tengan URL. */}
-            <ul
-              className="flex shrink-0 items-center justify-end gap-3"
-              aria-label={t.social}
-            >
-              {socialLinks.map((item) => (
-                <li key={item.key}>
+          {/* Links, centro, desde lg.
+              Van partidos en dos mitades con un hueco al centro: es donde
+              baja la insignia al hacer scroll. El hueco se abre y se cierra
+              con ella, asi que sin scroll los links quedan juntos. */}
+          <nav
+            className="hidden lg:flex lg:items-center"
+            aria-label={t.langKey === "es" ? "Principal" : "Primary"}
+          >
+            {/* Mitad izquierda, anclada a la derecha de su columna */}
+            <ul className="flex w-52 items-center justify-end gap-7">
+              {t.links.slice(0, Math.ceil(t.links.length / 2)).map((link) => (
+                <li key={link.href}>
                   <a
-                    href={item.href}
-                    target="_blank"
-                    rel="noopener"
-                    aria-label={item.label}
-                    className="block transition-colors hover:text-maiz-300"
+                    href={link.href}
+                    className="relative text-sm font-semibold text-hueso-100 transition-colors after:absolute after:-bottom-1.5 after:left-0 after:h-0.5 after:w-0 after:bg-maiz-300 after:transition-all hover:text-maiz-300 hover:after:w-full"
                   >
-                    <item.Icon size={15} />
+                    {link.label}
                   </a>
                 </li>
               ))}
+
             </ul>
-          </div>
-        </div>
 
-        {/* Barra principal */}
-        <div className="mx-auto flex h-18 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6">
-          <a
-            href={cfg.homeUrl}
-            className="shrink-0"
-            aria-label={t.home}
-          >
-            {cfg.logoLight ? (
-              <img
-                src={cfg.logoLight}
-                alt="Tortas Manantial"
-                width="150"
-                height="44"
-                className="h-9 w-auto sm:h-11"
-              />
-            ) : (
-              /* Fallback tipografico mientras tm_media() no tenga la URL del logo. */
-              <span className="font-serif text-lg font-bold leading-none text-hueso-100 sm:text-xl">
-                Tortas Manantial
-              </span>
-            )}
-          </a>
+            {/* Hueco de la insignia. Se abre al hacer scroll, que es cuando
+                el circulo baja a ocuparlo. */}
+            <div
+              aria-hidden="true"
+              className={`shrink-0 transition-all duration-300 ${
+                scrolled ? "w-28" : "w-8"
+              }`}
+            />
 
-          {/* Links, centro, desde lg */}
-          <nav
-            className="hidden lg:block"
-            aria-label={t.langKey === "es" ? "Principal" : "Primary"}
-          >
-            <ul className="flex items-center gap-7">
-              {t.links.map((link) => (
+            {/* Mitad derecha, anclada a la izquierda de su columna */}
+            <ul className="flex w-52 items-center justify-start gap-7">
+              {t.links.slice(Math.ceil(t.links.length / 2)).map((link) => (
                 <li key={link.href}>
                   <a
                     href={link.href}
@@ -545,8 +618,8 @@ export default function Navbar({ transparent = false }) {
             </ul>
           </nav>
 
-          {/* CTA, idioma y hamburguesa */}
-          <div className="relative flex shrink-0 items-center gap-2 sm:gap-3">
+          {/* CTA y hamburguesa */}
+          <div className="relative flex shrink-0 items-center justify-self-end gap-2 sm:gap-3">
             <button
               ref={ctaRef}
               type="button"
@@ -573,6 +646,43 @@ export default function Navbar({ transparent = false }) {
             </button>
           </div>
 
+
+          {/* ------------------------------------------------------------
+              Insignia. Al hacer scroll el logo se encierra en un circulo
+              anclado al borde SUPERIOR de la barra, asi que la mitad de
+              abajo asoma y la de arriba queda dentro. Colgado del borde
+              inferior se veia suelto sobre el hero.
+
+              Es un segundo elemento y no el mismo logo de la fila de arriba:
+              mover un nodo entre dos contenedores con layouts distintos no
+              se puede animar de forma estable.
+              ------------------------------------------------------------ */}
+          <a
+            href={cfg.homeUrl}
+            aria-label={t.home}
+            aria-hidden={!scrolled}
+            tabIndex={scrolled ? 0 : -1}
+            className={`tm-logo-badge absolute left-1/2 top-0 z-10 flex h-24 w-24 -translate-x-1/2 items-center justify-center rounded-full bg-carbon-400 p-3.5 shadow-xl ring-1 ring-white/15 transition-all duration-300 ${
+              scrolled
+                ? "pointer-events-auto scale-100 opacity-100"
+                : "pointer-events-none scale-90 opacity-0"
+            }`}
+          >
+            {cfg.logoLight ? (
+              <img
+                src={cfg.logoLight}
+                alt=""
+                width="200"
+                height="60"
+                className="h-auto w-full"
+              />
+            ) : (
+              <span className="text-center font-serif text-xs font-bold leading-none text-hueso-100">
+                TM
+              </span>
+            )}
+          </a>
+
           {panelOpen && (
             <LocationPanel
               t={t}
@@ -583,6 +693,8 @@ export default function Navbar({ transparent = false }) {
             />
           )}
         </div>
+
+
       </header>
 
       {/* Menu movil a pantalla completa */}

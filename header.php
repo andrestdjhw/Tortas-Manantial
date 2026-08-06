@@ -41,7 +41,7 @@
        * con sesion iniciada.
        */
       if (!$tm_has_hero) : ?>
-      <div style="height: calc(var(--tm-admin-h, 0px) + 4.5rem);" aria-hidden="true"></div>
+      <div style="height: calc(var(--tm-admin-h, 0px) + 9rem);" aria-hidden="true"></div>
     <?php endif; ?>
 
     <main id="main">

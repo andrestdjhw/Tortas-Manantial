@@ -11,13 +11,23 @@
    El tema no lleva carpeta /assets/: toda imagen entra por aqui.
    ========================================================================== */
 
+/**
+ * Ruta a un archivo de la biblioteca de medios.
+ * Se arma con content_url() y no con el dominio, para que las mismas rutas
+ * sirvan en local, staging y produccion sin tocar nada.
+ */
+function tm_upload($path) {
+  return content_url('/uploads/' . ltrim($path, '/'));
+}
+
 function tm_media() {
   return array(
-    // TODO: URL del logo en positivo, para fondos claros.
-    'logo'     => '',
+    // Logo de marca. Se usa tambien sobre carbon, ver nota en tm_load_assets.
+    'logo'     => tm_upload('2026/08/TortasManantial.png'),
 
-    // TODO: URL del logo en negativo, para el navbar y el footer en carbon.
-    'logo_neg' => '',
+    // TODO: version en negativo para fondos oscuros. Mientras no exista, se
+    // usa el mismo archivo en el navbar y el footer.
+    'logo_neg' => tm_upload('2026/08/TortasManantial.png'),
   );
 }
 
@@ -39,6 +49,120 @@ function tm_brand() {
       'facebook'  => 'https://www.facebook.com/tortasmanantial/',
       'yelp'      => 'https://www.yelp.com/biz/tortas-manantial-avondale-3',
     ),
+  );
+}
+
+
+/* ==========================================================================
+   LOCALES
+   Fuente unica de los cuatro locales. Vive en PHP porque las plantillas, el
+   schema y las paginas de ubicacion lo necesitan en el HTML inicial. El front
+   lo recibe por wp_localize_script y no mantiene su propia copia.
+
+   TODO: verificar uno por uno los enlaces de Toast y de Uber Eats.
+   TODO: reemplazar los telefonos por los reales.
+   ========================================================================== */
+
+function tm_locations() {
+  return array(
+    array(
+      'id'            => 'mcdowell',
+      'name'          => array('en' => 'Phoenix, McDowell', 'es' => 'Phoenix, McDowell'),
+      'street'        => '5950 W McDowell Rd #103-104',
+      'city'          => 'Phoenix, AZ 85035',
+      'lat'           => 33.4644,
+      'lng'           => -112.1846,
+      'phone'         => '+16025550000',
+      'phoneLabel'    => '(602) 555-0000',
+      'orderUrl'      => 'https://order.toasttab.com/online/tortas-manantial-phoenix-5950-west-mcdowell-road/',
+      'uberUrl'       => 'https://www.ubereats.com/store/tortas-manantial/QmSpagP0XnuilVUt3Scqvg',
+      'directionsUrl' => 'https://g.page/tortasmanantial-phoenix',
+      'pageUrl'       => '/locations/phoenix-mcdowell',
+      'hours'         => array('open' => '07:00', 'close' => '23:00'),
+    ),
+    array(
+      'id'            => 'indian-school',
+      'name'          => array('en' => 'Avondale, Indian School', 'es' => 'Avondale, Indian School'),
+      'street'        => '10665 W Indian School Rd #A',
+      'city'          => 'Avondale, AZ 85392',
+      'lat'           => 33.4948,
+      'lng'           => -112.2895,
+      'phone'         => '+16235550000',
+      'phoneLabel'    => '(623) 555-0000',
+      'orderUrl'      => 'https://order.toasttab.com/online/tortas-manantial-indian-school-rd-10665-west-indian-school-road/',
+      'uberUrl'       => 'https://www.ubereats.com/store/tortas-manantial/kPb19xCRXEOPrwa4B7G-VA',
+      'directionsUrl' => 'https://g.page/manantial-avondale107th',
+      'pageUrl'       => '/locations/avondale-indian-school',
+      'hours'         => array('open' => '08:00', 'close' => '22:00'),
+    ),
+    array(
+      'id'            => 'buckeye',
+      'name'          => array('en' => 'Avondale, Buckeye', 'es' => 'Avondale, Buckeye'),
+      'street'        => '11435 W Buckeye Rd A108',
+      'city'          => 'Avondale, AZ 85323',
+      'lat'           => 33.4256,
+      'lng'           => -112.3086,
+      'phone'         => '+16235550001',
+      'phoneLabel'    => '(623) 555-0001',
+      'orderUrl'      => 'https://order.toasttab.com/online/tortas-manantial-buckeye-rd-11435-west-buckeye-road/',
+      'uberUrl'       => 'https://www.order.store/store/tortas-manantial/C406Hme-VCGz7xJerlFQQA',
+      'directionsUrl' => 'https://g.page/tortasmanantial-avondaleblvd',
+      'pageUrl'       => '/locations/avondale-buckeye',
+      'hours'         => array('open' => '08:00', 'close' => '22:00'),
+    ),
+    array(
+      'id'            => 'laveen',
+      'name'          => array('en' => 'Laveen', 'es' => 'Laveen'),
+      'street'        => '5185 W Baseline Rd Unit 102',
+      'city'          => 'Laveen Village, AZ 85339',
+      'lat'           => 33.3771,
+      'lng'           => -112.1697,
+      'phone'         => '+16025550001',
+      'phoneLabel'    => '(602) 555-0001',
+      'orderUrl'      => 'https://order.toasttab.com/online/tortas-manantial-laveen-5185-west-baseline-road/',
+      'uberUrl'       => 'https://www.ubereats.com/store/tortas-manantial/n7AHrZzhUWa48cZKy4Kcng',
+      'directionsUrl' => 'https://goo.gl/maps/6FRrsVQ5JSqksro26',
+      'pageUrl'       => '/locations/laveen',
+      'hours'         => array('open' => '08:00', 'close' => '22:00'),
+    ),
+  );
+}
+
+/**
+ * Hora corta: "07:00" -> "7am", "22:00" -> "10pm".
+ */
+function tm_format_hour($hhmm) {
+  $parts  = explode(':', $hhmm);
+  $hour   = (int) $parts[0];
+  $minute = (int) $parts[1];
+  $suffix = $hour >= 12 ? 'pm' : 'am';
+  $hour12 = $hour % 12 === 0 ? 12 : $hour % 12;
+
+  return $minute === 0
+    ? $hour12 . $suffix
+    : $hour12 . ':' . str_pad((string) $minute, 2, '0', STR_PAD_LEFT) . $suffix;
+}
+
+/**
+ * Estado del local ahora mismo, en hora de Phoenix.
+ * Arizona no cambia con el horario de verano, por eso la zona es fija.
+ */
+function tm_location_status($location) {
+  $now = new DateTime('now', new DateTimeZone('America/Phoenix'));
+  $minutes = ((int) $now->format('G')) * 60 + ((int) $now->format('i'));
+
+  $to_minutes = function ($hhmm) {
+    $parts = explode(':', $hhmm);
+    return ((int) $parts[0]) * 60 + ((int) $parts[1]);
+  };
+
+  $open  = $to_minutes($location['hours']['open']);
+  $close = $to_minutes($location['hours']['close']);
+
+  return array(
+    'isOpen'   => $minutes >= $open && $minutes < $close,
+    'opensAt'  => tm_format_hour($location['hours']['open']),
+    'closesAt' => tm_format_hour($location['hours']['close']),
   );
 }
 
@@ -79,6 +203,7 @@ function tm_load_assets() {
     'logo'       => $tm_img['logo'],
     'logoLight'  => $tm_img['logo_neg'],
     'brand'      => tm_brand(),
+    'locations'  => tm_locations(),
     'lang'       => substr(get_locale(), 0, 2) === 'es' ? 'es' : 'en',
     'altLangUrl' => '',
     'restUrl'    => esc_url_raw(rest_url('tm/v1/')),

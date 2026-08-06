@@ -1,115 +1,29 @@
 /**
- * Fuente unica de verdad de los cuatro locales.
+ * Locales y datos de marca en el front.
  *
- * TODO PENDIENTE 1: reemplazar los enlaces de Toast por los verificados uno por uno.
- * TODO PENDIENTE 2: reemplazar los telefonos. Si el cliente usa un solo numero
- *                   central, poner el mismo en los cuatro y dejar la nota en el brief.
- *
- * Todo lo demas (direcciones y horarios) sale del sitio actual y ya esta
- * pendiente de validacion del cliente antes de publicar.
+ * La fuente de verdad es functions.php: tm_locations() y tm_brand(). Aqui
+ * solo se leen de window.tmData, que PHP imprime antes del bundle. Este
+ * archivo no guarda su propia copia de direcciones ni de enlaces: si algo
+ * falta, hay que editarlo en functions.php.
  */
 
-/**
- * Datos de la marca, no de un local en particular.
- *
- * La fuente de verdad es tm_brand() en functions.php, porque el schema
- * Organization del footer los necesita en el HTML inicial. Aqui solo se leen
- * de lo que PHP inyecta en window.tmData. Si no llega nada, se devuelve la
- * forma vacia y cada consumidor omite lo que falte.
- */
-function readBrand() {
-  const source =
-    (typeof window !== "undefined" &&
-      window.tmData &&
-      window.tmData.brand) ||
-    {};
+function readData(key) {
+  return (
+    (typeof window !== "undefined" && window.tmData && window.tmData[key]) ||
+    null
+  );
+}
+
+export const LOCATIONS = readData("locations") || [];
+
+export const BRAND = (() => {
+  const source = readData("brand") || {};
 
   return {
     email: source.email || "",
     social: source.social || {},
   };
-}
-
-export const BRAND = readBrand();
-
-export const LOCATIONS = [
-  {
-    id: "mcdowell",
-    name: { en: "Phoenix, McDowell", es: "Phoenix, McDowell" },
-    street: "5950 W McDowell Rd #103-104",
-    city: "Phoenix, AZ 85035",
-    lat: 33.4644,
-    lng: -112.1846,
-    // TODO: verificar
-    phone: "+16025550000",
-    phoneLabel: "(602) 555-0000",
-    orderUrl:
-      "https://order.toasttab.com/online/tortas-manantial-phoenix-5950-west-mcdowell-road/",
-    // TODO: verificar
-    uberUrl:
-      "https://www.ubereats.com/store/tortas-manantial/QmSpagP0XnuilVUt3Scqvg",
-    directionsUrl: "https://g.page/tortasmanantial-phoenix",
-    pageUrl: "/locations/phoenix-mcdowell",
-    hours: { open: "07:00", close: "23:00" },
-  },
-  {
-    id: "indian-school",
-    name: { en: "Avondale, Indian School", es: "Avondale, Indian School" },
-    street: "10665 W Indian School Rd #A",
-    city: "Avondale, AZ 85392",
-    lat: 33.4948,
-    lng: -112.2895,
-    // TODO: verificar
-    phone: "+16235550000",
-    phoneLabel: "(623) 555-0000",
-    orderUrl:
-      "https://order.toasttab.com/online/tortas-manantial-indian-school-rd-10665-west-indian-school-road/",
-    // TODO: verificar
-    uberUrl:
-      "https://www.ubereats.com/store/tortas-manantial/kPb19xCRXEOPrwa4B7G-VA",
-    directionsUrl: "https://g.page/manantial-avondale107th",
-    pageUrl: "/locations/avondale-indian-school",
-    hours: { open: "08:00", close: "22:00" },
-  },
-  {
-    id: "buckeye",
-    name: { en: "Avondale, Buckeye", es: "Avondale, Buckeye" },
-    street: "11435 W Buckeye Rd A108",
-    city: "Avondale, AZ 85323",
-    lat: 33.4256,
-    lng: -112.3086,
-    // TODO: verificar
-    phone: "+16235550001",
-    phoneLabel: "(623) 555-0001",
-    orderUrl:
-      "https://order.toasttab.com/online/tortas-manantial-buckeye-rd-11435-west-buckeye-road/",
-    // TODO: verificar
-    uberUrl:
-      "https://www.order.store/store/tortas-manantial/C406Hme-VCGz7xJerlFQQA",
-    directionsUrl: "https://g.page/tortasmanantial-avondaleblvd",
-    pageUrl: "/locations/avondale-buckeye",
-    hours: { open: "08:00", close: "22:00" },
-  },
-  {
-    id: "laveen",
-    name: { en: "Laveen", es: "Laveen" },
-    street: "5185 W Baseline Rd Unit 102",
-    city: "Laveen Village, AZ 85339",
-    lat: 33.3771,
-    lng: -112.1697,
-    // TODO: verificar
-    phone: "+16025550001",
-    phoneLabel: "(602) 555-0001",
-    orderUrl:
-      "https://order.toasttab.com/online/tortas-manantial-laveen-5185-west-baseline-road/",
-    // TODO: verificar
-    uberUrl:
-      "https://www.ubereats.com/store/tortas-manantial/n7AHrZzhUWa48cZKy4Kcng",
-    directionsUrl: "https://goo.gl/maps/6FRrsVQ5JSqksro26",
-    pageUrl: "/locations/laveen",
-    hours: { open: "08:00", close: "22:00" },
-  },
-];
+})();
 
 /** Arizona no cambia con el horario de verano, asi que la zona es fija. */
 const TZ = "America/Phoenix";

@@ -2,6 +2,215 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
+/***/ "./src/scripts/ClubForm.js"
+/*!*********************************!*\
+  !*** ./src/scripts/ClubForm.js ***!
+  \*********************************/
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ ClubForm)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _locations__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./locations */ "./src/scripts/locations.js");
+/* harmony import */ var _icons__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./icons */ "./src/scripts/icons.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__);
+
+
+
+
+/**
+ * Alta completa al Tortas Club. Bloque 07 de la home y pagina /tortas-club.
+ * La version de un solo campo vive en el Footer.
+ *
+ * TODO: el campo de celular esta desactivado hasta cerrar el registro
+ * A2P 10DLC y elegir proveedor de mensajeria. Publicar el campo sin el
+ * texto de consentimiento aprobado es un problema de cumplimiento, no de
+ * diseno. Cambiar SMS_ENABLED a true cuando este listo.
+ */
+
+const SMS_ENABLED = false;
+const COPY = {
+  en: {
+    firstName: "First name",
+    email: "Email",
+    mobile: "Mobile number",
+    home: "Home location",
+    pick: "Pick your shop",
+    join: "Join the club",
+    joining: "Joining",
+    consent: "I agree to receive marketing texts from Tortas Manantial at the number provided. Message and data rates may apply. Reply STOP to unsubscribe.",
+    success: "You are in. Check your email for your welcome reward.",
+    invalid: "Check the highlighted fields and try again.",
+    failed: "Something went wrong on our end. Try again in a moment."
+  },
+  es: {
+    firstName: "Nombre",
+    email: "Correo",
+    mobile: "Celular",
+    home: "Local que visitas",
+    pick: "Elige tu local",
+    join: "Únete al club",
+    joining: "Enviando",
+    consent: "Acepto recibir mensajes de texto promocionales de Tortas Manantial al número que proporcione. Pueden aplicar tarifas de mensajes y datos. Responde STOP para cancelar.",
+    success: "Ya quedaste. Revisa tu correo para tu recompensa de bienvenida.",
+    invalid: "Revisa los campos marcados e inténtalo otra vez.",
+    failed: "Algo falló de nuestro lado. Inténtalo en un momento."
+  }
+};
+function getConfig() {
+  const cfg = typeof window !== "undefined" ? window.tmData || {} : {};
+  return {
+    lang: cfg.lang === "es" ? "es" : "en",
+    restUrl: cfg.restUrl || "",
+    nonce: cfg.nonce || ""
+  };
+}
+function ClubForm() {
+  const cfg = getConfig();
+  const t = COPY[cfg.lang];
+  const [values, setValues] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)({
+    firstName: "",
+    email: "",
+    mobile: "",
+    location: "",
+    consent: false
+  });
+  const [status, setStatus] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("idle");
+  const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(values.email.trim());
+  function update(field, value) {
+    setValues(current => ({
+      ...current,
+      [field]: value
+    }));
+    if (status !== "idle") setStatus("idle");
+  }
+  async function handleSubmit(event) {
+    event.preventDefault();
+    if (!emailValid || !values.firstName.trim()) {
+      setStatus("invalid");
+      return;
+    }
+    setStatus("loading");
+    try {
+      const response = await fetch(`${cfg.restUrl}club`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-WP-Nonce": cfg.nonce
+        },
+        body: JSON.stringify({
+          email: values.email.trim(),
+          firstName: values.firstName.trim(),
+          location: values.location,
+          source: "home"
+        })
+      });
+      if (!response.ok) throw new Error("request failed");
+      setStatus("success");
+    } catch (error) {
+      setStatus("failed");
+    }
+  }
+  if (status === "success") {
+    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("p", {
+      className: "text-lg text-olivo-200",
+      role: "status",
+      children: t.success
+    });
+  }
+  const fieldClass = "w-full rounded-lg border-2 border-carbon-300 bg-carbon-500 px-3 py-2.5 text-sm text-hueso-100 placeholder:text-carbon-300";
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("form", {
+    onSubmit: handleSubmit,
+    noValidate: true,
+    className: "flex flex-col gap-4",
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("label", {
+        htmlFor: "tm-club-first",
+        className: "mb-1.5 block text-sm",
+        children: t.firstName
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("input", {
+        id: "tm-club-first",
+        type: "text",
+        autoComplete: "given-name",
+        value: values.firstName,
+        onChange: event => update("firstName", event.target.value),
+        className: fieldClass
+      })]
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("label", {
+        htmlFor: "tm-club-mail",
+        className: "mb-1.5 block text-sm",
+        children: t.email
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("input", {
+        id: "tm-club-mail",
+        type: "email",
+        autoComplete: "email",
+        value: values.email,
+        onChange: event => update("email", event.target.value),
+        className: fieldClass
+      })]
+    }), SMS_ENABLED && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("label", {
+        htmlFor: "tm-club-mobile",
+        className: "mb-1.5 block text-sm",
+        children: t.mobile
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("input", {
+        id: "tm-club-mobile",
+        type: "tel",
+        autoComplete: "tel",
+        value: values.mobile,
+        onChange: event => update("mobile", event.target.value),
+        className: fieldClass
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("label", {
+        className: "mt-3 flex items-start gap-2.5 text-xs text-carbon-200",
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("input", {
+          type: "checkbox",
+          checked: values.consent,
+          onChange: event => update("consent", event.target.checked),
+          className: "mt-0.5 shrink-0"
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("span", {
+          children: t.consent
+        })]
+      })]
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("label", {
+        htmlFor: "tm-club-location",
+        className: "mb-1.5 block text-sm",
+        children: t.home
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("select", {
+        id: "tm-club-location",
+        value: values.location,
+        onChange: event => update("location", event.target.value),
+        className: fieldClass,
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("option", {
+          value: "",
+          children: t.pick
+        }), _locations__WEBPACK_IMPORTED_MODULE_1__.LOCATIONS.map(location => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("option", {
+          value: location.id,
+          children: location.name[cfg.lang]
+        }, location.id))]
+      })]
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("button", {
+      type: "submit",
+      disabled: status === "loading",
+      className: "tm-btn tm-btn-relief tm-btn-primary tm-btn-primary-on-dark mt-1 disabled:opacity-70",
+      children: [status === "loading" ? t.joining : t.join, /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_icons__WEBPACK_IMPORTED_MODULE_2__.IconArrow, {
+        size: 18
+      })]
+    }), (status === "invalid" || status === "failed") && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("p", {
+      className: "text-sm text-carbon-200",
+      role: "alert",
+      children: status === "invalid" ? t.invalid : t.failed
+    })]
+  });
+}
+
+/***/ },
+
 /***/ "./src/scripts/Footer.js"
 /*!*******************************!*\
   !*** ./src/scripts/Footer.js ***!
@@ -303,7 +512,7 @@ function Footer() {
     Icon: _icons__WEBPACK_IMPORTED_MODULE_2__.IconYelp
   }].filter(item => Boolean(item.href));
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("footer", {
-    className: "bg-carbon-400 text-hueso-100",
+    className: "tm-weave text-hueso-100",
     children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
       className: "mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:py-16",
       children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
@@ -792,22 +1001,48 @@ function Navbar({
       maximumAge: 600000
     });
   }, [askedForLocation]);
+
+  /**
+   * Cualquier CTA de las plantillas .php marcado con data-tm-order-cta abre
+   * este panel en vez de navegar. Asi el flujo de pedido es siempre el mismo
+   * y se respeta la regla de los tres toques del brief.
+   *
+   * Va despues de requestLocation a proposito: const no se puede leer antes
+   * de su declaracion, ni siquiera en el arreglo de dependencias.
+   */
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
+    function onClick(event) {
+      const target = event.target;
+      if (!target || typeof target.closest !== "function") return;
+      const trigger = target.closest("[data-tm-order-cta]");
+      if (!trigger) return;
+      event.preventDefault();
+      setMenuOpen(false);
+      setPanelOpen(true);
+      requestLocation();
+    }
+    document.addEventListener("click", onClick);
+    return () => document.removeEventListener("click", onClick);
+  }, [requestLocation]);
   function openPanel() {
     setMenuOpen(false);
     setPanelOpen(true);
     requestLocation();
   }
   const ordered = (0,_locations__WEBPACK_IMPORTED_MODULE_1__.sortByProximity)(_locations__WEBPACK_IMPORTED_MODULE_1__.LOCATIONS, coords);
-  const nearestId = coords ? ordered[0].id : null;
+  const hasLocations = ordered.length > 0;
+  const nearestId = coords && hasLocations ? ordered[0].id : null;
 
   /* El local de la franja de utilidad: el mas cercano si hay permiso,
      si no, el primero que este abierto ahora mismo. */
-  const utilityLocation = ordered.find(location => (0,_locations__WEBPACK_IMPORTED_MODULE_1__.getStatus)(location).isOpen) || ordered[0];
-  const utilityStatus = (0,_locations__WEBPACK_IMPORTED_MODULE_1__.getStatus)(utilityLocation);
+  const utilityLocation = hasLocations ? ordered.find(location => (0,_locations__WEBPACK_IMPORTED_MODULE_1__.getStatus)(location).isOpen) || ordered[0] : null;
+  const utilityStatus = utilityLocation ? (0,_locations__WEBPACK_IMPORTED_MODULE_1__.getStatus)(utilityLocation) : null;
 
   /* Transparente solo donde hay hero, y solo hasta pasar el umbral de scroll. */
   const isTransparent = transparent && heroPresent && !scrolled && !menuOpen;
-  const showUtility = !scrolled;
+  /* La fila superior lleva el logo, asi que se muestra siempre que no haya
+     scroll, aunque falte el geotag. */
+  const showTopRow = !scrolled;
 
   /* Redes disponibles. Las que no tengan URL simplemente no aparecen. */
   const socialLinks = [{
@@ -832,15 +1067,15 @@ function Navbar({
       className: "sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[70] focus:rounded-lg focus:bg-maiz-300 focus:px-4 focus:py-2 focus:font-bold focus:text-carbon-400",
       children: t.skip
     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("header", {
-      className: `tm-header fixed inset-x-0 z-50 transition-colors duration-300 ${isTransparent ? "bg-transparent" : "bg-carbon-400 shadow-lg"}`,
+      className: `tm-header fixed inset-x-0 z-50 transition-colors duration-300 ${isTransparent ? "bg-transparent" : "tm-weave shadow-lg"}`,
       children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
-        className: `overflow-hidden border-b border-white/10 transition-all duration-300 ${showUtility ? "h-9 opacity-100" : "h-0 opacity-0"} ${isTransparent ? "border-white/20" : "bg-carbon-500"}`,
-        "aria-hidden": !showUtility,
+        className: `overflow-hidden border-b border-white/10 transition-all duration-300 ${showTopRow ? "h-20 opacity-100" : "h-0 opacity-0"} ${isTransparent ? "border-white/20" : "bg-carbon-500/55"}`,
+        "aria-hidden": !showTopRow,
         children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
-          className: "mx-auto grid h-9 max-w-7xl grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 px-4 text-xs text-hueso-100 sm:gap-4 sm:px-6",
+          className: "mx-auto grid h-20 max-w-7xl grid-cols-[1fr_auto_1fr] items-center gap-3 px-4 text-xs text-hueso-100 sm:gap-4 sm:px-6",
           children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
-            className: "flex shrink-0 items-center gap-4",
-            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("a", {
+            className: "flex min-w-0 items-center gap-4",
+            children: [utilityLocation && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("a", {
               href: `tel:${utilityLocation.phone}`,
               "data-tm-phone": utilityLocation.id,
               "aria-label": `${t.call} ${utilityLocation.phoneLabel}`,
@@ -862,21 +1097,21 @@ function Navbar({
                 children: brand.email
               })]
             })]
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("a", {
-            href: utilityLocation.pageUrl,
-            className: "flex min-w-0 items-center justify-center gap-1.5 transition-colors hover:text-maiz-300",
-            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_icons__WEBPACK_IMPORTED_MODULE_2__.IconPin, {
-              size: 14
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("span", {
-              className: "truncate sm:hidden",
-              children: utilityLocation.name[t.langKey]
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("span", {
-              className: "hidden truncate sm:inline",
-              children: utilityStatus.isOpen ? t.utility(utilityLocation.name[t.langKey], utilityStatus.closesAt) : `${utilityLocation.name[t.langKey]}, ${t.opensAt(utilityStatus.opensAt)}`
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("span", {
-              className: `inline-block h-1.5 w-1.5 shrink-0 rounded-full ${utilityStatus.isOpen ? "bg-olivo-300" : "bg-carbon-300"}`,
-              "aria-hidden": "true"
-            })]
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("a", {
+            href: cfg.homeUrl,
+            "aria-label": t.home,
+            tabIndex: showTopRow ? 0 : -1,
+            className: "flex shrink-0 items-center justify-center",
+            children: cfg.logoLight ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("img", {
+              src: cfg.logoLight,
+              alt: "Tortas Manantial",
+              width: "200",
+              height: "60",
+              className: "h-14 w-auto sm:h-16"
+            }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("span", {
+              className: "font-serif text-lg font-bold leading-none text-hueso-100 sm:text-xl",
+              children: "Tortas Manantial"
+            })
           }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("ul", {
             className: "flex shrink-0 items-center justify-end gap-3",
             "aria-label": t.social,
@@ -886,6 +1121,7 @@ function Navbar({
                 target: "_blank",
                 rel: "noopener",
                 "aria-label": item.label,
+                tabIndex: showTopRow ? 0 : -1,
                 className: "block transition-colors hover:text-maiz-300",
                 children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(item.Icon, {
                   size: 15
@@ -895,39 +1131,49 @@ function Navbar({
           })]
         })
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
-        className: "mx-auto flex h-18 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6",
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("a", {
-          href: cfg.homeUrl,
-          className: "shrink-0",
-          "aria-label": t.home,
-          children: cfg.logoLight ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("img", {
-            src: cfg.logoLight,
-            alt: "Tortas Manantial",
-            width: "150",
-            height: "44",
-            className: "h-9 w-auto sm:h-11"
-          }) :
-          /*#__PURE__*/
-          /* Fallback tipografico mientras tm_media() no tenga la URL del logo. */
-          (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("span", {
-            className: "font-serif text-lg font-bold leading-none text-hueso-100 sm:text-xl",
-            children: "Tortas Manantial"
-          })
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("nav", {
-          className: "hidden lg:block",
+        className: "relative mx-auto grid h-16 max-w-7xl grid-cols-[1fr_auto_1fr] items-center gap-4 px-4 sm:px-6",
+        children: [utilityLocation ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("a", {
+          href: utilityLocation.pageUrl,
+          className: "flex min-w-0 items-center gap-1.5 text-xs text-hueso-100 transition-colors hover:text-maiz-300 sm:text-sm",
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_icons__WEBPACK_IMPORTED_MODULE_2__.IconPin, {
+            size: 15
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("span", {
+            className: "truncate sm:hidden",
+            children: utilityLocation.name[t.langKey]
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("span", {
+            className: "hidden truncate sm:inline",
+            children: utilityStatus.isOpen ? t.utility(utilityLocation.name[t.langKey], utilityStatus.closesAt) : `${utilityLocation.name[t.langKey]}, ${t.opensAt(utilityStatus.opensAt)}`
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("span", {
+            className: `inline-block h-1.5 w-1.5 shrink-0 rounded-full ${utilityStatus.isOpen ? "bg-olivo-300" : "bg-carbon-300"}`,
+            "aria-hidden": "true"
+          })]
+        }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("span", {}), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("nav", {
+          className: "hidden lg:flex lg:items-center",
           "aria-label": t.langKey === "es" ? "Principal" : "Primary",
-          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("ul", {
-            className: "flex items-center gap-7",
-            children: t.links.map(link => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("li", {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("ul", {
+            className: "flex w-52 items-center justify-end gap-7",
+            children: t.links.slice(0, Math.ceil(t.links.length / 2)).map(link => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("li", {
               children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("a", {
                 href: link.href,
                 className: "relative text-sm font-semibold text-hueso-100 transition-colors after:absolute after:-bottom-1.5 after:left-0 after:h-0.5 after:w-0 after:bg-maiz-300 after:transition-all hover:text-maiz-300 hover:after:w-full",
                 children: link.label
               })
             }, link.href))
-          })
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
+            "aria-hidden": "true",
+            className: `shrink-0 transition-all duration-300 ${scrolled ? "w-28" : "w-8"}`
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("ul", {
+            className: "flex w-52 items-center justify-start gap-7",
+            children: t.links.slice(Math.ceil(t.links.length / 2)).map(link => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("li", {
+              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("a", {
+                href: link.href,
+                className: "relative text-sm font-semibold text-hueso-100 transition-colors after:absolute after:-bottom-1.5 after:left-0 after:h-0.5 after:w-0 after:bg-maiz-300 after:transition-all hover:text-maiz-300 hover:after:w-full",
+                children: link.label
+              })
+            }, link.href))
+          })]
         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
-          className: "relative flex shrink-0 items-center gap-2 sm:gap-3",
+          className: "relative flex shrink-0 items-center justify-self-end gap-2 sm:gap-3",
           children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("button", {
             ref: ctaRef,
             type: "button",
@@ -948,6 +1194,22 @@ function Navbar({
             className: "-mr-2 rounded-lg p-2 text-hueso-100 lg:hidden",
             children: menuOpen ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_icons__WEBPACK_IMPORTED_MODULE_2__.IconClose, {}) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_icons__WEBPACK_IMPORTED_MODULE_2__.IconMenu, {})
           })]
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("a", {
+          href: cfg.homeUrl,
+          "aria-label": t.home,
+          "aria-hidden": !scrolled,
+          tabIndex: scrolled ? 0 : -1,
+          className: `tm-logo-badge absolute left-1/2 top-0 z-10 flex h-24 w-24 -translate-x-1/2 items-center justify-center rounded-full bg-carbon-400 p-3.5 shadow-xl ring-1 ring-white/15 transition-all duration-300 ${scrolled ? "pointer-events-auto scale-100 opacity-100" : "pointer-events-none scale-90 opacity-0"}`,
+          children: cfg.logoLight ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("img", {
+            src: cfg.logoLight,
+            alt: "",
+            width: "200",
+            height: "60",
+            className: "h-auto w-full"
+          }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("span", {
+            className: "text-center font-serif text-xs font-bold leading-none text-hueso-100",
+            children: "TM"
+          })
         }), panelOpen && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(LocationPanel, {
           t: t,
           locations: ordered,
@@ -1271,121 +1533,25 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   sortByProximity: () => (/* binding */ sortByProximity)
 /* harmony export */ });
 /**
- * Fuente unica de verdad de los cuatro locales.
+ * Locales y datos de marca en el front.
  *
- * TODO PENDIENTE 1: reemplazar los enlaces de Toast por los verificados uno por uno.
- * TODO PENDIENTE 2: reemplazar los telefonos. Si el cliente usa un solo numero
- *                   central, poner el mismo en los cuatro y dejar la nota en el brief.
- *
- * Todo lo demas (direcciones y horarios) sale del sitio actual y ya esta
- * pendiente de validacion del cliente antes de publicar.
+ * La fuente de verdad es functions.php: tm_locations() y tm_brand(). Aqui
+ * solo se leen de window.tmData, que PHP imprime antes del bundle. Este
+ * archivo no guarda su propia copia de direcciones ni de enlaces: si algo
+ * falta, hay que editarlo en functions.php.
  */
 
-/**
- * Datos de la marca, no de un local en particular.
- *
- * La fuente de verdad es tm_brand() en functions.php, porque el schema
- * Organization del footer los necesita en el HTML inicial. Aqui solo se leen
- * de lo que PHP inyecta en window.tmData. Si no llega nada, se devuelve la
- * forma vacia y cada consumidor omite lo que falte.
- */
-function readBrand() {
-  const source = typeof window !== "undefined" && window.tmData && window.tmData.brand || {};
+function readData(key) {
+  return typeof window !== "undefined" && window.tmData && window.tmData[key] || null;
+}
+const LOCATIONS = readData("locations") || [];
+const BRAND = (() => {
+  const source = readData("brand") || {};
   return {
     email: source.email || "",
     social: source.social || {}
   };
-}
-const BRAND = readBrand();
-const LOCATIONS = [{
-  id: "mcdowell",
-  name: {
-    en: "Phoenix, McDowell",
-    es: "Phoenix, McDowell"
-  },
-  street: "5950 W McDowell Rd #103-104",
-  city: "Phoenix, AZ 85035",
-  lat: 33.4644,
-  lng: -112.1846,
-  // TODO: verificar
-  phone: "+16025550000",
-  phoneLabel: "(602) 555-0000",
-  orderUrl: "https://order.toasttab.com/online/tortas-manantial-phoenix-5950-west-mcdowell-road/",
-  // TODO: verificar
-  uberUrl: "https://www.ubereats.com/store/tortas-manantial/QmSpagP0XnuilVUt3Scqvg",
-  directionsUrl: "https://g.page/tortasmanantial-phoenix",
-  pageUrl: "/locations/phoenix-mcdowell",
-  hours: {
-    open: "07:00",
-    close: "23:00"
-  }
-}, {
-  id: "indian-school",
-  name: {
-    en: "Avondale, Indian School",
-    es: "Avondale, Indian School"
-  },
-  street: "10665 W Indian School Rd #A",
-  city: "Avondale, AZ 85392",
-  lat: 33.4948,
-  lng: -112.2895,
-  // TODO: verificar
-  phone: "+16235550000",
-  phoneLabel: "(623) 555-0000",
-  orderUrl: "https://order.toasttab.com/online/tortas-manantial-indian-school-rd-10665-west-indian-school-road/",
-  // TODO: verificar
-  uberUrl: "https://www.ubereats.com/store/tortas-manantial/kPb19xCRXEOPrwa4B7G-VA",
-  directionsUrl: "https://g.page/manantial-avondale107th",
-  pageUrl: "/locations/avondale-indian-school",
-  hours: {
-    open: "08:00",
-    close: "22:00"
-  }
-}, {
-  id: "buckeye",
-  name: {
-    en: "Avondale, Buckeye",
-    es: "Avondale, Buckeye"
-  },
-  street: "11435 W Buckeye Rd A108",
-  city: "Avondale, AZ 85323",
-  lat: 33.4256,
-  lng: -112.3086,
-  // TODO: verificar
-  phone: "+16235550001",
-  phoneLabel: "(623) 555-0001",
-  orderUrl: "https://order.toasttab.com/online/tortas-manantial-buckeye-rd-11435-west-buckeye-road/",
-  // TODO: verificar
-  uberUrl: "https://www.order.store/store/tortas-manantial/C406Hme-VCGz7xJerlFQQA",
-  directionsUrl: "https://g.page/tortasmanantial-avondaleblvd",
-  pageUrl: "/locations/avondale-buckeye",
-  hours: {
-    open: "08:00",
-    close: "22:00"
-  }
-}, {
-  id: "laveen",
-  name: {
-    en: "Laveen",
-    es: "Laveen"
-  },
-  street: "5185 W Baseline Rd Unit 102",
-  city: "Laveen Village, AZ 85339",
-  lat: 33.3771,
-  lng: -112.1697,
-  // TODO: verificar
-  phone: "+16025550001",
-  phoneLabel: "(602) 555-0001",
-  orderUrl: "https://order.toasttab.com/online/tortas-manantial-laveen-5185-west-baseline-road/",
-  // TODO: verificar
-  uberUrl: "https://www.ubereats.com/store/tortas-manantial/n7AHrZzhUWa48cZKy4Kcng",
-  directionsUrl: "https://goo.gl/maps/6FRrsVQ5JSqksro26",
-  pageUrl: "/locations/laveen",
-  hours: {
-    open: "08:00",
-    close: "22:00"
-  }
-}];
+})();
 
 /** Arizona no cambia con el horario de verano, asi que la zona es fija. */
 const TZ = "America/Phoenix";
@@ -1582,8 +1748,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react_dom_client__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react_dom_client__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _scripts_Navbar__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./scripts/Navbar */ "./src/scripts/Navbar.js");
 /* harmony import */ var _scripts_Footer__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./scripts/Footer */ "./src/scripts/Footer.js");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _scripts_ClubForm__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./scripts/ClubForm */ "./src/scripts/ClubForm.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__);
+
 
 
 
@@ -1598,13 +1766,19 @@ const navbarMount = document.querySelector("#tm-navbar");
 if (navbarMount) {
   // data-transparent lo pone header.php: true solo donde hay hero a sangre.
   const transparent = navbarMount.dataset.transparent === "true";
-  react_dom_client__WEBPACK_IMPORTED_MODULE_1___default().createRoot(navbarMount).render(/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_scripts_Navbar__WEBPACK_IMPORTED_MODULE_2__["default"], {
+  react_dom_client__WEBPACK_IMPORTED_MODULE_1___default().createRoot(navbarMount).render(/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_scripts_Navbar__WEBPACK_IMPORTED_MODULE_2__["default"], {
     transparent: transparent
   }));
 }
 const footerMount = document.querySelector("#tm-footer");
 if (footerMount) {
-  react_dom_client__WEBPACK_IMPORTED_MODULE_1___default().createRoot(footerMount).render(/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_scripts_Footer__WEBPACK_IMPORTED_MODULE_3__["default"], {}));
+  react_dom_client__WEBPACK_IMPORTED_MODULE_1___default().createRoot(footerMount).render(/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_scripts_Footer__WEBPACK_IMPORTED_MODULE_3__["default"], {}));
+}
+
+// Bloque 07 de la home. Version completa del alta al Tortas Club.
+const clubMount = document.querySelector("#tm-club-form");
+if (clubMount) {
+  react_dom_client__WEBPACK_IMPORTED_MODULE_1___default().createRoot(clubMount).render(/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_scripts_ClubForm__WEBPACK_IMPORTED_MODULE_4__["default"], {}));
 }
 })();
 
