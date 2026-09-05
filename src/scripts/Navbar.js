@@ -122,6 +122,7 @@ function getConfig() {
     lang: cfg.lang === "es" ? "es" : "en",
     altLangUrl: cfg.altLangUrl || "",
     orderUrl: cfg.orderUrl || "",
+    footerGraphics: Array.isArray(cfg.footerGraphics) ? cfg.footerGraphics : [],
   };
 }
 
@@ -439,6 +440,14 @@ export default function Navbar({ transparent = false }) {
      scroll, aunque falte el geotag. */
   const showTopRow = !scrolled;
 
+  /* Tinta del contenido del navbar: hueso sobre el hero (isTransparent),
+     carbon sobre el fondo claro solido. Un solo lugar para decidirlo en
+     vez de repetir el ternario en cada link. */
+  const navTone = isTransparent ? "text-hueso-100" : "text-carbon-400";
+  const navHover = isTransparent ? "hover:text-maiz-300" : "hover:text-olivo-400";
+  const navUnderline = isTransparent ? "after:bg-maiz-300" : "after:bg-olivo-400";
+  const topRowLogo = isTransparent ? cfg.logoLight : cfg.logo;
+
   /* Redes disponibles. Las que no tengan URL simplemente no aparecen. */
   const socialLinks = [
     { key: "yelp", href: brand.social.yelp, label: t.yelp, Icon: IconYelp },
@@ -466,21 +475,58 @@ export default function Navbar({ transparent = false }) {
       </a>
 
       <header
-        className={`tm-header fixed inset-x-0 z-50 transition-colors duration-300 ${
-          isTransparent ? "bg-transparent" : "tm-weave shadow-lg"
+        className={`tm-header fixed inset-x-0 z-50 transition-shadow duration-300 ${
+          isTransparent ? "" : "shadow-lg"
         }`}
       >
+        {/* Fondo en degradado, capa aparte y no background del header:
+            un background-image no hace fundido via transition-colors (eso
+            solo anima background-color), asi que el fundido de "aparece al
+            scrollear" sale de animar la opacity de esta capa en vez del
+            fondo directo. */}
+        <span
+          aria-hidden="true"
+          className={`tm-header-solid pointer-events-none absolute inset-0 -z-10 transition-opacity duration-300 ${
+            isTransparent ? "opacity-0" : "opacity-100"
+          }`}
+        />
+
+        {/* Elementos de apoyo, solo con el fondo claro puesto: sobre el
+            hero compiten con la foto, aca tienen aire de sobra en los
+            gutters del contenedor ancho. Reusan las mismas graficas del
+            footer, no hacia falta pedir mas URLs. */}
+        {!isTransparent && cfg.footerGraphics[0] && (
+          <img
+            src={cfg.footerGraphics[0]}
+            alt=""
+            aria-hidden="true"
+            className="pointer-events-none absolute left-2 top-1/2 hidden w-10 -translate-y-1/2 opacity-20 xl:block"
+          />
+        )}
+        {!isTransparent && cfg.footerGraphics[1] && (
+          <img
+            src={cfg.footerGraphics[1]}
+            alt=""
+            aria-hidden="true"
+            className="pointer-events-none absolute right-2 top-1/2 hidden w-10 -translate-y-1/2 opacity-20 xl:block"
+          />
+        )}
+
         {/* ------------------------------------------------------------
             Fila superior. Telefono y correo a la izquierda, logo al centro,
             redes a la derecha. Colapsa completa al hacer scroll.
             ------------------------------------------------------------ */}
         <div
-          className={`overflow-hidden border-b border-white/10 transition-all duration-300 ${
+          className={`overflow-hidden transition-all duration-300 ${
             showTopRow ? "h-20 opacity-100" : "h-0 opacity-0"
-          } ${isTransparent ? "border-white/20" : "bg-carbon-500/55"}`}
+          } ${
+            isTransparent
+              ? "border-b border-white/20"
+              : "border-b border-carbon-400/10 bg-hueso-200/70"
+          }`}
           aria-hidden={!showTopRow}
         >
-          <div className="mx-auto grid h-20 max-w-7xl grid-cols-[1fr_auto_1fr] items-center gap-3 px-4 text-xs text-hueso-100 sm:gap-4 sm:px-6">
+          <div className={`mx-auto grid h-20 max-w-7xl grid-cols-[1fr_auto_1fr] items-center gap-3 px-4 text-xs sm:gap-4 sm:px-6 ${navTone}`}>
             {/* Izquierda: telefono y correo */}
             <div className="flex min-w-0 items-center gap-4">
               {utilityLocation && (
@@ -488,7 +534,7 @@ export default function Navbar({ transparent = false }) {
                   href={`tel:${utilityLocation.phone}`}
                   data-tm-phone={utilityLocation.id}
                   aria-label={`${t.call} ${utilityLocation.phoneLabel}`}
-                  className="flex shrink-0 items-center gap-1.5 transition-colors hover:text-maiz-300"
+                  className={`flex shrink-0 items-center gap-1.5 transition-colors ${navHover}`}
                 >
                   <IconPhone size={14} />
                   <span className="hidden sm:inline">
@@ -501,7 +547,7 @@ export default function Navbar({ transparent = false }) {
                 <a
                   href={`mailto:${brand.email}`}
                   aria-label={t.emailAria}
-                  className="hidden min-w-0 items-center gap-1.5 transition-colors hover:text-maiz-300 md:flex"
+                  className={`hidden min-w-0 items-center gap-1.5 transition-colors md:flex ${navHover}`}
                 >
                   <IconMail size={14} />
                   <span className="truncate">{brand.email}</span>
@@ -516,16 +562,16 @@ export default function Navbar({ transparent = false }) {
               tabIndex={showTopRow ? 0 : -1}
               className="flex shrink-0 items-center justify-center"
             >
-              {cfg.logoLight ? (
+              {topRowLogo ? (
                 <img
-                  src={cfg.logoLight}
+                  src={topRowLogo}
                   alt="Tortas Manantial"
                   width="200"
                   height="60"
                   className="h-14 w-auto sm:h-16"
                 />
               ) : (
-                <span className="font-display text-lg font-bold leading-none text-hueso-100 sm:text-xl">
+                <span className={`font-display text-lg font-bold leading-none sm:text-xl ${navTone}`}>
                   Tortas Manantial
                 </span>
               )}
@@ -544,7 +590,7 @@ export default function Navbar({ transparent = false }) {
                     rel="noopener"
                     aria-label={item.label}
                     tabIndex={showTopRow ? 0 : -1}
-                    className="block transition-colors hover:text-maiz-300"
+                    className={`block transition-colors ${navHover}`}
                   >
                     <item.Icon size={15} />
                   </a>
@@ -567,7 +613,7 @@ export default function Navbar({ transparent = false }) {
           {utilityLocation ? (
             <a
               href={utilityLocation.pageUrl}
-              className="col-start-1 flex min-w-0 items-center gap-1.5 text-xs text-hueso-100 transition-colors hover:text-maiz-300 sm:text-sm"
+              className={`col-start-1 flex min-w-0 items-center gap-1.5 text-xs transition-colors sm:text-sm ${navTone} ${navHover}`}
             >
               <IconPin size={15} />
 
@@ -611,7 +657,7 @@ export default function Navbar({ transparent = false }) {
                 <li key={link.href}>
                   <a
                     {...linkProps(link)}
-                    className="relative text-sm font-semibold text-hueso-100 transition-colors after:absolute after:-bottom-1.5 after:left-0 after:h-0.5 after:w-0 after:bg-maiz-300 after:transition-all hover:text-maiz-300 hover:after:w-full"
+                    className={`relative text-sm font-semibold transition-colors after:absolute after:-bottom-1.5 after:left-0 after:h-0.5 after:w-0 after:transition-all hover:after:w-full ${navTone} ${navHover} ${navUnderline}`}
                   >
                     {link.label}
                   </a>
@@ -635,7 +681,7 @@ export default function Navbar({ transparent = false }) {
                 <li key={link.href}>
                   <a
                     {...linkProps(link)}
-                    className="relative text-sm font-semibold text-hueso-100 transition-colors after:absolute after:-bottom-1.5 after:left-0 after:h-0.5 after:w-0 after:bg-maiz-300 after:transition-all hover:text-maiz-300 hover:after:w-full"
+                    className={`relative text-sm font-semibold transition-colors after:absolute after:-bottom-1.5 after:left-0 after:h-0.5 after:w-0 after:transition-all hover:after:w-full ${navTone} ${navHover} ${navUnderline}`}
                   >
                     {link.label}
                   </a>
@@ -655,7 +701,9 @@ export default function Navbar({ transparent = false }) {
               rel="noopener"
               data-tm-order="default"
               data-tm-channel="toast"
-              className="tm-btn tm-btn-relief tm-btn-primary tm-btn-primary-on-dark px-6 py-3.5 text-base sm:px-5 sm:py-3 sm:text-sm"
+              className={`tm-btn tm-btn-relief tm-btn-primary px-6 py-3.5 text-base sm:px-5 sm:py-3 sm:text-sm ${
+                isTransparent ? "tm-btn-primary-on-dark" : ""
+              }`}
             >
               <span className="sm:hidden">{t.ctaShort}</span>
               <span className="hidden sm:inline">{t.cta}</span>
@@ -682,7 +730,7 @@ export default function Navbar({ transparent = false }) {
             aria-expanded={menuOpen}
             aria-controls="tm-mobile-menu"
             aria-label={menuOpen ? t.closeMenu : t.openMenu}
-            className="col-start-3 -mr-2 justify-self-end rounded-lg p-2 text-hueso-100 lg:hidden"
+            className={`col-start-3 -mr-2 justify-self-end rounded-lg p-2 lg:hidden ${navTone}`}
           >
             {menuOpen ? <IconClose /> : <IconMenu />}
           </button>
@@ -696,32 +744,50 @@ export default function Navbar({ transparent = false }) {
               Es un segundo elemento y no el mismo logo de la fila de arriba:
               mover un nodo entre dos contenedores con layouts distintos no
               se puede animar de forma estable.
+
+              El circulo se arma como una torta en corte: dos rodajas
+              (.tm-torta-slice) asoman detras en diagonal, y el logo
+              "posa" en el circulo del frente. Las rodajas van como
+              hermanas del link y no como pseudo-elementos suyos porque
+              un pseudo-elemento no puede pintarse detras del propio
+              fondo de su dueno, que es justo el truco que hacia
+              funcionar esto con box-shadow. Con hermanas, el fondo
+              opaco del link de encima las tapa salvo en el borde que
+              asoma, que es el efecto que buscamos.
               ------------------------------------------------------------ */}
-          <a
-            href={cfg.homeUrl}
-            aria-label={t.home}
-            aria-hidden={!scrolled}
-            tabIndex={scrolled ? 0 : -1}
-            className={`tm-logo-badge absolute left-1/2 top-0 z-10 hidden h-24 w-24 -translate-x-1/2 items-center justify-center rounded-full bg-carbon-400 p-3.5 lg:flex ${
-              scrolled
-                ? "pointer-events-auto scale-100 opacity-100"
-                : "pointer-events-none scale-90 opacity-0"
+          <div
+            aria-hidden="true"
+            className={`tm-logo-badge-wrap absolute left-1/2 top-0 z-10 hidden h-24 w-24 -translate-x-1/2 lg:block ${
+              scrolled ? "scale-100 opacity-100" : "scale-90 opacity-0"
             }`}
           >
-            {cfg.logoLight ? (
-              <img
-                src={cfg.logoLight}
-                alt=""
-                width="200"
-                height="60"
-                className="h-auto w-full"
-              />
-            ) : (
-              <span className="text-center font-display text-xs font-bold leading-none text-hueso-100">
-                TM
-              </span>
-            )}
-          </a>
+            <span className="tm-torta-slice tm-torta-slice--bottom"></span>
+            <span className="tm-torta-slice tm-torta-slice--filling"></span>
+
+            <a
+              href={cfg.homeUrl}
+              aria-label={t.home}
+              aria-hidden={!scrolled}
+              tabIndex={scrolled ? 0 : -1}
+              className={`tm-logo-badge absolute inset-0 flex items-center justify-center rounded-full p-3.5 ${
+                scrolled ? "pointer-events-auto" : "pointer-events-none"
+              }`}
+            >
+              {cfg.logoLight ? (
+                <img
+                  src={cfg.logoLight}
+                  alt=""
+                  width="200"
+                  height="60"
+                  className="h-auto w-full"
+                />
+              ) : (
+                <span className="text-center font-display text-xs font-bold leading-none text-hueso-100">
+                  TM
+                </span>
+              )}
+            </a>
+          </div>
         </div>
       </header>
 

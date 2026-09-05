@@ -15,10 +15,6 @@
 $tm_img_hero_video   = tm_upload('2026/08/TortasManantialHeroCompressed.mp4');
 $tm_img_hero_poster  = ''; // TODO: primer frame del video. Sin el, el hero se
                            // ve en carbon plano hasta que el video empieza.
-$tm_img_fav_torta    = tm_upload('2026/08/TortasTM.jpg');
-$tm_img_fav_nachos   = tm_upload('2026/08/NachosTM.jpg');
-$tm_img_fav_agua     = tm_upload('2026/08/AguasM.webp');
-$tm_img_fav_licuado  = tm_upload('2026/08/LicuadoM.webp');
 $tm_img_fresh        = tm_upload('2026/08/Tortas.webp');
 $tm_img_story        = tm_upload('2026/08/TMFachada.webp');
 $tm_img_ig_1         = ''; // TODO
@@ -28,13 +24,22 @@ $tm_img_ig_4         = ''; // TODO
 $tm_img_ig_5         = ''; // TODO
 $tm_img_ig_6         = ''; // TODO
 
-/* ==========================================================================
-   RESENAS
-   TODO: sustituir por resenas reales de Google. Se rotan cada mes: una
-   resena reciente pesa mas que diez viejas. Nunca inventar testimonios.
-   ========================================================================== */
+$tm_img_bg           = tm_upload('2026/09/FondoVerde.png'); // Fondo de las secciones .tm-tiles.
+$tm_img_club_bg      = tm_upload('2026/09/TortasFondo.png'); // Fondo de la banda en maiz de Tortas Club.
+$tm_img_facets_bg    = tm_upload('2026/09/TortasFondo.png'); // Mismo fondo, ahora en la barra de cierre (antes tm-facets).
 
-$tm_reviews = array();
+// Graficos de apoyo a los costados del FAQ. Mismo par en Tortas Club.
+$tm_img_faq_left     = tm_upload('2026/09/02-Coco-Graphics-scaled.png');
+$tm_img_faq_right    = tm_upload('2026/09/03-Coco-Graphics-scaled.png');
+
+// Mismo grafico de apoyo, ahora como acento en la esquina del panel de
+// texto de los bloques 04 y 05 (el otro lado de cada uno es foto, ahi no
+// entra un acento sin taparla).
+$tm_img_fresh_bg     = tm_upload('2026/09/FondoAguasFrescas.png'); // Fondo del panel de texto de 04.
+$tm_img_story_accent_bl = tm_upload('2026/09/06-Coco-Graphics-scaled.png'); // Abajo-izquierda.
+$tm_img_story_accent_tl = tm_upload('2026/09/05-Coco-Graphics-scaled.png'); // Arriba-izquierda.
+$tm_img_story_accent_tr = tm_upload('2026/09/21-Coco-Graphics-scaled.png'); // Arriba-derecha.
+$tm_img_story_accent_br = tm_upload('2026/09/22-Coco-Graphics-scaled.png'); // Abajo-derecha.
 
 $tm_locations = tm_locations();
 
@@ -78,24 +83,24 @@ get_header(); ?>
     >
   <?php endif; ?>
 
-  <!-- Dos scrims: uno parejo para movil, uno asimetrico desde lg -->
-  <div class="absolute inset-0 bg-carbon-500/45 lg:hidden" aria-hidden="true"></div>
-  <div class="absolute inset-0 hidden bg-gradient-to-r from-carbon-500/85 via-carbon-500/55 to-transparent lg:block" aria-hidden="true"></div>
+  <!-- Un solo scrim parejo: con el texto centrado ya no hay un lado
+       "de texto" que necesite mas velo que el otro. -->
+  <div class="absolute inset-0 bg-carbon-500/55" aria-hidden="true"></div>
 
-  <div class="relative z-10 mx-auto w-full max-w-7xl px-4 pb-14 pt-40 sm:px-6">
-    <div class="max-w-2xl">
+  <div class="relative z-10 mx-auto w-full max-w-7xl px-4 pb-14 pt-40 text-center sm:px-6">
+    <div class="mx-auto max-w-2xl">
       <p class="tm-eyebrow text-maiz-300">Family owned in Phoenix since 2000</p>
 
       <h1 class="mt-4 font-display text-[2rem] leading-[1.08] text-hueso-100 sm:text-5xl lg:text-6xl">
         The torta that tastes <span class="whitespace-nowrap">like home</span>
       </h1>
 
-      <p class="mt-5 max-w-xl text-lg text-hueso-100/90">
+      <p class="mx-auto mt-5 max-w-xl text-lg text-hueso-100/90">
         Fresh bread, real sazón, made to order. Four neighborhood shops across
         Phoenix, Avondale and Laveen, open seven days a week.
       </p>
 
-      <div class="mt-8 flex flex-wrap items-center gap-3">
+      <div class="mt-8 flex flex-wrap items-center justify-center gap-3">
         <a
           href="<?php echo esc_url($tm_order_url); ?>"
           target="_blank" rel="noopener"
@@ -134,145 +139,31 @@ get_header(); ?>
 
 <!-- ============================================================
      03  LOS FAVORITOS
+     Parcial compartido, ver template-parts/favorites-carousel.php.
+     full_height + id porque esta es la seccion a la que apunta el
+     "See the menu" del hero (#favorites); en las demas paginas el
+     mismo parcial se pide sin esos dos args.
      ============================================================ -->
-<section id="favorites" class="tm-tiles min-h-svh scroll-mt-24 py-16 lg:py-24">
-  <div class="mx-auto max-w-7xl px-4 sm:px-6">
-    <h2 class="max-w-2xl font-display text-3xl leading-tight text-carbon-400 sm:text-4xl">
-      The ones everybody comes back for
-    </h2>
-    <p class="mt-3 max-w-xl text-carbon-300">
-      Twenty five years of the same recipe, made fresh every single order.
-    </p>
-
-    <ul class="tm-cards-3d mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-      <?php
-        $tm_favorites = array(
-          array('Tortas',       'Toasted bread, layered high, the way it is done at home.',    $tm_img_fav_torta),
-          array('Nachos',       'Loaded, shareable, and gone in five minutes.',                 $tm_img_fav_nachos),
-          array('Aguas Frescas','Real fruit, squeezed the same morning you drink it.',          $tm_img_fav_agua),
-          array('Licuados',     'Mexican milkshakes, thick, cold and worth the brain freeze.',  $tm_img_fav_licuado),
-        );
-
-        foreach ($tm_favorites as $tm_index => $tm_item) :
-          list($tm_name, $tm_desc, $tm_image) = $tm_item; ?>
-        <li>
-          <a
-            href="<?php echo esc_url($tm_order_url); ?>"
-            target="_blank" rel="noopener"
-            data-tm-order="default" data-tm-channel="toast"
-            class="tm-card-3d group relative flex h-full flex-col overflow-hidden rounded-xl border border-hueso-400 bg-hueso-100 shadow-sm"
-          >
-            <div class="tm-placeholder aspect-square overflow-hidden sm:aspect-4/5">
-              <?php if ($tm_image) : ?>
-                <img
-                  src="<?php echo esc_url($tm_image); ?>"
-                  alt="<?php echo esc_attr($tm_name); ?>"
-                  loading="lazy"
-                  class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                >
-              <?php else : ?>
-                <span class="tm-eyebrow flex h-full items-center justify-center text-carbon-200">
-                  <?php echo esc_html($tm_name); ?>
-                </span>
-              <?php endif; ?>
-            </div>
-
-            <div class="tm-card-3d__lift p-5">
-              <h3 class="font-display text-xl text-carbon-400 group-hover:text-olivo-400">
-                <?php echo esc_html($tm_name); ?>
-              </h3>
-              <p class="mt-1.5 text-sm text-carbon-300"><?php echo esc_html($tm_desc); ?></p>
-            </div>
-          </a>
-        </li>
-      <?php endforeach; ?>
-    </ul>
-
-    <a
-      href="<?php echo esc_url($tm_order_url); ?>"
-      target="_blank" rel="noopener"
-      data-tm-order="default" data-tm-channel="toast"
-      class="tm-btn tm-btn-ghost-dark mt-12"
-    >See the full menu</a>
-  </div>
-</section>
-
-<!-- ============================================================
-     04  HECHO AL MOMENTO
-     ============================================================ -->
-<section class="bg-hueso-200">
-  <div class="grid lg:grid-cols-2">
-    <div class="tm-placeholder min-h-64 lg:min-h-[32rem]">
-      <?php if ($tm_img_fresh) : ?>
-        <img
-          src="<?php echo esc_url($tm_img_fresh); ?>"
-          alt="Bread going on the grill"
-          loading="lazy"
-          class="h-full w-full object-cover"
-        >
-      <?php endif; ?>
-    </div>
-
-    <div class="tm-glow flex items-center px-4 py-16 sm:px-10 lg:py-24">
-      <div class="max-w-lg">
-        <h2 class="font-display text-3xl leading-tight text-carbon-400 sm:text-4xl">
-          Every order made fresh
-        </h2>
-        <p class="mt-5 text-lg text-carbon-300">
-          Nothing sits under a lamp. The bread hits the grill when you order,
-          the fruit gets cut the same morning, and the sazón has not changed
-          since the year 2000. That is the whole trick, and there is no
-          shortcut to it.
-        </p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ============================================================
-     05  HISTORIA CORTA
-     TODO: copy provisional. Se reescribe con la historia real de la
-     familia (pendiente 02 del brief maestro).
-     ============================================================ -->
-<section class="bg-hueso-300">
-  <div class="grid lg:grid-cols-2">
-    <!-- Texto a la izquierda -->
-    <div class="tm-glow flex items-center px-4 py-16 [--tm-glow-color:var(--color-maiz-200)] sm:px-10 lg:py-24">
-      <div class="max-w-lg">
-        <p class="tm-eyebrow text-olivo-400">Since 2000</p>
-        <h2 class="mt-4 font-display text-3xl leading-tight text-carbon-400 sm:text-4xl">
-          One family, one recipe, four neighborhoods
-        </h2>
-        <p class="mt-5 text-lg text-carbon-300">
-          We opened one small shop in Phoenix with a family recipe and a lot of
-          nerve. Twenty five years later there are four of us across the west
-          Valley, and the recipe has not moved an inch. What grew was the number
-          of families who call this their spot.
-        </p>
-        <a href="/our-story" class="tm-btn tm-btn-ghost-dark mt-8">Read our story</a>
-      </div>
-    </div>
-
-    <!-- Imagen a sangre, toda la mitad derecha.
-         En movil va debajo del texto, no encima: la historia es lo que
-         justifica la foto, no al reves. -->
-    <div class="tm-placeholder order-last min-h-64 lg:min-h-[32rem]">
-      <?php if ($tm_img_story) : ?>
-        <img
-          src="<?php echo esc_url($tm_img_story); ?>"
-          alt="The family behind Tortas Manantial"
-          loading="lazy"
-          class="h-full w-full object-cover"
-        >
-      <?php endif; ?>
-    </div>
-  </div>
-</section>
+<?php
+  get_template_part('template-parts/favorites-carousel', null, array(
+    'id'          => 'favorites',
+    'full_height' => true,
+  ));
+?>
 
 <!-- ============================================================
      06  UBICACIONES
      ============================================================ -->
 <section id="locations" class="tm-tiles min-h-svh scroll-mt-24 py-16 lg:py-24">
+  <?php if ($tm_img_bg) : ?>
+    <img
+      src="<?php echo esc_url($tm_img_bg); ?>"
+      alt=""
+      aria-hidden="true"
+      loading="lazy"
+      class="tm-tiles__bg"
+    >
+  <?php endif; ?>
   <div class="mx-auto max-w-7xl px-4 sm:px-6">
     <h2 class="font-display text-3xl leading-tight text-carbon-400 sm:text-4xl">
       Find the one closest to you
@@ -282,9 +173,13 @@ get_header(); ?>
     </p>
 
     <ul class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-      <?php foreach ($tm_locations as $tm_location) :
+      <?php foreach ($tm_locations as $tm_index => $tm_location) :
         $tm_status = tm_location_status($tm_location); ?>
-        <li class="flex flex-col overflow-hidden rounded-xl border border-hueso-400 bg-hueso-200">
+        <li
+          data-tm-reveal="top"
+          style="transition-delay: <?php echo esc_attr($tm_index * 0.1); ?>s"
+          class="flex flex-col overflow-hidden rounded-xl border border-hueso-400 bg-hueso-200 shadow-xl shadow-carbon-500/10"
+        >
           <!-- Mapa del local. loading="lazy" es obligatorio aqui: son cuatro
                iframes de terceros en la misma pagina y sin esto se cargan
                los cuatro antes de que nadie los vea. -->
@@ -358,46 +253,6 @@ get_header(); ?>
 </section>
 
 <!-- ============================================================
-     07  TORTAS CLUB
-     La unica banda grande en maiz de toda la home. Si el color se
-     repite, deja de ser una senal.
-     TODO: el campo de celular no se publica hasta cerrar el registro
-     A2P 10DLC (pendiente del brief).
-     ============================================================ -->
-<section class="relative isolate overflow-hidden bg-maiz-300 py-16 text-carbon-400 lg:py-24">
-  <!-- Mismas facetas que la seccion de cierre, en version clara.
-       Los rombos van en maiz-400, un paso sobre el fondo, y las lineas de
-       acento en carbon con alfa baja: sobre amarillo el olivo se ensucia. -->
-  <div
-    class="tm-facets [--tm-facet-bg:var(--color-maiz-300)] [--tm-facet-glow:color-mix(in_srgb,var(--color-hueso-100)_25%,transparent)] [--tm-facet-line:color-mix(in_srgb,var(--color-carbon-400)_8%,transparent)] [--tm-facet-shape:var(--color-maiz-400)]"
-    aria-hidden="true"
-  ></div>
-
-  <div class="relative z-10 mx-auto grid max-w-7xl gap-10 px-4 sm:px-6 lg:grid-cols-2 lg:items-center">
-    <div>
-      <p class="tm-eyebrow">Tortas Club</p>
-      <h2 class="mt-4 font-display text-3xl leading-tight sm:text-4xl">
-        Eat here often? Start getting paid for it
-      </h2>
-      <p class="mt-5 max-w-lg text-lg">
-        Points on every order, a free torta on your birthday, and first word on
-        new items and specials. Free to join, takes about twenty seconds.
-      </p>
-    </div>
-
-    <div class="rounded-2xl bg-carbon-400 p-6 text-hueso-100 sm:p-8">
-      <div id="tm-club-form"></div>
-
-      <noscript>
-        <p class="text-sm">
-          Sign up at the counter on your next visit, or call your closest shop.
-        </p>
-      </noscript>
-    </div>
-  </div>
-</section>
-
-<!-- ============================================================
      08  RESENAS
      ============================================================ -->
 <section class="bg-hueso-200 py-16 lg:py-24">
@@ -407,19 +262,13 @@ get_header(); ?>
     </h2>
     <p class="mt-3 text-carbon-300">Real reviews from our four shops.</p>
 
-    <?php if (!empty($tm_reviews)) : ?>
-      <ul class="mt-12 grid gap-6 lg:grid-cols-3">
-        <?php foreach ($tm_reviews as $tm_review) : ?>
-          <li class="rounded-xl border border-hueso-400 bg-hueso-100 p-6">
-            <p class="text-carbon-400"><?php echo esc_html($tm_review['text']); ?></p>
-            <p class="mt-4 text-sm font-semibold text-carbon-400">
-              <?php echo esc_html($tm_review['name']); ?>
-            </p>
-            <p class="text-sm text-carbon-300"><?php echo esc_html($tm_review['location']); ?></p>
-          </li>
-        <?php endforeach; ?>
-      </ul>
-    <?php endif; ?>
+    <!-- Widget de Trustindex (plugin wp-reviews-plugin-for-google), jala
+         las resenas de Google directo, asi que no hay testimonios a mano
+         que mantener ni rotar aca. no-registration=google: no pide que el
+         negocio se registre en Trustindex, solo lee lo publico. -->
+    <div class="mt-12">
+      <?php echo do_shortcode('[trustindex no-registration=google]'); ?>
+    </div>
 
     <div class="mt-12 rounded-xl bg-hueso-300 p-6 sm:flex sm:items-center sm:justify-between sm:gap-6">
       <p class="max-w-xl text-carbon-400">
@@ -439,6 +288,15 @@ get_header(); ?>
      09  INSTAGRAM
      ============================================================ -->
 <section class="tm-tiles py-16 lg:py-24">
+  <?php if ($tm_img_bg) : ?>
+    <img
+      src="<?php echo esc_url($tm_img_bg); ?>"
+      alt=""
+      aria-hidden="true"
+      loading="lazy"
+      class="tm-tiles__bg"
+    >
+  <?php endif; ?>
   <div class="mx-auto max-w-7xl px-4 sm:px-6">
     <div class="sm:flex sm:items-end sm:justify-between sm:gap-6">
       <div>
@@ -459,8 +317,12 @@ get_header(); ?>
       <?php
         $tm_ig = array($tm_img_ig_1, $tm_img_ig_2, $tm_img_ig_3, $tm_img_ig_4, $tm_img_ig_5, $tm_img_ig_6);
 
-        foreach ($tm_ig as $tm_ig_image) : ?>
-        <li class="tm-placeholder aspect-square overflow-hidden rounded-lg">
+        foreach ($tm_ig as $tm_ig_index => $tm_ig_image) : ?>
+        <li
+          data-tm-reveal="top"
+          style="transition-delay: <?php echo esc_attr($tm_ig_index * 0.07); ?>s"
+          class="tm-placeholder aspect-square overflow-hidden rounded-lg"
+        >
           <?php if ($tm_ig_image) : ?>
             <img
               src="<?php echo esc_url($tm_ig_image); ?>"
@@ -476,10 +338,170 @@ get_header(); ?>
 </section>
 
 <!-- ============================================================
-     10  TRABAJA CON NOSOTROS
-     Banda compacta de una linea. No merece mas espacio en la home.
+     04  HECHO AL MOMENTO
      ============================================================ -->
-<section class="bg-olivo-300 py-8">
+<section class="bg-hueso-200">
+  <div class="grid lg:grid-cols-2">
+    <div data-tm-reveal="left" class="tm-placeholder min-h-64 lg:min-h-[32rem]">
+      <?php if ($tm_img_fresh) : ?>
+        <img
+          src="<?php echo esc_url($tm_img_fresh); ?>"
+          alt="Bread going on the grill"
+          loading="lazy"
+          class="h-full w-full object-cover"
+        >
+      <?php endif; ?>
+    </div>
+
+    <div data-tm-reveal="right" class="relative overflow-hidden flex items-center justify-center bg-hueso-200 px-4 py-16 text-center sm:px-10 lg:py-24">
+      <?php if ($tm_img_fresh_bg) : ?>
+        <img
+          src="<?php echo esc_url($tm_img_fresh_bg); ?>"
+          alt=""
+          aria-hidden="true"
+          loading="lazy"
+          class="absolute inset-0 h-full w-full object-cover"
+        >
+      <?php endif; ?>
+      <div class="relative z-10 max-w-lg rounded-2xl bg-hueso-100/90 p-8 shadow-xl backdrop-blur-sm">
+        <h2 class="font-display text-3xl leading-tight text-carbon-400 sm:text-4xl">
+          Every order made fresh
+        </h2>
+        <p class="mt-5 text-lg text-carbon-300">
+          Nothing sits under a lamp. The bread hits the grill when you order,
+          the fruit gets cut the same morning, and the sazón has not changed
+          since the year 2000. That is the whole trick, and there is no
+          shortcut to it.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     05  HISTORIA CORTA
+     TODO: copy provisional. Se reescribe con la historia real de la
+     familia (pendiente 02 del brief maestro).
+     ============================================================ -->
+<section class="bg-hueso-300">
+  <div class="grid lg:grid-cols-2">
+    <!-- Texto a la izquierda -->
+    <div data-tm-reveal="left" class="relative overflow-hidden flex items-center justify-center bg-carbon-400 px-4 py-16 text-center sm:px-10 lg:py-24">
+      <?php if ($tm_img_story_accent_tl) : ?>
+        <img
+          src="<?php echo esc_url($tm_img_story_accent_tl); ?>"
+          alt=""
+          aria-hidden="true"
+          loading="lazy"
+          class="pointer-events-none absolute -left-8 -top-8 hidden w-32 -rotate-6 opacity-20 lg:block xl:w-40"
+        >
+      <?php endif; ?>
+      <?php if ($tm_img_story_accent_tr) : ?>
+        <img
+          src="<?php echo esc_url($tm_img_story_accent_tr); ?>"
+          alt=""
+          aria-hidden="true"
+          loading="lazy"
+          class="pointer-events-none absolute -right-8 -top-8 hidden w-32 rotate-6 opacity-20 lg:block xl:w-40"
+        >
+      <?php endif; ?>
+      <?php if ($tm_img_story_accent_bl) : ?>
+        <img
+          src="<?php echo esc_url($tm_img_story_accent_bl); ?>"
+          alt=""
+          aria-hidden="true"
+          loading="lazy"
+          class="pointer-events-none absolute -bottom-8 -left-8 hidden w-40 opacity-20 lg:block xl:w-52"
+        >
+      <?php endif; ?>
+      <?php if ($tm_img_story_accent_br) : ?>
+        <img
+          src="<?php echo esc_url($tm_img_story_accent_br); ?>"
+          alt=""
+          aria-hidden="true"
+          loading="lazy"
+          class="pointer-events-none absolute -bottom-8 -right-8 hidden w-40 opacity-20 lg:block xl:w-52"
+        >
+      <?php endif; ?>
+      <div class="relative z-10 max-w-lg">
+        <p class="tm-eyebrow text-maiz-300">Since 2000</p>
+        <h2 class="mt-4 font-display text-3xl leading-tight text-hueso-100 sm:text-4xl">
+          One family, one recipe, four neighborhoods
+        </h2>
+        <p class="mt-5 text-lg text-hueso-100/80">
+          We opened one small shop in Phoenix with a family recipe and a lot of
+          nerve. Twenty five years later there are four of us across the west
+          Valley, and the recipe has not moved an inch. What grew was the number
+          of families who call this their spot.
+        </p>
+        <a href="/our-story" class="tm-btn tm-btn-ghost-light mt-8">Read our story</a>
+      </div>
+    </div>
+
+    <!-- Imagen a sangre, toda la mitad derecha.
+         En movil va debajo del texto, no encima: la historia es lo que
+         justifica la foto, no al reves. -->
+    <div data-tm-reveal="right" class="tm-placeholder order-last min-h-64 lg:min-h-[32rem]">
+      <?php if ($tm_img_story) : ?>
+        <img
+          src="<?php echo esc_url($tm_img_story); ?>"
+          alt="The family behind Tortas Manantial"
+          loading="lazy"
+          class="h-full w-full object-cover"
+        >
+      <?php endif; ?>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     07  TORTAS CLUB
+     La unica banda grande en maiz de toda la home. Si el color se
+     repite, deja de ser una senal.
+     TODO: el campo de celular no se publica hasta cerrar el registro
+     A2P 10DLC (pendiente del brief).
+     ============================================================ -->
+<section class="relative isolate overflow-hidden bg-maiz-300 py-16 text-carbon-400 lg:py-24">
+  <?php if ($tm_img_club_bg) : ?>
+    <img
+      src="<?php echo esc_url($tm_img_club_bg); ?>"
+      alt=""
+      class="absolute inset-0 h-full w-full object-cover"
+      loading="lazy"
+    >
+  <?php endif; ?>
+
+  <div class="relative z-10 mx-auto grid max-w-7xl gap-10 px-4 sm:px-6 lg:grid-cols-2 lg:items-center">
+    <div data-tm-reveal="left" class="rounded-2xl bg-hueso-100/90 p-8 shadow-xl backdrop-blur-sm">
+      <p class="tm-eyebrow">Tortas Club</p>
+      <h2 class="mt-4 font-display text-3xl leading-tight sm:text-4xl">
+        Eat here often? Start getting paid for it
+      </h2>
+      <p class="mt-5 max-w-lg text-lg">
+        Points on every order, a free torta on your birthday, and first word on
+        new items and specials. Free to join, takes about twenty seconds.
+      </p>
+    </div>
+
+    <div data-tm-reveal="right" class="tm-levitate rounded-2xl bg-carbon-400 p-6 text-hueso-100 sm:p-8">
+      <div id="tm-club-form"></div>
+
+      <noscript>
+        <p class="text-sm">
+          Sign up at the counter on your next visit, or call your closest shop.
+        </p>
+      </noscript>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     10  TRABAJA CON NOSOTROS
+     Degradado de hoja de palmera (.tm-header-leaves). El navbar lo probo
+     y volvio a fondo claro (ver .tm-header-solid en index.css), esta
+     banda se queda con el verde.
+     ============================================================ -->
+<section class="tm-header-leaves py-14">
   <div class="mx-auto flex max-w-7xl flex-col gap-5 px-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
     <p class="text-lg font-bold text-hueso-100">
       We are hiring at all four locations. No experience needed for most roles.
@@ -495,8 +517,26 @@ get_header(); ?>
      Las preguntas pendientes de confirmar con el cliente estan
      listadas en el TODO de abajo, no publicadas a medias.
      ============================================================ -->
-<section class="bg-hueso-200 py-16 lg:py-24">
-  <div class="mx-auto max-w-3xl px-4 sm:px-6">
+<section class="relative overflow-hidden bg-hueso-200 py-16 lg:py-24">
+  <?php if ($tm_img_faq_left) : ?>
+    <img
+      src="<?php echo esc_url($tm_img_faq_left); ?>"
+      alt=""
+      aria-hidden="true"
+      loading="lazy"
+      class="pointer-events-none absolute left-0 top-1/2 hidden w-36 -translate-y-1/2 xl:block xl:w-48"
+    >
+  <?php endif; ?>
+  <?php if ($tm_img_faq_right) : ?>
+    <img
+      src="<?php echo esc_url($tm_img_faq_right); ?>"
+      alt=""
+      aria-hidden="true"
+      loading="lazy"
+      class="pointer-events-none absolute right-0 top-1/2 hidden w-36 -translate-y-1/2 xl:block xl:w-48"
+    >
+  <?php endif; ?>
+  <div class="relative z-10 mx-auto max-w-3xl px-4 sm:px-6">
     <h2 class="font-display text-3xl leading-tight text-carbon-400 sm:text-4xl">
       Questions we get a lot
     </h2>
@@ -612,27 +652,35 @@ get_header(); ?>
      Si el precio directo no es igual al del local, cambiar por
      "No third party fees" y quitar la promesa de precio.
      ============================================================ -->
-<section class="relative isolate overflow-hidden bg-carbon-400 py-16 text-hueso-100">
-  <!-- Fondo de facetas. Todo en CSS, sin nodos extra. -->
-  <div class="tm-facets" aria-hidden="true"></div>
+<section class="relative isolate overflow-hidden bg-maiz-300 py-16 text-carbon-400">
+  <?php if ($tm_img_facets_bg) : ?>
+    <img
+      src="<?php echo esc_url($tm_img_facets_bg); ?>"
+      alt=""
+      class="absolute inset-0 h-full w-full object-cover"
+      loading="lazy"
+    >
+  <?php endif; ?>
 
   <div class="relative z-10 mx-auto max-w-7xl px-4 sm:px-6">
-    <p class="tm-eyebrow text-maiz-300">Order here, not there</p>
+    <div class="rounded-2xl bg-hueso-100/90 p-8 shadow-xl backdrop-blur-sm">
+      <p class="tm-eyebrow">Order here, not there</p>
 
-    <div class="mt-6 grid gap-6 sm:grid-cols-3">
-      <p class="text-lg font-semibold">Same price, no app markup</p>
-      <p class="text-lg font-semibold">Ready faster, straight from our kitchen</p>
-      <p class="text-lg font-semibold">Every order earns Tortas Club points</p>
+      <div class="mt-6 grid gap-6 sm:grid-cols-3">
+        <p class="text-lg font-semibold">Same price, no app markup</p>
+        <p class="text-lg font-semibold">Ready faster, straight from our kitchen</p>
+        <p class="text-lg font-semibold">Every order earns Tortas Club points</p>
+      </div>
+
+      <a
+        href="<?php echo esc_url($tm_order_url); ?>"
+        target="_blank" rel="noopener"
+        data-tm-order="default" data-tm-channel="toast"
+        class="tm-btn tm-btn-relief tm-btn-primary mt-8"
+      >
+        Start your order
+      </a>
     </div>
-
-    <a
-      href="<?php echo esc_url($tm_order_url); ?>"
-      target="_blank" rel="noopener"
-      data-tm-order="default" data-tm-channel="toast"
-      class="tm-btn tm-btn-relief tm-btn-primary tm-btn-primary-on-dark mt-8"
-    >
-      Start your order
-    </a>
   </div>
 </section>
 

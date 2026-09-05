@@ -4,6 +4,7 @@ import Navbar from "./scripts/Navbar";
 import Footer from "./scripts/Footer";
 import ClubForm from "./scripts/ClubForm";
 import CareersForm from "./scripts/CareersForm";
+import initReveal from "./scripts/reveal";
 
 /**
  * Montaje de los componentes React del tema.
@@ -38,3 +39,6 @@ const careersMount = document.querySelector("#tm-careers-form");
 if (careersMount) {
   ReactDOM.createRoot(careersMount).render(<CareersForm />);
 }
+
+// Revelado con slide-in de los bloques marcados con [data-tm-reveal].
+initReveal();

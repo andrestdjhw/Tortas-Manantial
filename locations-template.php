@@ -10,20 +10,11 @@
    MEDIOS DE ESTA PLANTILLA
    ========================================================================== */
 
-/**
- * Imagenes del slideshow del hero. El orden manda: la primera es la que se
- * ve al cargar, asi que conviene que sea la mas fuerte.
- * Si cambia la cantidad hay que ajustar los delays de abajo y los
- * porcentajes de tm-crossfade en index.css.
- */
-$tm_hero_slides = array(
-  tm_upload('2026/08/LocationsHero1.webp'),
-  tm_upload('2026/08/LocationsHero2.webp'),
-  tm_upload('2026/08/LocationsHero3.webp'),
-  tm_upload('2026/08/LocationsHero4.webp'),
-);
+$tm_img_hero = tm_upload('2026/09/LocationsMejorada.png');
 
 $tm_locations = tm_locations();
+
+$tm_img_bg = tm_upload('2026/09/FondoVerde.png'); // Fondo de las secciones .tm-tiles.
 
 get_header(); ?>
 
@@ -32,31 +23,14 @@ get_header(); ?>
      Media pantalla, imagen con scrim. El video se reserva para la home.
      ============================================================ -->
 <section data-tm-hero class="relative flex min-h-[60svh] items-end overflow-hidden bg-carbon-400">
-  <div class="tm-slideshow" aria-hidden="true">
-    <?php
-      $tm_slide_count = count($tm_hero_slides);
-      $tm_cycle       = 28; // segundos, igual que la animacion en index.css
-
-      foreach ($tm_hero_slides as $tm_index => $tm_slide) :
-        if (!$tm_slide) {
-          continue;
-        }
-
-        // Cada capa arranca un turno despues de la anterior
-        $tm_delay = ($tm_cycle / $tm_slide_count) * $tm_index; ?>
-        <img
-          src="<?php echo esc_url($tm_slide); ?>"
-          alt=""
-          class="tm-slideshow__img"
-          style="animation-delay: <?php echo esc_attr($tm_delay); ?>s;"
-          <?php if ($tm_index === 0) : ?>
-            fetchpriority="high"
-          <?php else : ?>
-            loading="lazy"
-          <?php endif; ?>
-        >
-      <?php endforeach; ?>
-  </div>
+  <?php if ($tm_img_hero) : ?>
+    <img
+      src="<?php echo esc_url($tm_img_hero); ?>"
+      alt=""
+      class="absolute inset-0 h-full w-full object-cover"
+      fetchpriority="high"
+    >
+  <?php endif; ?>
 
   <div class="absolute inset-0 bg-carbon-500/60" aria-hidden="true"></div>
 
@@ -74,8 +48,15 @@ get_header(); ?>
 </section>
 
 <!-- Migas de pan -->
-<nav class="tm-weave" aria-label="Breadcrumb">
-  <ol class="mx-auto flex max-w-7xl gap-2 px-4 py-3 text-xs text-carbon-200 sm:px-6">
+<nav class="relative bg-carbon-400" aria-label="Breadcrumb">
+  <img
+    src="<?php echo esc_url(tm_upload('2026/09/06-Coco-Graphics-scaled.png')); ?>"
+    alt=""
+    aria-hidden="true"
+    loading="lazy"
+    class="pointer-events-none absolute -left-2 top-1/2 hidden w-14 -translate-y-1/2 -rotate-3 opacity-20 sm:block"
+  >
+  <ol class="relative mx-auto flex max-w-7xl gap-2 px-4 py-3 text-xs text-carbon-200 sm:px-6">
     <li><a href="<?php echo esc_url(home_url('/')); ?>" class="hover:text-maiz-300">Home</a></li>
     <li aria-hidden="true">/</li>
     <li class="text-hueso-100" aria-current="page">Locations</li>
@@ -83,24 +64,49 @@ get_header(); ?>
 </nav>
 
 <!-- ============================================================
+     L0b  CARRUSEL DE PRODUCTOS
+     Parcial compartido, ver template-parts/favorites-carousel.php.
+     Justo antes del CTA de cierre de la pagina (Find my shop, dentro
+     de L1).
+     ============================================================ -->
+<?php get_template_part('template-parts/favorites-carousel'); ?>
+
+<!-- ============================================================
      L1  LOS CUATRO LOCALES
      ============================================================ -->
 <section class="tm-tiles py-16 lg:py-24">
+  <?php if ($tm_img_bg) : ?>
+    <img
+      src="<?php echo esc_url($tm_img_bg); ?>"
+      alt=""
+      aria-hidden="true"
+      loading="lazy"
+      class="tm-tiles__bg"
+    >
+  <?php endif; ?>
   <div class="mx-auto max-w-7xl px-4 sm:px-6">
-    <ul class="grid gap-8 lg:grid-cols-2">
-      <?php foreach ($tm_locations as $tm_location) :
-        $tm_status = tm_location_status($tm_location); ?>
-        <li class="flex flex-col overflow-hidden rounded-xl border border-hueso-400 bg-hueso-100 shadow-sm">
+    <!-- Zig-zag: una columna, cada tarjeta partida en mapa/texto, alternando
+         de lado. El mapa entra por el lado donde queda y el texto por el
+         contrario, asi el layout y el revelado cuentan la misma historia. -->
+    <ul class="grid gap-8">
+      <?php foreach ($tm_locations as $tm_location_index => $tm_location) :
+        $tm_status  = tm_location_status($tm_location);
+        $tm_flipped = $tm_location_index % 2 === 1; ?>
+        <li class="flex flex-col overflow-hidden rounded-xl border border-hueso-400 bg-hueso-100 shadow-sm lg:flex-row <?php echo $tm_flipped ? 'lg:flex-row-reverse' : ''; ?>">
           <iframe
+            data-tm-reveal="<?php echo $tm_flipped ? 'right' : 'left'; ?>"
             src="<?php echo esc_url(tm_map_embed($tm_location)); ?>"
             title="Map of Tortas Manantial, <?php echo esc_attr($tm_location['name']['en']); ?>"
-            class="tm-placeholder aspect-video w-full border-0"
+            class="tm-placeholder aspect-video w-full border-0 lg:aspect-auto lg:w-2/5 lg:shrink-0"
             loading="lazy"
             referrerpolicy="no-referrer-when-downgrade"
             allowfullscreen
           ></iframe>
 
-          <div class="flex flex-1 flex-col p-6">
+          <div
+            data-tm-reveal="<?php echo $tm_flipped ? 'left' : 'right'; ?>"
+            class="flex flex-1 flex-col justify-center p-6 lg:p-8"
+          >
             <h2 class="font-display text-2xl text-carbon-400">
               <a href="<?php echo esc_url($tm_location['pageUrl']); ?>" class="hover:text-olivo-400">
                 <?php echo esc_html($tm_location['name']['en']); ?>

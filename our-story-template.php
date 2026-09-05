@@ -16,7 +16,7 @@
    MEDIOS DE ESTA PLANTILLA
    ========================================================================== */
 
-$tm_img_hero    = tm_upload('2026/08/TMFachada.webp');
+$tm_img_hero    = tm_upload('2026/09/OurStory.png');
 $tm_img_recipe  = tm_upload('2026/08/Tortas.webp');
 $tm_img_family  = ''; // TODO: foto de la familia o del equipo
 $tm_img_archive = ''; // TODO: material de archivo del negocio, si existe.
@@ -24,6 +24,9 @@ $tm_img_archive = ''; // TODO: material de archivo del negocio, si existe.
                       // negro se convierte en un activo de marca.
 
 $tm_locations = tm_locations();
+
+$tm_img_bg = tm_upload('2026/09/FondoVerde.png'); // Fondo de las secciones .tm-tiles.
+$tm_img_facets_bg = tm_upload('2026/09/TortasFondo.png'); // Fondo de la barra de cierre (antes tm-facets).
 
 get_header(); ?>
 
@@ -52,8 +55,15 @@ get_header(); ?>
 </section>
 
 <!-- Migas de pan -->
-<nav class="tm-weave" aria-label="Breadcrumb">
-  <ol class="mx-auto flex max-w-7xl gap-2 px-4 py-3 text-xs text-carbon-200 sm:px-6">
+<nav class="relative bg-carbon-400" aria-label="Breadcrumb">
+  <img
+    src="<?php echo esc_url(tm_upload('2026/09/22-Coco-Graphics-scaled.png')); ?>"
+    alt=""
+    aria-hidden="true"
+    loading="lazy"
+    class="pointer-events-none absolute -left-2 top-1/2 hidden w-14 -translate-y-1/2 rotate-3 opacity-20 sm:block"
+  >
+  <ol class="relative mx-auto flex max-w-7xl gap-2 px-4 py-3 text-xs text-carbon-200 sm:px-6">
     <li><a href="<?php echo esc_url(home_url('/')); ?>" class="hover:text-maiz-300">Home</a></li>
     <li aria-hidden="true">/</li>
     <li class="text-hueso-100" aria-current="page">Our Story</li>
@@ -66,7 +76,7 @@ get_header(); ?>
      del sitio y la que mas lo necesita.
      ============================================================ -->
 <section class="tm-glow py-16 lg:py-24">
-  <div class="mx-auto max-w-2xl px-4 sm:px-6">
+  <div data-tm-reveal="top" class="mx-auto max-w-2xl px-4 sm:px-6">
     <p class="font-display text-2xl leading-snug text-carbon-400 sm:text-3xl">
       In the year 2000 we opened one shop in Phoenix. The plan was simple and a
       little naive: make the torta the way it is made at home, charge a fair
@@ -80,7 +90,7 @@ get_header(); ?>
      ============================================================ -->
 <section class="bg-hueso-200">
   <div class="grid lg:grid-cols-2">
-    <div class="tm-placeholder min-h-64 lg:min-h-[34rem]">
+    <div data-tm-reveal="left" class="tm-placeholder min-h-64 lg:min-h-[34rem]">
       <?php if ($tm_img_recipe) : ?>
         <img
           src="<?php echo esc_url($tm_img_recipe); ?>"
@@ -91,7 +101,7 @@ get_header(); ?>
       <?php endif; ?>
     </div>
 
-    <div class="flex items-center px-4 py-16 sm:px-10 lg:py-24">
+    <div data-tm-reveal="right" class="flex items-center px-4 py-16 sm:px-10 lg:py-24">
       <div class="max-w-lg">
         <h2 class="font-display text-3xl leading-tight text-carbon-400 sm:text-4xl">
           The recipe did not change. The city did.
@@ -112,7 +122,16 @@ get_header(); ?>
      S3  QUE QUEREMOS DECIR CON FRESCO
      ============================================================ -->
 <section class="tm-tiles py-16 lg:py-24">
-  <div class="mx-auto max-w-2xl px-4 sm:px-6">
+  <?php if ($tm_img_bg) : ?>
+    <img
+      src="<?php echo esc_url($tm_img_bg); ?>"
+      alt=""
+      aria-hidden="true"
+      loading="lazy"
+      class="tm-tiles__bg"
+    >
+  <?php endif; ?>
+  <div data-tm-reveal="top" class="mx-auto max-w-2xl px-4 sm:px-6">
     <h2 class="font-display text-3xl leading-tight text-carbon-400 sm:text-4xl">
       What we mean by fresh
     </h2>
@@ -143,7 +162,7 @@ get_header(); ?>
      ============================================================ -->
 <section class="bg-hueso-300">
   <div class="grid lg:grid-cols-2">
-    <div class="tm-glow flex items-center px-4 py-16 [--tm-glow-color:var(--color-maiz-200)] sm:px-10 lg:py-24">
+    <div data-tm-reveal="left" class="tm-glow flex items-center px-4 py-16 [--tm-glow-color:var(--color-maiz-200)] sm:px-10 lg:py-24">
       <div class="max-w-lg">
         <h2 class="font-display text-3xl leading-tight text-carbon-400 sm:text-4xl">
           Made for the people who made us
@@ -156,7 +175,7 @@ get_header(); ?>
       </div>
     </div>
 
-    <div class="tm-placeholder order-last min-h-64 lg:min-h-[34rem]">
+    <div data-tm-reveal="right" class="tm-placeholder order-last min-h-64 lg:min-h-[34rem]">
       <?php if ($tm_img_family) : ?>
         <img
           src="<?php echo esc_url($tm_img_family); ?>"
@@ -170,24 +189,40 @@ get_header(); ?>
 </section>
 
 <!-- ============================================================
+     S4b  CARRUSEL DE PRODUCTOS
+     Parcial compartido, ver template-parts/favorites-carousel.php.
+     Justo antes del CTA de cierre de la pagina.
+     ============================================================ -->
+<?php get_template_part('template-parts/favorites-carousel'); ?>
+
+<!-- ============================================================
      S5  REENGANCHE
      Pagina narrativa, asi que cierra con el club y no con el pedido.
      ============================================================ -->
-<section class="relative isolate overflow-hidden bg-carbon-400 py-16 text-hueso-100 lg:py-20">
-  <div class="tm-facets" aria-hidden="true"></div>
+<section class="relative isolate overflow-hidden bg-maiz-300 py-16 text-carbon-400 lg:py-20">
+  <?php if ($tm_img_facets_bg) : ?>
+    <img
+      src="<?php echo esc_url($tm_img_facets_bg); ?>"
+      alt=""
+      class="absolute inset-0 h-full w-full object-cover"
+      loading="lazy"
+    >
+  <?php endif; ?>
 
   <div class="relative z-10 mx-auto max-w-7xl px-4 sm:px-6">
-    <h2 class="max-w-xl font-display text-3xl leading-tight sm:text-4xl">
-      Come see what twenty five years tastes like
-    </h2>
+    <div class="rounded-2xl bg-hueso-100/90 p-8 shadow-xl backdrop-blur-sm">
+      <h2 class="max-w-xl font-display text-3xl leading-tight sm:text-4xl">
+        Come see what twenty five years tastes like
+      </h2>
 
-    <div class="mt-8 flex flex-wrap items-center gap-3">
-      <a href="/menu" class="tm-btn tm-btn-relief tm-btn-primary tm-btn-primary-on-dark">
-        See the menu
-      </a>
-      <a href="/locations" class="tm-btn tm-btn-ghost-light">
-        Find your location
-      </a>
+      <div class="mt-8 flex flex-wrap items-center gap-3">
+        <a href="/menu" class="tm-btn tm-btn-relief tm-btn-primary">
+          See the menu
+        </a>
+        <a href="/locations" class="tm-btn tm-btn-ghost-dark">
+          Find your location
+        </a>
+      </div>
     </div>
   </div>
 </section>

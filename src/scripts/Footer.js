@@ -39,10 +39,8 @@ const COPY = {
     failed: "Something went wrong on our end. Try again in a moment.",
     tagline: "Family owned in Phoenix since 2000.",
     legal: [
-      { label: "Privacy Policy", href: "/privacy" },
+      { label: "Privacy Policy", href: "/privacy-policy" },
       { label: "Terms", href: "/terms" },
-      { label: "SMS Terms", href: "/sms-terms" },
-      { label: "Accessibility", href: "/accessibility" },
     ],
     rights: "All rights reserved.",
     siteBy: "Site by",
@@ -74,10 +72,8 @@ const COPY = {
     failed: "Algo falló de nuestro lado. Inténtalo en un momento.",
     tagline: "Negocio de familia en Phoenix desde el 2000.",
     legal: [
-      { label: "Aviso de Privacidad", href: "/privacy" },
+      { label: "Aviso de Privacidad", href: "/privacy-policy" },
       { label: "Términos", href: "/terms" },
-      { label: "Términos SMS", href: "/sms-terms" },
-      { label: "Accesibilidad", href: "/accessibility" },
     ],
     rights: "Todos los derechos reservados.",
     siteBy: "Sitio por",
@@ -100,6 +96,7 @@ function getConfig() {
     lang: cfg.lang === "es" ? "es" : "en",
     restUrl: cfg.restUrl || "",
     nonce: cfg.nonce || "",
+    footerGraphics: Array.isArray(cfg.footerGraphics) ? cfg.footerGraphics : [],
   };
 }
 
@@ -246,6 +243,29 @@ function ClubSignup({ t, cfg }) {
 }
 
 /* ------------------------------------------------------------------ */
+/*  Grafico de apoyo, uno por esquina                                  */
+/*  Puramente decorativos: aria-hidden, sin pointer-events, y ocultos  */
+/*  hasta lg, que es donde el footer tiene margen de sobra para no     */
+/*  pisar las columnas.                                                */
+/* ------------------------------------------------------------------ */
+
+function CornerGraphic({ src, className }) {
+  if (!src) {
+    return null;
+  }
+
+  return (
+    <img
+      src={src}
+      alt=""
+      aria-hidden="true"
+      loading="lazy"
+      className={`pointer-events-none absolute hidden w-32 opacity-15 lg:block xl:w-40 ${className}`}
+    />
+  );
+}
+
+/* ------------------------------------------------------------------ */
 /*  Footer                                                             */
 /* ------------------------------------------------------------------ */
 
@@ -261,8 +281,13 @@ export default function Footer() {
   ].filter((item) => Boolean(item.href));
 
   return (
-    <footer className="tm-weave text-hueso-100">
-      <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:py-16">
+    <footer className="relative overflow-hidden bg-carbon-400 text-hueso-100">
+      <CornerGraphic src={cfg.footerGraphics[0]} className="left-0 top-0" />
+      <CornerGraphic src={cfg.footerGraphics[1]} className="right-0 top-0" />
+      <CornerGraphic src={cfg.footerGraphics[2]} className="bottom-0 left-0" />
+      <CornerGraphic src={cfg.footerGraphics[3]} className="bottom-0 right-0" />
+
+      <div className="relative z-10 mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:py-16">
         <div className="grid gap-0 lg:grid-cols-4 lg:gap-10">
           {/* Ubicaciones. Enlazan a la pagina del local, nunca a Toast:
               la pagina de ubicacion es la que rankea. */}

@@ -267,16 +267,26 @@ function tm_load_assets() {
    * (pendiente 04 del brief maestro).
    */
   wp_localize_script('tm-main-js', 'tmData', array(
-    'homeUrl'    => home_url('/'),
-    'logo'       => $tm_img['logo'],
-    'logoLight'  => $tm_img['logo_neg'],
-    'brand'      => tm_brand(),
-    'locations'  => tm_locations(),
-    'orderUrl'   => tm_default_order_url(),
-    'lang'       => substr(get_locale(), 0, 2) === 'es' ? 'es' : 'en',
-    'altLangUrl' => '',
-    'restUrl'    => esc_url_raw(rest_url('tm/v1/')),
-    'nonce'      => wp_create_nonce('wp_rest'),
+    'homeUrl'        => home_url('/'),
+    'logo'           => $tm_img['logo'],
+    'logoLight'      => $tm_img['logo_neg'],
+    'brand'          => tm_brand(),
+    'locations'      => tm_locations(),
+    'orderUrl'       => tm_default_order_url(),
+    'lang'           => substr(get_locale(), 0, 2) === 'es' ? 'es' : 'en',
+    'altLangUrl'     => '',
+    'restUrl'        => esc_url_raw(rest_url('tm/v1/')),
+    'nonce'          => wp_create_nonce('wp_rest'),
+
+    // Graficos de apoyo del footer, uno por esquina. El footer es React y
+    // tm_upload() es PHP, asi que la unica forma de que el componente los
+    // vea es mandarlos por aca, igual que el logo.
+    'footerGraphics' => array(
+      tm_upload('2026/09/06-Coco-Graphics-scaled.png'),
+      tm_upload('2026/09/23-Coco-Graphics-scaled.png'),
+      tm_upload('2026/09/22-Coco-Graphics-scaled.png'),
+      tm_upload('2026/09/21-Coco-Graphics-scaled.png'),
+    ),
   ));
 }
 

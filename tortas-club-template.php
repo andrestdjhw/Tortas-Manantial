@@ -15,7 +15,14 @@
    MEDIOS DE ESTA PLANTILLA
    ========================================================================== */
 
-$tm_img_hero = tm_upload('2026/08/Tortas.webp');
+$tm_img_hero = tm_upload('2026/09/TortasMejorada.png');
+
+$tm_img_bg = tm_upload('2026/09/FondoVerde.png'); // Fondo de las secciones .tm-tiles.
+
+// Graficos de apoyo a los costados del FAQ. La derecha reusa el mismo
+// archivo que la izquierda del FAQ de la home, espejado.
+$tm_img_faq_left  = tm_upload('2026/09/05-Coco-Graphics-scaled.png');
+$tm_img_faq_right = tm_upload('2026/09/02-Coco-Graphics-scaled.png');
 
 get_header(); ?>
 
@@ -59,8 +66,15 @@ get_header(); ?>
 </section>
 
 <!-- Migas de pan -->
-<nav class="tm-weave" aria-label="Breadcrumb">
-  <ol class="mx-auto flex max-w-7xl gap-2 px-4 py-3 text-xs text-carbon-200 sm:px-6">
+<nav class="relative bg-carbon-400" aria-label="Breadcrumb">
+  <img
+    src="<?php echo esc_url(tm_upload('2026/09/23-Coco-Graphics-scaled.png')); ?>"
+    alt=""
+    aria-hidden="true"
+    loading="lazy"
+    class="pointer-events-none absolute -right-2 top-1/2 hidden w-14 -translate-y-1/2 rotate-6 opacity-20 sm:block"
+  >
+  <ol class="relative mx-auto flex max-w-7xl gap-2 px-4 py-3 text-xs text-carbon-200 sm:px-6">
     <li><a href="<?php echo esc_url(home_url('/')); ?>" class="hover:text-maiz-300">Home</a></li>
     <li aria-hidden="true">/</li>
     <li class="text-hueso-100" aria-current="page">Tortas Club</li>
@@ -71,12 +85,21 @@ get_header(); ?>
      C1  COMO FUNCIONA
      ============================================================ -->
 <section class="tm-tiles py-16 lg:py-24">
+  <?php if ($tm_img_bg) : ?>
+    <img
+      src="<?php echo esc_url($tm_img_bg); ?>"
+      alt=""
+      aria-hidden="true"
+      loading="lazy"
+      class="tm-tiles__bg"
+    >
+  <?php endif; ?>
   <div class="mx-auto max-w-7xl px-4 sm:px-6">
     <h2 class="font-display text-3xl leading-tight text-carbon-400 sm:text-4xl">
       How it works
     </h2>
 
-    <ol class="mt-12 grid gap-6 lg:grid-cols-3">
+    <ol data-tm-reveal="top" class="tm-cards-3d mt-12 grid gap-6 lg:grid-cols-3">
       <?php
         $tm_steps = array(
           array('Sign up in twenty seconds', 'Name, email, and the shop you visit most. That is it.'),
@@ -85,12 +108,14 @@ get_header(); ?>
         );
 
         foreach ($tm_steps as $tm_index => $tm_step) : ?>
-        <li class="rounded-xl border border-hueso-400 bg-hueso-100 p-6 shadow-sm">
-          <p class="font-display text-4xl text-maiz-400"><?php echo esc_html($tm_index + 1); ?></p>
-          <h3 class="mt-3 font-display text-xl text-carbon-400">
-            <?php echo esc_html($tm_step[0]); ?>
-          </h3>
-          <p class="mt-2 text-carbon-300"><?php echo esc_html($tm_step[1]); ?></p>
+        <li class="tm-card-3d relative overflow-hidden rounded-xl border border-hueso-400 bg-hueso-100 p-6 shadow-xl shadow-carbon-500/10">
+          <div class="tm-card-3d__lift">
+            <p class="font-display text-4xl text-maiz-400"><?php echo esc_html($tm_index + 1); ?></p>
+            <h3 class="mt-3 font-display text-xl text-carbon-400">
+              <?php echo esc_html($tm_step[0]); ?>
+            </h3>
+            <p class="mt-2 text-carbon-300"><?php echo esc_html($tm_step[1]); ?></p>
+          </div>
         </li>
       <?php endforeach; ?>
     </ol>
@@ -103,12 +128,19 @@ get_header(); ?>
 </section>
 
 <!-- ============================================================
+     C1b  CARRUSEL DE PRODUCTOS
+     Parcial compartido, ver template-parts/favorites-carousel.php.
+     Justo antes del CTA de cierre de la pagina (el alta al club).
+     ============================================================ -->
+<?php get_template_part('template-parts/favorites-carousel'); ?>
+
+<!-- ============================================================
      C2  ALTA
      Mismo componente React que el bloque 07 de la home.
      ============================================================ -->
 <section class="bg-hueso-300 py-16 lg:py-24">
   <div class="mx-auto grid max-w-7xl gap-10 px-4 sm:px-6 lg:grid-cols-2 lg:items-center">
-    <div>
+    <div data-tm-reveal="left">
       <h2 class="font-display text-3xl leading-tight text-carbon-400 sm:text-4xl">
         Join the club
       </h2>
@@ -118,7 +150,7 @@ get_header(); ?>
       </p>
     </div>
 
-    <div class="rounded-2xl bg-carbon-400 p-6 text-hueso-100 sm:p-8">
+    <div data-tm-reveal="right" class="tm-levitate rounded-2xl bg-carbon-400 p-6 text-hueso-100 sm:p-8">
       <div id="tm-club-form"></div>
 
       <noscript>
@@ -133,8 +165,26 @@ get_header(); ?>
 <!-- ============================================================
      C3  PREGUNTAS DEL PROGRAMA
      ============================================================ -->
-<section class="bg-hueso-200 py-16 lg:py-24">
-  <div class="mx-auto max-w-3xl px-4 sm:px-6">
+<section class="relative overflow-hidden bg-hueso-200 py-16 lg:py-24">
+  <?php if ($tm_img_faq_left) : ?>
+    <img
+      src="<?php echo esc_url($tm_img_faq_left); ?>"
+      alt=""
+      aria-hidden="true"
+      loading="lazy"
+      class="pointer-events-none absolute left-0 top-1/2 hidden w-36 -translate-y-1/2 xl:block xl:w-48"
+    >
+  <?php endif; ?>
+  <?php if ($tm_img_faq_right) : ?>
+    <img
+      src="<?php echo esc_url($tm_img_faq_right); ?>"
+      alt=""
+      aria-hidden="true"
+      loading="lazy"
+      class="pointer-events-none absolute right-0 top-1/2 hidden w-36 -translate-y-1/2 scale-x-[-1] xl:block xl:w-48"
+    >
+  <?php endif; ?>
+  <div class="relative z-10 mx-auto max-w-3xl px-4 sm:px-6">
     <h2 class="font-display text-3xl leading-tight text-carbon-400 sm:text-4xl">
       About the program
     </h2>
@@ -153,10 +203,29 @@ get_header(); ?>
           'Can I use my points at any location?',
           'Yes. One account works across all four shops.',
         ),
+        array(
+          'Will you share my information with anyone else?',
+          'No. Your name and email are only used for the Tortas Club, never sold or shared.',
+        ),
+        array(
+          'Can I join if I do not live near a Tortas Manantial shop?',
+          'Yes, anyone can sign up. The rewards are just more useful if you visit one of our four shops.',
+        ),
+        array(
+          'Can I sign up more than once?',
+          'One account per person works best, so your points do not end up split across two signups.',
+        ),
+        array(
+          'What if I do not get a confirmation after signing up?',
+          'Check your spam folder first. If it is still missing, ask at your closest shop and we can confirm you are in.',
+        ),
       );
 
       /**
-       * TODO: agregar cuando el cliente confirme la mecanica.
+       * TODO BLOQUEANTE: estas se agregan recien cuando el cliente confirme
+       * la mecanica del programa (ver nota al inicio del archivo). No son
+       * preguntas de politica que se puedan contestar en generico, piden un
+       * numero o un mecanismo real:
        *   - How many points do I earn per dollar?
        *   - Do points expire?
        *   - How do I check my balance?
@@ -164,7 +233,7 @@ get_header(); ?>
        */
     ?>
 
-    <div class="mt-10 divide-y divide-hueso-400 border-y border-hueso-400">
+    <div data-tm-reveal="top" class="mt-10 divide-y divide-hueso-400 border-y border-hueso-400">
       <?php foreach ($tm_faqs as $tm_faq) : ?>
         <details class="group py-5">
           <summary class="flex cursor-pointer items-center justify-between gap-4 font-semibold text-carbon-400 marker:content-none">

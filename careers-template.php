@@ -13,6 +13,8 @@
 $tm_img_team = ''; // TODO: foto del equipo real, en el local, trabajando.
                    // Nada de stock: es lo que hace creible la pagina.
 
+$tm_img_bg = tm_upload('2026/09/FondoVerde.png'); // Fondo de las secciones .tm-tiles.
+
 $tm_locations = tm_locations();
 
 get_header(); ?>
@@ -48,8 +50,15 @@ get_header(); ?>
 </section>
 
 <!-- Migas de pan -->
-<nav class="tm-weave" aria-label="Breadcrumb">
-  <ol class="mx-auto flex max-w-7xl gap-2 px-4 py-3 text-xs text-carbon-200 sm:px-6">
+<nav class="relative bg-carbon-400" aria-label="Breadcrumb">
+  <img
+    src="<?php echo esc_url(tm_upload('2026/09/21-Coco-Graphics-scaled.png')); ?>"
+    alt=""
+    aria-hidden="true"
+    loading="lazy"
+    class="pointer-events-none absolute -right-2 top-1/2 hidden w-14 -translate-y-1/2 -rotate-6 opacity-20 sm:block"
+  >
+  <ol class="relative mx-auto flex max-w-7xl gap-2 px-4 py-3 text-xs text-carbon-200 sm:px-6">
     <li><a href="<?php echo esc_url(home_url('/')); ?>" class="hover:text-maiz-300">Home</a></li>
     <li aria-hidden="true">/</li>
     <li class="text-hueso-100" aria-current="page">Careers</li>
@@ -60,6 +69,15 @@ get_header(); ?>
      K1  LOS PUESTOS
      ============================================================ -->
 <section class="tm-tiles py-16 lg:py-24">
+  <?php if ($tm_img_bg) : ?>
+    <img
+      src="<?php echo esc_url($tm_img_bg); ?>"
+      alt=""
+      aria-hidden="true"
+      loading="lazy"
+      class="tm-tiles__bg"
+    >
+  <?php endif; ?>
   <div class="mx-auto max-w-7xl px-4 sm:px-6">
     <h2 class="font-display text-3xl leading-tight text-carbon-400 sm:text-4xl">
       What we hire for
@@ -78,8 +96,12 @@ get_header(); ?>
           array('Management', 'Running a shop: team, inventory and the day to day.'),
         );
 
-        foreach ($tm_roles as $tm_role) : ?>
-        <li class="rounded-xl border border-hueso-400 bg-hueso-100 p-6 shadow-sm">
+        foreach ($tm_roles as $tm_role_index => $tm_role) : ?>
+        <li
+          data-tm-reveal="top"
+          style="transition-delay: <?php echo esc_attr($tm_role_index * 0.1); ?>s"
+          class="rounded-xl border border-hueso-400 bg-hueso-100 p-6 shadow-sm"
+        >
           <h3 class="font-display text-xl text-carbon-400"><?php echo esc_html($tm_role[0]); ?></h3>
           <p class="mt-2 text-sm text-carbon-300"><?php echo esc_html($tm_role[1]); ?></p>
         </li>
@@ -106,8 +128,12 @@ get_header(); ?>
     </h2>
 
     <ul class="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-      <?php foreach ($tm_locations as $tm_location) : ?>
-        <li class="rounded-xl border border-hueso-400 bg-hueso-100 p-5">
+      <?php foreach ($tm_locations as $tm_location_index => $tm_location) : ?>
+        <li
+          data-tm-reveal="top"
+          style="transition-delay: <?php echo esc_attr($tm_location_index * 0.1); ?>s"
+          class="rounded-xl border border-hueso-400 bg-hueso-100 p-5"
+        >
           <h3 class="font-display text-lg text-carbon-400">
             <?php echo esc_html($tm_location['name']['en']); ?>
           </h3>
@@ -122,11 +148,18 @@ get_header(); ?>
 </section>
 
 <!-- ============================================================
+     K2b  CARRUSEL DE PRODUCTOS
+     Parcial compartido, ver template-parts/favorites-carousel.php.
+     Justo antes del CTA de cierre de la pagina (aplicar).
+     ============================================================ -->
+<?php get_template_part('template-parts/favorites-carousel'); ?>
+
+<!-- ============================================================
      K3  FOTO DEL EQUIPO Y FORMULARIO
      ============================================================ -->
 <section class="bg-hueso-300">
   <div class="grid lg:grid-cols-2">
-    <div class="tm-placeholder min-h-64 lg:min-h-[36rem]">
+    <div data-tm-reveal="left" class="tm-placeholder min-h-64 lg:min-h-[36rem]">
       <?php if ($tm_img_team) : ?>
         <img
           src="<?php echo esc_url($tm_img_team); ?>"
@@ -137,7 +170,7 @@ get_header(); ?>
       <?php endif; ?>
     </div>
 
-    <div class="flex items-center px-4 py-16 sm:px-10 lg:py-24">
+    <div data-tm-reveal="right" class="flex items-center px-4 py-16 sm:px-10 lg:py-24">
       <div class="w-full max-w-lg">
         <h2 class="font-display text-3xl leading-tight text-carbon-400 sm:text-4xl">
           Apply now

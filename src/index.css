@@ -6,6 +6,7 @@
    sin esto puede no alcanzar las plantillas .php de la raiz del tema y las
    clases usadas solo ahi no se generan nunca. */
 @source "../*.php";
+@source "../template-parts/**/*.php";
 @source "../src/**/*.js";
 
 @theme {
@@ -107,6 +108,12 @@
   }
 
   body {
+    /* overflow-x:hidden como red de seguridad. Varios acentos decorativos
+       del sitio (migas de pan, esquinas de secciones) asoman a proposito
+       unos pixeles fuera de su contenedor con posicion negativa, y nada
+       obligaba antes a que ese sobrante se recortara: sin esto, cualquiera
+       de esos acentos le agrega scroll horizontal a la pagina completa. */
+    overflow-x: hidden;
     background-color: var(--color-surface);
     color: var(--color-ink);
   }
@@ -279,13 +286,25 @@
   /* Sin movimiento: se conservan color y sombra de reposo, se retiran el
      desplazamiento y el barrido. */
   @media (prefers-reduced-motion: reduce) {
-    .tm-logo-badge {
+    .tm-logo-badge-wrap,
+    .tm-logo-badge,
+    .tm-torta-slice {
       transition-property: opacity;
     }
 
-    .tm-logo-badge:hover,
-    .tm-logo-badge:active {
+    .tm-logo-badge-wrap:has(.tm-logo-badge:hover) .tm-logo-badge,
+    .tm-logo-badge-wrap:has(.tm-logo-badge:active) .tm-logo-badge {
       transform: none;
+    }
+
+    .tm-logo-badge-wrap:has(.tm-logo-badge:hover) .tm-torta-slice--bottom,
+    .tm-logo-badge-wrap:has(.tm-logo-badge:active) .tm-torta-slice--bottom {
+      transform: translate(6px, 6px);
+    }
+
+    .tm-logo-badge-wrap:has(.tm-logo-badge:hover) .tm-torta-slice--filling,
+    .tm-logo-badge-wrap:has(.tm-logo-badge:active) .tm-torta-slice--filling {
+      transform: translate(3px, 3px);
     }
 
     .tm-btn-relief:hover,
@@ -405,31 +424,99 @@
      translate y scale, asi que transform queda libre y las tres se
      componen sin pisarse.
      ------------------------------------------------------------------ */
-  .tm-logo-badge {
-    box-shadow:
-      3px 3px 0 0 var(--color-hueso-100),
-      6px 6px 0 0 var(--color-maiz-300);
+  /* ------------------------------------------------------------------
+     Insignia = torta en corte.
+     Tres capas en diagonal, de atras hacia adelante: pan de abajo,
+     relleno (carne y jitomate) y pan de arriba, con el logo posando
+     encima de ese pan de arriba.
+
+     El truco de sticker de siempre (copias que asoman detras al
+     desplazarse) ya no puede hacerse con box-shadow ni con pseudo-
+     elementos: ninguno de los dos puede pintarse DETRAS del propio
+     fondo de .tm-logo-badge, y aqui cada capa necesita su propio
+     degradado. Por eso las dos rebanadas de atras (.tm-torta-slice)
+     son hermanas del link en el markup (ver Navbar.js), no hijas: el
+     fondo opaco del link las tapa por completo salvo en el borde que
+     el translate() deja asomando, que es justo el efecto buscado.
+
+     El hover/active se resuelve con :has() sobre el link, ya que las
+     rebanadas van antes que el en el DOM y :hover no llega hacia
+     atras con el combinador de hermanos.
+
+     Unica excepcion del tema a "los colores salen de la paleta": una
+     torta no se lee como tal en maiz/olivo/carbon, asi que estas tres
+     capas llevan tonos de pan y jitomate reales, fijos aqui.
+     ------------------------------------------------------------------ */
+  .tm-logo-badge-wrap {
     transition:
-      transform 150ms ease-out,
-      box-shadow 150ms ease-out,
       opacity 300ms ease-out,
       scale 300ms ease-out;
   }
 
+  .tm-logo-badge {
+    background: linear-gradient(160deg, #d9a154, #a8672c); /* pan de arriba */
+    transition: transform 150ms ease-out;
+  }
+
+  .tm-torta-slice {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    pointer-events: none;
+    transition: transform 150ms ease-out;
+  }
+
+  /* Pan de abajo: la rebanada mas lejana. */
+  .tm-torta-slice--bottom {
+    background: linear-gradient(160deg, #b9793a, #6b3d1a);
+    transform: translate(6px, 6px);
+  }
+
+  /* Relleno: carne (cafe) con trozos redondos de jitomate (rojo,
+     tienen que leerse como rodaja) y una capa fina de lechuga (olivo,
+     ya sale de la paleta) pegada al borde exterior, mas delgada que
+     el cafe de fondo. Todo agrupado cerca de la esquina inferior
+     derecha a proposito: es la unica zona que el asomo diagonal llega
+     a destapar, y se nota mas al hacer hover, que es cuando el hueco
+     crece. */
+  .tm-torta-slice--filling {
+    background:
+      radial-gradient(circle at 78% 80%, #c0392b 0 11%, transparent 12%),
+      radial-gradient(circle at 85% 90%, #c0392b 0 7%, transparent 8%),
+      radial-gradient(circle at 91% 83%, #c0392b 0 6%, transparent 7%),
+      radial-gradient(
+        circle at 50% 50%,
+        transparent 93%,
+        var(--color-olivo-300) 94%,
+        var(--color-olivo-200) 97%,
+        var(--color-olivo-300) 100%
+      ),
+      linear-gradient(135deg, #6f4226, #46280f);
+    transform: translate(3px, 3px);
+  }
+
   @media (hover: hover) {
-    .tm-logo-badge:hover,
-    .tm-logo-badge:focus-visible {
+    .tm-logo-badge-wrap:has(.tm-logo-badge:hover) .tm-logo-badge,
+    .tm-logo-badge-wrap:has(.tm-logo-badge:focus-visible) .tm-logo-badge {
       transform: translate(-3px, -3px);
-      box-shadow:
-        5px 5px 0 0 var(--color-hueso-100),
-        10px 10px 0 0 var(--color-maiz-300);
     }
 
-    .tm-logo-badge:active {
+    .tm-logo-badge-wrap:has(.tm-logo-badge:hover) .tm-torta-slice--bottom,
+    .tm-logo-badge-wrap:has(.tm-logo-badge:focus-visible) .tm-torta-slice--bottom {
+      transform: translate(10px, 10px);
+    }
+
+    .tm-logo-badge-wrap:has(.tm-logo-badge:hover) .tm-torta-slice--filling,
+    .tm-logo-badge-wrap:has(.tm-logo-badge:focus-visible) .tm-torta-slice--filling {
+      transform: translate(5px, 5px);
+    }
+
+    .tm-logo-badge-wrap:has(.tm-logo-badge:active) .tm-logo-badge {
       transform: translate(3px, 3px);
-      box-shadow:
-        0 0 0 0 var(--color-hueso-100),
-        0 0 0 0 var(--color-maiz-300);
+    }
+
+    .tm-logo-badge-wrap:has(.tm-logo-badge:active) .tm-torta-slice {
+      transform: translate(0, 0);
     }
   }
 
@@ -516,9 +603,36 @@
   }
 
   /* ------------------------------------------------------------------
+     Degradado de hoja de palmera.
+     Los tres tonos salen de pixeles reales de la palmera del logo (no
+     del verde olivo de marca, que es mas gris): oscuro de sombra, medio
+     y el verde mas comun de la hoja. Se paro antes de llegar al
+     amarillo-verde mas claro de la punta de la hoja porque ahi el texto
+     blanco ya no aprueba contraste.
+
+     El navbar ya no lo usa (paso a fondo claro, ver .tm-header-solid mas
+     abajo); queda para la banda "We are hiring" de la home.
+     ------------------------------------------------------------------ */
+  .tm-header-leaves {
+    background: linear-gradient(180deg, #487800, #427100 55%, #0e4e00);
+  }
+
+  /* ------------------------------------------------------------------
+     Navbar solido, fondo claro.
+     El navbar probo el degradado de arriba y no convencio; se queda en
+     un tono claro liso, y todo el texto/iconos de adentro pasan a tinta
+     oscura (Navbar.js decide el color exacto segun isTransparent, esto
+     solo pone el fondo).
+     ------------------------------------------------------------------ */
+  .tm-header-solid {
+    background-color: var(--color-hueso-100);
+  }
+
+  /* ------------------------------------------------------------------
      Trama
-     Port del snippet de Uiverse a la paleta. Rayado diagonal de 20px
-     para las superficies en carbon: navbar solido y footer.
+     Port del snippet de Uiverse a la paleta. Rayado diagonal de 20px.
+     Queda para las migas de pan de las paginas internas; navbar y
+     footer pasaron a fondo solido.
 
      Las dos tintas van con color-mix y alfa baja. A 20px un patron
      contrastado se lee como ruido detras del texto de navegacion, que
@@ -557,63 +671,46 @@
   }
 
   /* ------------------------------------------------------------------
-     Mosaico
-     Port del snippet de Uiverse a la paleta. Va como fondo de las
-     secciones claras, sin nodos extra: es solo background-image.
+     Fondo de las secciones claras.
+     Paso por un mosaico de gradientes y despues por un video en loop de
+     las palmas (ver historial de git); ahora es una foto fija
+     (FondoVerde.png), con un velo de hueso encima para que el texto
+     siga leyendose igual en las secciones que no tienen tarjeta detras.
 
-     Las dos variables se pueden pisar por seccion:
-       --tm-tile-size   tamano del modulo
-       --tm-tile-color  color del dibujo
-
-     El original usa un color bastante presente. Aqui el dibujo va en
-     hueso-300 sobre hueso-100, o sea dos pasos de la misma familia: se
-     percibe como textura de papel y no compite con el texto que va
-     encima, que en estas secciones no siempre tiene tarjeta detras.
+     El markup de cada plantilla solo pone el <img class="tm-tiles__bg">
+     como primer hijo de la seccion; el resto (posicion, velo, subir el
+     contenido por encima) sale de aqui, mismo criterio de capas que
+     .tm-facets: nada en z-index negativo porque un hijo asi se pinta
+     por debajo del propio fondo del contenedor.
      ------------------------------------------------------------------ */
   .tm-tiles {
-    --tm-tile-size: 150px;
-    --tm-tile-color: var(--color-hueso-300);
-    --tm-tile-shade: color-mix(in srgb, var(--color-carbon-400) 4%, transparent);
-
+    position: relative;
+    overflow: hidden;
     background-color: var(--color-hueso-100);
-    background-image:
-      radial-gradient(
-        circle at 15% 30%,
-        transparent 40%,
-        var(--tm-tile-color) 41%
-      ),
-      radial-gradient(
-        circle at 85% 30%,
-        transparent 40%,
-        var(--tm-tile-color) 41%
-      ),
-      radial-gradient(
-        circle at 50% 70%,
-        transparent 40%,
-        var(--tm-tile-color) 41%
-      ),
-      radial-gradient(
-        circle at 15% 70%,
-        transparent 40%,
-        var(--tm-tile-color) 41%
-      ),
-      radial-gradient(
-        circle at 85% 70%,
-        transparent 40%,
-        var(--tm-tile-color) 41%
-      ),
-      linear-gradient(
-        45deg,
-        var(--tm-tile-color) 25%,
-        var(--tm-tile-shade) 0,
-        var(--tm-tile-shade) 50%,
-        var(--tm-tile-color) 0,
-        var(--tm-tile-color) 75%,
-        var(--tm-tile-shade) 0,
-        var(--tm-tile-shade) 100%,
-        var(--tm-tile-color) 0
-      );
-    background-size: var(--tm-tile-size) var(--tm-tile-size);
+  }
+
+  .tm-tiles__bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+    pointer-events: none;
+  }
+
+  .tm-tiles::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background-color: color-mix(in srgb, var(--color-hueso-100) 78%, transparent);
+    pointer-events: none;
+  }
+
+  .tm-tiles > :not(.tm-tiles__bg) {
+    position: relative;
+    z-index: 2;
   }
 
   /* ------------------------------------------------------------------
@@ -765,6 +862,30 @@
     }
   }
 
+  /* Variante de la cinta para tarjetas clicables (favoritos).
+     Misma mecanica de dos pistas, tres ajustes sobre la base:
+       1. Vuelo mas corto: 4 tarjetas pesan mas que un renglon de texto,
+          40s se sentia lento.
+       2. overflow-x solo, dejando la Y libre: el hover de .tm-card-3d
+          levanta la tarjeta y le mete sombra, y con overflow:hidden a
+          secas se recortaba contra el borde de la cinta.
+       3. Se pausa con el mouse encima: a diferencia del texto del hero,
+          esto son links reales y no se puede hacer click a un blanco
+          que se sigue moviendo. */
+  .tm-marquee--cards {
+    overflow-x: hidden;
+    overflow-y: visible;
+  }
+
+  .tm-marquee--cards .tm-marquee__track {
+    animation-duration: 32s;
+  }
+
+  .tm-marquee--cards:hover .tm-marquee__track,
+  .tm-marquee--cards:focus-within .tm-marquee__track {
+    animation-play-state: paused;
+  }
+
   .tm-btn-ghost-light {
     border: 2px solid var(--color-ink-inverse);
     color: var(--color-ink-inverse);
@@ -775,11 +896,95 @@
     color: var(--color-ink);
   }
 
+  /* ------------------------------------------------------------------
+     Levitacion.
+     Sube y baja sin parar, y la sombra se achica y se aclara justo
+     cuando esta mas arriba (se despega del "piso") y crece cuando
+     vuelve a bajar. Sin eso el sube-y-baja se lee como un simple
+     rebote; con la sombra respirando al reves que la tarjeta, se lee
+     como que flota de verdad.
+     ------------------------------------------------------------------ */
+  @keyframes tm-levitate {
+    0%,
+    100% {
+      transform: translateY(0);
+      box-shadow:
+        0 18px 30px -14px rgb(0 0 0 / 0.45),
+        0 6px 10px -6px rgb(0 0 0 / 0.3);
+    }
+    50% {
+      transform: translateY(-14px);
+      box-shadow:
+        0 30px 40px -18px rgb(0 0 0 / 0.25),
+        0 10px 16px -8px rgb(0 0 0 / 0.15);
+    }
+  }
+
+  .tm-levitate {
+    animation: tm-levitate 6s ease-in-out infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .tm-levitate {
+      animation: none;
+    }
+  }
+
   /* Eyebrow del sistema: 12px, mayusculas, tracking amplio */
   .tm-eyebrow {
     font-size: 0.75rem;
     font-weight: 700;
     letter-spacing: 0.16em;
     text-transform: uppercase;
+  }
+
+  /* ------------------------------------------------------------------
+     Revelado al hacer scroll.
+     Para secciones de dos columnas (foto + texto): cada columna entra
+     desde su propio costado y se acomoda en su lugar, asi que las dos
+     se leen convergiendo hacia el centro. data-tm-reveal="left|right"
+     marca de que lado entra cada bloque; reveal.js le agrega
+     .tm-reveal-visible con un IntersectionObserver cuando el bloque
+     entra en pantalla, una sola vez.
+
+     El markup es PHP puro, no React, por eso el disparador vive en un
+     modulo vanilla (src/scripts/reveal.js) y no en un componente.
+
+     Con menos movimiento, el bloque queda visible de una y
+     reveal.js ni se molesta en observar nada. */
+  [data-tm-reveal] {
+    opacity: 0;
+    transition:
+      opacity 700ms ease-out,
+      transform 700ms ease-out;
+  }
+
+  [data-tm-reveal="left"] {
+    transform: translateX(-3rem);
+  }
+
+  [data-tm-reveal="right"] {
+    transform: translateX(3rem);
+    transition-delay: 120ms;
+  }
+
+  /* Tarjetas sueltas (ej. las de ubicaciones): bajan desde arriba en vez
+     de entrar por un costado, tiene mas sentido para una fila/grilla
+     que para dos columnas enfrentadas. */
+  [data-tm-reveal="top"] {
+    transform: translateY(-2.5rem);
+  }
+
+  [data-tm-reveal].tm-reveal-visible {
+    opacity: 1;
+    transform: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    [data-tm-reveal] {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
   }
 }
