@@ -128,11 +128,12 @@ get_header(); ?>
 </section>
 
 <!-- ============================================================
-     C1b  CARRUSEL DE PRODUCTOS
-     Parcial compartido, ver template-parts/favorites-carousel.php.
-     Justo antes del CTA de cierre de la pagina (el alta al club).
+     C1b  TODAS LAS TORTAS
+     Parcial compartido, ver template-parts/tortas-grid.php. Reemplazo el
+     carrusel de favoritos aca por pedido del cliente. Justo antes del CTA
+     de cierre de la pagina (el alta al club).
      ============================================================ -->
-<?php get_template_part('template-parts/favorites-carousel'); ?>
+<?php get_template_part('template-parts/tortas-grid'); ?>
 
 <!-- ============================================================
      C2  ALTA

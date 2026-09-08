@@ -75,6 +75,7 @@
 @layer base {
   html {
     scroll-behavior: smooth;
+    overflow-x: hidden;
   }
 
   /* ---------- Offset de la admin bar de WordPress ----------
@@ -108,11 +109,23 @@
   }
 
   body {
-    /* overflow-x:hidden como red de seguridad. Varios acentos decorativos
-       del sitio (migas de pan, esquinas de secciones) asoman a proposito
-       unos pixeles fuera de su contenedor con posicion negativa, y nada
-       obligaba antes a que ese sobrante se recortara: sin esto, cualquiera
-       de esos acentos le agrega scroll horizontal a la pagina completa. */
+    /* overflow-x:hidden como red de seguridad, en body Y en html arriba.
+       Varios acentos decorativos del sitio (migas de pan, esquinas de
+       secciones) asoman a proposito unos pixeles fuera de su contenedor
+       con posicion negativa, y nada obligaba antes a que ese sobrante se
+       recortara.
+
+       Va en los dos porque #wpadminbar (lo pone WordPress, no este tema)
+       es hijo directo de body pero se posiciona fixed o absolute segun
+       el ancho de pantalla, y en movil angosto su propio contenido
+       (nombre del sitio, "Howdy, fulano", los accesos rapidos) no
+       siempre cabe. El overflow-x:hidden de body no siempre le gana a
+       eso porque queda relativo al viewport, no al overflow-box de
+       body; el de html si. Solo lo nota quien navega con sesion de
+       WordPress iniciada, un visitante normal nunca ve la admin bar.
+       max-width evita que el propio body se estire para "abrazar" ese
+       sobrante antes de recortarlo. */
+    max-width: 100%;
     overflow-x: hidden;
     background-color: var(--color-surface);
     color: var(--color-ink);
@@ -158,6 +171,23 @@
     /* Desde sm el panel cuelga del CTA, asi que se posiciona solo. */
     .tm-location-panel {
       top: calc(100% + 0.75rem);
+    }
+  }
+
+  /* Barra fija de CTAs en movil (llamar / pedir). El padding de abajo es
+     para el home indicator del iPhone y equivalentes; sin esto el boton
+     queda debajo de esa franja en vez de arriba. */
+  .tm-mobile-cta-bar {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  /* Deja aire al fondo de la pagina en movil para que la barra fija de
+     arriba no tape lo ultimo del contenido (tipicamente el footer). Sale
+     del alto real del boton (py-4 + texto+icono, ~3.5rem) mas el safe
+     area que ya cubre .tm-mobile-cta-bar. */
+  @media (max-width: 1023.98px) {
+    body {
+      padding-bottom: calc(3.5rem + env(safe-area-inset-bottom, 0px));
     }
   }
 
@@ -603,18 +633,66 @@
   }
 
   /* ------------------------------------------------------------------
-     Degradado de hoja de palmera.
-     Los tres tonos salen de pixeles reales de la palmera del logo (no
-     del verde olivo de marca, que es mas gris): oscuro de sombra, medio
-     y el verde mas comun de la hoja. Se paro antes de llegar al
-     amarillo-verde mas claro de la punta de la hoja porque ahi el texto
-     blanco ya no aprueba contraste.
+     Mismo brillo diagonal de .tm-card-3d::after, pero en loop en vez de
+     al hover: para una foto sola que no se toca (la del bloque de
+     catering), en vez de esperar el mouse se repite sola cada tantos
+     segundos. 150% -> -50% son las mismas posiciones que la version de
+     hover: en ambas el brillo queda fuera de la caja, asi que el salto
+     de vuelta al inicio del loop no se nota (no hay nada visible que
+     "salte", el brillo ya esta afuera de los dos lados). El tramo
+     0%->30% es el barrido (se ve, con ease-in-out); 30%->100% es la
+     pausa entre barridos (sin cambio, no necesita easing). */
+  .tm-shine-loop::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    background: linear-gradient(
+      110deg,
+      transparent 35%,
+      rgb(255 255 255 / 0.4) 50%,
+      transparent 65%
+    );
+    background-size: 250% 100%;
+    animation: tm-shine-loop 5s infinite;
+  }
 
-     El navbar ya no lo usa (paso a fondo claro, ver .tm-header-solid mas
-     abajo); queda para la banda "We are hiring" de la home.
+  @keyframes tm-shine-loop {
+    0% {
+      background-position: 150% 0;
+      animation-timing-function: ease-in-out;
+    }
+    30% {
+      background-position: -50% 0;
+    }
+    100% {
+      background-position: -50% 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .tm-shine-loop::after {
+      animation: none;
+      background-position: -50% 0;
+    }
+  }
+
+  /* ------------------------------------------------------------------
+     Degradado gris de carbon.
+     Nacio como degradado de hoja de palmera (verde, sacado de pixeles
+     reales del logo) para la banda "We are hiring"; el cliente lo paso
+     a gris y despues pidio el mismo tratamiento para toda seccion del
+     sitio que llevara fondo plano en carbon-400. Tres tonos de la
+     propia paleta (300 -> 400 -> 500), claro-a-oscuro de arriba a
+     abajo; el texto blanco de esas secciones sigue aprobando contraste
+     en los tres.
+
+     El navbar probo esto mismo y no convencio (paso a fondo claro, ver
+     .tm-header-solid mas abajo), asi que no lo usa.
      ------------------------------------------------------------------ */
-  .tm-header-leaves {
-    background: linear-gradient(180deg, #487800, #427100 55%, #0e4e00);
+  .tm-carbon-gradient {
+    background: linear-gradient(180deg, var(--color-carbon-300), var(--color-carbon-400) 55%, var(--color-carbon-500));
   }
 
   /* ------------------------------------------------------------------
@@ -711,6 +789,18 @@
   .tm-tiles > :not(.tm-tiles__bg) {
     position: relative;
     z-index: 2;
+  }
+
+  /* Modificador para secciones donde el fondo es un mosaico de verdad
+     (Estampado.png) y no una foto: el velo de 78% de .tm-tiles se
+     pensó para que una foto no le quite lectura al texto, pero encima
+     de un patron ilustrado lo deja casi plano. Fue subiendo por pedido
+     del cliente (45% -> 65% -> 74% -> 85%) hasta 93%: un dibujo de
+     lineas distrae mas que una foto a la misma opacidad, asi que
+     necesita bastante mas velo para quedar de fondo presente pero
+     tenue y no compitiendo con el texto. */
+  .tm-tiles--pattern::after {
+    background-color: color-mix(in srgb, var(--color-hueso-100) 93%, transparent);
   }
 
   /* ------------------------------------------------------------------
@@ -862,16 +952,27 @@
     }
   }
 
-  /* Variante de la cinta para tarjetas clicables (favoritos).
-     Misma mecanica de dos pistas, tres ajustes sobre la base:
-       1. Vuelo mas corto: 4 tarjetas pesan mas que un renglon de texto,
-          40s se sentia lento.
+  /* ------------------------------------------------------------------
+     Variante de la cinta para tarjetas clicables (favoritos).
+     Volvio a la cinta en loop continuo (se probaron scroll-snap con
+     avance a saltos y un difuminado en los bordes; ninguna de las dos
+     daba el movimiento constante que se pedia). La solucion real al
+     corte no es un mecanismo distinto, es sacar la cinta de la columna
+     angosta de texto: en el markup del parcial va fuera del
+     max-w-7xl, a todo el ancho de la seccion, asi el corte de cada
+     vuelta cae en el borde real de la pantalla y no en medio del
+     contenido.
+
+     Ajustes sobre la cinta base:
+       1. Vuelo mas corto: 4 tarjetas pesan mas que un renglon de
+          texto, 40s se sentia lento.
        2. overflow-x solo, dejando la Y libre: el hover de .tm-card-3d
           levanta la tarjeta y le mete sombra, y con overflow:hidden a
           secas se recortaba contra el borde de la cinta.
-       3. Se pausa con el mouse encima: a diferencia del texto del hero,
-          esto son links reales y no se puede hacer click a un blanco
-          que se sigue moviendo. */
+       3. Se pausa con el mouse encima: a diferencia del texto del
+          hero, esto son links reales y no se puede hacer click a un
+          blanco que se sigue moviendo.
+     ------------------------------------------------------------------ */
   .tm-marquee--cards {
     overflow-x: hidden;
     overflow-y: visible;
@@ -883,6 +984,34 @@
 
   .tm-marquee--cards:hover .tm-marquee__track,
   .tm-marquee--cards:focus-within .tm-marquee__track {
+    animation-play-state: paused;
+  }
+
+  /* ------------------------------------------------------------------
+     Variante para el grid de "Every torta we make": dos renglones,
+     cada uno su propia cinta en loop, corriendo en sentidos opuestos.
+     Misma mecanica de dos pistas identicas que .tm-marquee--cards; lo
+     unico nuevo es --reverse, que voltea el sentido con
+     animation-direction en vez de un @keyframes aparte (mismo par de
+     pistas, asi que el empalme del loop sigue siendo perfecto: el
+     punto de reinicio en reversa es visualmente identico al normal,
+     porque ambas pistas son copias iguales).
+     ------------------------------------------------------------------ */
+  .tm-marquee--tortas {
+    overflow-x: hidden;
+    overflow-y: visible;
+  }
+
+  .tm-marquee--tortas .tm-marquee__track {
+    animation-duration: 34s;
+  }
+
+  .tm-marquee--tortas .tm-marquee__track--reverse {
+    animation-direction: reverse;
+  }
+
+  .tm-marquee--tortas:hover .tm-marquee__track,
+  .tm-marquee--tortas:focus-within .tm-marquee__track {
     animation-play-state: paused;
   }
 
@@ -926,6 +1055,115 @@
 
   @media (prefers-reduced-motion: reduce) {
     .tm-levitate {
+      animation: none;
+    }
+  }
+
+  /* ------------------------------------------------------------------
+     Levitacion para texto suelto (el h1 del hero, sin tarjeta debajo).
+     .tm-levitate mueve la sombra de una caja; un titular no tiene caja
+     visible, asi que aca la que respira es un drop-shadow suave en vez
+     del box-shadow: mismo criterio (se achica y sube cuando el texto
+     esta mas arriba), pero sigue la silueta de las letras.
+     ------------------------------------------------------------------ */
+  @keyframes tm-levitate-text {
+    0%,
+    100% {
+      transform: translateY(0);
+      filter: drop-shadow(0 10px 14px rgb(0 0 0 / 0.35));
+    }
+    50% {
+      transform: translateY(-12px);
+      filter: drop-shadow(0 20px 18px rgb(0 0 0 / 0.2));
+    }
+  }
+
+  .tm-levitate-text {
+    animation: tm-levitate-text 6s ease-in-out infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .tm-levitate-text {
+      animation: none;
+    }
+  }
+
+  /* ------------------------------------------------------------------
+     Efecto "bouncy" al hover, para tarjetas simples que no tienen ya un
+     tratamiento propio (.tm-card-3d es la version con inclinacion 3D
+     para tarjetas de producto). El cubic-bezier con el segundo valor
+     arriba de 1 es lo que da el rebote: la tarjeta se pasa un poco de
+     su tamano final antes de asentarse ahi, en vez de solo agrandarse.
+     ------------------------------------------------------------------ */
+  .tm-card-bouncy {
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+  }
+
+  .tm-card-bouncy:hover,
+  .tm-card-bouncy:focus-within {
+    transform: translateY(-6px) scale(1.04);
+    box-shadow:
+      0 20px 30px -12px rgb(0 0 0 / 0.18),
+      0 8px 12px -6px rgb(0 0 0 / 0.12);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .tm-card-bouncy {
+      transition: none;
+    }
+
+    .tm-card-bouncy:hover,
+    .tm-card-bouncy:focus-within {
+      transform: none;
+    }
+  }
+
+  /* ------------------------------------------------------------------
+     Circulos del riel de redes.
+     Animacion de referencia: Uiverse.io by 0800Gonza. El fondo de cada
+     red es fijo (su color de marca, ver swatch en SocialSidebar.js) en
+     vez de aparecer solo al hover como en el original; lo que si se
+     mantiene es el icono cayendo desde arriba con fade cada vez que se
+     activa el hover, y el scale(0.9) de "presionado" al hacer click.
+     ------------------------------------------------------------------ */
+  .tm-social-icon {
+    overflow: hidden;
+    transition: transform 0.3s;
+  }
+
+  .tm-social-icon:active {
+    transform: scale(0.9);
+    transition-duration: 0.3s;
+  }
+
+  .tm-social-icon svg {
+    transition: none;
+  }
+
+  .tm-social-icon:hover svg {
+    animation: tm-social-slide-in 0.3s both;
+  }
+
+  @keyframes tm-social-slide-in {
+    from {
+      transform: translateY(-18px);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .tm-social-icon,
+    .tm-social-icon:hover,
+    .tm-social-icon:active {
+      transition: none;
+      transform: none;
+    }
+
+    .tm-social-icon:hover svg {
       animation: none;
     }
   }

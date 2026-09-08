@@ -4,10 +4,11 @@ import {
   IconArrow,
   IconChevron,
   IconFacebook,
+  IconGoogle,
   IconInstagram,
   IconMail,
   IconPhone,
-  IconYelp,
+  IconTikTok,
 } from "./icons";
 
 /* ------------------------------------------------------------------ */
@@ -44,9 +45,10 @@ const COPY = {
     ],
     rights: "All rights reserved.",
     siteBy: "Site by",
-    yelp: "Tortas Manantial on Yelp",
+    google: "Tortas Manantial on Google",
     facebook: "Tortas Manantial on Facebook",
     instagram: "Tortas Manantial on Instagram",
+    tiktok: "Tortas Manantial on TikTok",
     emailUs: "Email us",
   },
   es: {
@@ -77,9 +79,10 @@ const COPY = {
     ],
     rights: "Todos los derechos reservados.",
     siteBy: "Sitio por",
-    yelp: "Tortas Manantial en Yelp",
+    google: "Tortas Manantial en Google",
     facebook: "Tortas Manantial en Facebook",
     instagram: "Tortas Manantial en Instagram",
+    tiktok: "Tortas Manantial en TikTok",
     emailUs: "Escríbenos",
   },
 };
@@ -275,13 +278,14 @@ export default function Footer() {
   const t = { ...COPY[cfg.lang], langKey: cfg.lang };
 
   const socialLinks = [
-    { key: "instagram", href: brand.social.instagram, label: t.instagram, Icon: IconInstagram },
-    { key: "facebook", href: brand.social.facebook, label: t.facebook, Icon: IconFacebook },
-    { key: "yelp", href: brand.social.yelp, label: t.yelp, Icon: IconYelp },
+    { key: "instagram", name: "Instagram", href: brand.social.instagram, label: t.instagram, Icon: IconInstagram },
+    { key: "facebook", name: "Facebook", href: brand.social.facebook, label: t.facebook, Icon: IconFacebook },
+    { key: "tiktok", name: "TikTok", href: brand.social.tiktok, label: t.tiktok, Icon: IconTikTok },
+    { key: "google", name: "Google", href: brand.social.google, label: t.google, Icon: IconGoogle },
   ].filter((item) => Boolean(item.href));
 
   return (
-    <footer className="relative overflow-hidden bg-carbon-400 text-hueso-100">
+    <footer className="tm-carbon-gradient relative overflow-hidden text-hueso-100">
       <CornerGraphic src={cfg.footerGraphics[0]} className="left-0 top-0" />
       <CornerGraphic src={cfg.footerGraphics[1]} className="right-0 top-0" />
       <CornerGraphic src={cfg.footerGraphics[2]} className="bottom-0 left-0" />
@@ -340,8 +344,8 @@ export default function Footer() {
                     rel="noopener"
                     className="flex items-center gap-2.5 text-sm transition-colors hover:text-maiz-300"
                   >
-                    <item.Icon size={18} />
-                    <span className="capitalize">{item.key}</span>
+                    <item.Icon size={21} />
+                    <span>{item.name}</span>
                   </a>
                 </li>
               ))}

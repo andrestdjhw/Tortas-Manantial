@@ -10,7 +10,8 @@
    MEDIOS DE ESTA PLANTILLA
    ========================================================================== */
 
-$tm_img_hero = tm_upload('2026/09/LocationsMejorada.png');
+$tm_img_hero_video  = tm_upload('2026/09/PhoenixSkyline-1.mp4');
+$tm_img_hero_poster = tm_upload('2026/09/LocationsMejorada.png'); // Se ve mientras carga el video.
 
 $tm_locations = tm_locations();
 
@@ -20,12 +21,23 @@ get_header(); ?>
 
 <!-- ============================================================
      L0  HERO INTERNO
-     Media pantalla, imagen con scrim. El video se reserva para la home.
+     Media pantalla, con el video del skyline de Phoenix en loop y la
+     foto de LocationsMejorada.png como poster mientras carga.
      ============================================================ -->
 <section data-tm-hero class="relative flex min-h-[60svh] items-end overflow-hidden bg-carbon-400">
-  <?php if ($tm_img_hero) : ?>
+  <?php if ($tm_img_hero_video) : ?>
+    <video
+      class="absolute inset-0 h-full w-full object-cover"
+      autoplay muted loop playsinline
+      preload="auto"
+      aria-hidden="true"
+      <?php if ($tm_img_hero_poster) : ?>poster="<?php echo esc_url($tm_img_hero_poster); ?>"<?php endif; ?>
+    >
+      <source src="<?php echo esc_url($tm_img_hero_video); ?>" type="video/mp4">
+    </video>
+  <?php elseif ($tm_img_hero_poster) : ?>
     <img
-      src="<?php echo esc_url($tm_img_hero); ?>"
+      src="<?php echo esc_url($tm_img_hero_poster); ?>"
       alt=""
       class="absolute inset-0 h-full w-full object-cover"
       fetchpriority="high"

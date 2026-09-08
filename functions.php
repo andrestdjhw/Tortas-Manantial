@@ -40,14 +40,18 @@ function tm_media() {
 
 function tm_brand() {
   return array(
-    // TODO: correo publico de contacto. Vacio = no se pinta en ningun lado.
-    'email'  => '',
+    // Correo publico de contacto. Vacio = no se pinta en ningun lado.
+    'email'  => 'info@tortasmanantial.com',
 
     'social' => array(
       // Tomados del sitio actual, pendientes de confirmar con el cliente.
       'instagram' => 'https://www.instagram.com/tortasmanantial',
       'facebook'  => 'https://www.facebook.com/tortasmanantial/',
-      'yelp'      => 'https://www.yelp.com/biz/tortas-manantial-avondale-3',
+      'tiktok'    => 'https://www.tiktok.com/@tortasmanantial',
+      // Reemplaza a Yelp por pedido del cliente. Es la ficha de Google
+      // Maps del local (resenas y toda la info del negocio), no un link
+      // de direcciones puntual como el de las tarjetas de locales.
+      'google'    => 'https://www.google.com/maps/place/Tortas+Manantial/@33.4663745,-112.1890158,993m/data=!3m2!1e3!4b1!4m6!3m5!1s0x872b14ffbfa863e9:0xe256478d82a088f5!8m2!3d33.4663745!4d-112.1890158!16s%2Fg%2F1264dww6m?entry=ttu&g_ep=EgoyMDI2MDkwMi4wIKXMDSoASAFQAw%3D%3D',
     ),
   );
 }
@@ -414,6 +418,77 @@ function tm_careers_application(WP_REST_Request $request) {
   return rest_ensure_response(array('ok' => true));
 }
 
+/* ==========================================================================
+   SOLICITUDES DE CATERING
+   Cada envio del formulario de /catering se guarda como entrada privada,
+   mismo criterio que las solicitudes de empleo de arriba: nada se pierde
+   mientras se decide a donde deben llegar.
+
+   TODO: enganchar el hook tm_catering_inquiry al correo o a la persona que
+   el cliente confirme.
+   ========================================================================== */
+
+function tm_register_catering_inquiry_type() {
+  register_post_type('tm_catering_inquiry', array(
+    'label'           => 'Catering',
+    'public'          => false,
+    'show_ui'         => true,
+    'show_in_menu'    => true,
+    'menu_icon'       => 'dashicons-food',
+    'supports'        => array('title', 'editor'),
+    'capability_type' => 'post',
+    'capabilities'    => array('create_posts' => 'do_not_allow'),
+    'map_meta_cap'    => true,
+  ));
+}
+
+add_action('init', 'tm_register_catering_inquiry_type');
+
+function tm_catering_inquiry(WP_REST_Request $request) {
+  // Honeypot: si viene relleno es un bot. Se responde ok y se descarta.
+  if (!empty($request->get_param('company'))) {
+    return rest_ensure_response(array('ok' => true));
+  }
+
+  $name  = sanitize_text_field((string) $request->get_param('name'));
+  $phone = sanitize_text_field((string) $request->get_param('phone'));
+  $email = sanitize_email((string) $request->get_param('email'));
+
+  if ($name === '' || $phone === '') {
+    return new WP_Error(
+      'tm_missing_fields',
+      'Name and phone are required.',
+      array('status' => 400)
+    );
+  }
+
+  $body = sprintf(
+    "Phone: %s\nEmail: %s\nEvent date: %s\nGuests: %s\nEvent type: %s\nClosest shop: %s\n\n%s",
+    $phone,
+    $email,
+    sanitize_text_field((string) $request->get_param('eventDate')),
+    sanitize_text_field((string) $request->get_param('guests')),
+    sanitize_text_field((string) $request->get_param('eventType')),
+    sanitize_text_field((string) $request->get_param('location')),
+    sanitize_textarea_field((string) $request->get_param('details'))
+  );
+
+  $inquiry_id = wp_insert_post(array(
+    'post_type'    => 'tm_catering_inquiry',
+    'post_title'   => $name . ', ' . sanitize_text_field((string) $request->get_param('eventDate')),
+    'post_content' => $body,
+    'post_status'  => 'private',
+  ));
+
+  /**
+   * Gancho para avisar al cliente. Cuando confirme el correo destino, aqui
+   * va el wp_mail o la llamada al sistema que use para catering.
+   */
+  do_action('tm_catering_inquiry', $inquiry_id, $request->get_params());
+
+  return rest_ensure_response(array('ok' => true));
+}
+
 function tm_register_routes() {
   register_rest_route('tm/v1', '/club', array(
     'methods'             => 'POST',
@@ -424,6 +499,12 @@ function tm_register_routes() {
   register_rest_route('tm/v1', '/careers', array(
     'methods'             => 'POST',
     'callback'            => 'tm_careers_application',
+    'permission_callback' => '__return_true',
+  ));
+
+  register_rest_route('tm/v1', '/catering', array(
+    'methods'             => 'POST',
+    'callback'            => 'tm_catering_inquiry',
     'permission_callback' => '__return_true',
   ));
 }

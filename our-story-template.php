@@ -16,7 +16,7 @@
    MEDIOS DE ESTA PLANTILLA
    ========================================================================== */
 
-$tm_img_hero    = tm_upload('2026/09/OurStory.png');
+$tm_img_hero    = tm_upload('2026/09/OurStoryBannerNew-scaled.jpg');
 $tm_img_recipe  = tm_upload('2026/08/Tortas.webp');
 $tm_img_family  = ''; // TODO: foto de la familia o del equipo
 $tm_img_archive = ''; // TODO: material de archivo del negocio, si existe.

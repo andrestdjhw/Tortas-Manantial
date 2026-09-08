@@ -25,6 +25,7 @@
         'our-story-template.php',
         'tortas-club-template.php',
         'careers-template.php',
+        'catering-template.php',
       );
 
       $tm_has_hero = false;
@@ -38,6 +39,11 @@
     ?>
 
     <div id="tm-navbar" data-transparent="<?php echo $tm_has_hero ? 'true' : 'false'; ?>"></div>
+
+    <!-- Riel de redes sociales, fijo a la izquierda. Mismo criterio de
+         montaje que el navbar: un div vacio que React llena, position:fixed
+         asi que no le importa donde caiga en el DOM. -->
+    <div id="tm-social-sidebar"></div>
 
     <?php
       /**

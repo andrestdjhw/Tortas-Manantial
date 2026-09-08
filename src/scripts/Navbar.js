@@ -9,13 +9,14 @@ import {
   IconBag,
   IconClose,
   IconFacebook,
+  IconGoogle,
   IconInstagram,
   IconMail,
   IconMenu,
   IconMoped,
   IconPhone,
   IconPin,
-  IconYelp,
+  IconTikTok,
 } from "./icons";
 
 /* ------------------------------------------------------------------ */
@@ -28,7 +29,7 @@ const COPY = {
     skip: "Skip to content",
     home: "Tortas Manantial, home",
     links: [
-      { label: "Menu", href: "order", external: true },
+      { label: "Catering", href: "/catering" },
       { label: "Locations", href: "/locations" },
       { label: "Our Story", href: "/our-story" },
       { label: "Tortas Club", href: "/tortas-club" },
@@ -52,15 +53,16 @@ const COPY = {
     otherLangAria: "Ver este sitio en español",
     emailAria: "Email us",
     social: "Follow us",
-    yelp: "Tortas Manantial on Yelp",
+    google: "Tortas Manantial on Google",
     facebook: "Tortas Manantial on Facebook",
     instagram: "Tortas Manantial on Instagram",
+    tiktok: "Tortas Manantial on TikTok",
   },
   es: {
     skip: "Saltar al contenido",
     home: "Tortas Manantial, inicio",
     links: [
-      { label: "Menú", href: "order", external: true },
+      { label: "Catering", href: "/catering" },
       { label: "Ubicaciones", href: "/locations" },
       { label: "Nuestra Historia", href: "/our-story" },
       { label: "Tortas Club", href: "/tortas-club" },
@@ -84,9 +86,10 @@ const COPY = {
     otherLangAria: "View this site in English",
     emailAria: "Escríbenos",
     social: "Síguenos",
-    yelp: "Tortas Manantial en Yelp",
+    google: "Tortas Manantial en Google",
     facebook: "Tortas Manantial en Facebook",
     instagram: "Tortas Manantial en Instagram",
+    tiktok: "Tortas Manantial en TikTok",
   },
 };
 
@@ -450,7 +453,7 @@ export default function Navbar({ transparent = false }) {
 
   /* Redes disponibles. Las que no tengan URL simplemente no aparecen. */
   const socialLinks = [
-    { key: "yelp", href: brand.social.yelp, label: t.yelp, Icon: IconYelp },
+    { key: "google", href: brand.social.google, label: t.google, Icon: IconGoogle },
     {
       key: "facebook",
       href: brand.social.facebook,
@@ -462,6 +465,12 @@ export default function Navbar({ transparent = false }) {
       href: brand.social.instagram,
       label: t.instagram,
       Icon: IconInstagram,
+    },
+    {
+      key: "tiktok",
+      href: brand.social.tiktok,
+      label: t.tiktok,
+      Icon: IconTikTok,
     },
   ].filter((item) => Boolean(item.href));
 
@@ -527,8 +536,11 @@ export default function Navbar({ transparent = false }) {
           aria-hidden={!showTopRow}
         >
           <div className={`mx-auto grid h-20 max-w-7xl grid-cols-[1fr_auto_1fr] items-center gap-3 px-4 text-xs sm:gap-4 sm:px-6 ${navTone}`}>
-            {/* Izquierda: telefono y correo */}
-            <div className="flex min-w-0 items-center gap-4">
+            {/* Izquierda: telefono y correo. Oculto en movil: el telefono
+                se muda al menu de pantalla completa y a la barra fija de
+                abajo (ver tm-mobile-cta-bar), asi que aca solo hace falta
+                desde lg. */}
+            <div className="hidden min-w-0 items-center gap-4 lg:flex">
               {utilityLocation && (
                 <a
                   href={`tel:${utilityLocation.phone}`}
@@ -555,12 +567,16 @@ export default function Navbar({ transparent = false }) {
               )}
             </div>
 
-            {/* Centro: logo en reposo */}
+            {/* Centro: logo en reposo. col-start-2 explicito porque en
+                movil el telefono y las redes de los costados estan en
+                display:none: sin el, el grid los saca de la fila de
+                acomodo automatico y el logo cae en la primera columna
+                libre (la 1) en vez de quedarse en el medio. */}
             <a
               href={cfg.homeUrl}
               aria-label={t.home}
               tabIndex={showTopRow ? 0 : -1}
-              className="flex shrink-0 items-center justify-center"
+              className="col-start-2 flex shrink-0 items-center justify-center"
             >
               {topRowLogo ? (
                 <img
@@ -577,9 +593,10 @@ export default function Navbar({ transparent = false }) {
               )}
             </a>
 
-            {/* Derecha: redes. Solo se pintan las que tengan URL. */}
+            {/* Derecha: redes. Solo se pintan las que tengan URL. Oculto en
+                movil, se muda al menu de pantalla completa. */}
             <ul
-              className="flex shrink-0 items-center justify-end gap-3"
+              className="hidden shrink-0 items-center justify-end gap-3 lg:flex"
               aria-label={t.social}
             >
               {socialLinks.map((item) => (
@@ -592,7 +609,7 @@ export default function Navbar({ transparent = false }) {
                     tabIndex={showTopRow ? 0 : -1}
                     className={`block transition-colors ${navHover}`}
                   >
-                    <item.Icon size={15} />
+                    <item.Icon size={18} />
                   </a>
                 </li>
               ))}
@@ -609,19 +626,25 @@ export default function Navbar({ transparent = false }) {
               largo que fuera el geotag, y la insignia, que va en left-1/2,
               nunca coincidia con el hueco. */}
           <div className="relative mx-auto grid h-16 max-w-7xl grid-cols-[1fr_auto_1fr] items-center gap-4 px-4 sm:px-6">
-          {/* Geotag del local abierto o mas cercano */}
+          {/* Geotag del local abierto o mas cercano.
+              Va a Maps (directionsUrl), no a pageUrl: el icono es un pin y
+              lo que la gente espera al tocarlo es como llegar, no la ficha
+              del local (esa ya esta en el link "Locations" del menu).
+              Oculto en movil, se muda al menu de pantalla completa. */}
           {utilityLocation ? (
             <a
-              href={utilityLocation.pageUrl}
-              className={`col-start-1 flex min-w-0 items-center gap-1.5 text-xs transition-colors sm:text-sm ${navTone} ${navHover}`}
+              href={utilityLocation.directionsUrl}
+              target="_blank"
+              rel="noopener"
+              data-tm-directions={utilityLocation.id}
+              className={`col-start-1 hidden min-w-0 items-center gap-1.5 text-[0.9rem] transition-colors sm:text-[1.05rem] lg:flex ${navTone} ${navHover}`}
             >
               <IconPin size={15} />
 
-              <span className="truncate sm:hidden">
-                {utilityLocation.name[t.langKey]}
-              </span>
-
-              <span className="hidden truncate sm:inline">
+              {/* Un solo texto: esta "a" solo se muestra desde lg (ver
+                  className de arriba), asi que la version corta que
+                  llevaba para movil ya no aplica. */}
+              <span className="truncate">
                 {utilityStatus.isOpen
                   ? t.utility(
                       utilityLocation.name[t.langKey],
@@ -657,7 +680,7 @@ export default function Navbar({ transparent = false }) {
                 <li key={link.href}>
                   <a
                     {...linkProps(link)}
-                    className={`relative text-sm font-semibold transition-colors after:absolute after:-bottom-1.5 after:left-0 after:h-0.5 after:w-0 after:transition-all hover:after:w-full ${navTone} ${navHover} ${navUnderline}`}
+                    className={`relative text-[1.05rem] font-semibold transition-colors after:absolute after:-bottom-1.5 after:left-0 after:h-0.5 after:w-0 after:transition-all hover:after:w-full ${navTone} ${navHover} ${navUnderline}`}
                   >
                     {link.label}
                   </a>
@@ -681,7 +704,7 @@ export default function Navbar({ transparent = false }) {
                 <li key={link.href}>
                   <a
                     {...linkProps(link)}
-                    className={`relative text-sm font-semibold transition-colors after:absolute after:-bottom-1.5 after:left-0 after:h-0.5 after:w-0 after:transition-all hover:after:w-full ${navTone} ${navHover} ${navUnderline}`}
+                    className={`relative text-[1.05rem] font-semibold transition-colors after:absolute after:-bottom-1.5 after:left-0 after:h-0.5 after:w-0 after:transition-all hover:after:w-full ${navTone} ${navHover} ${navUnderline}`}
                   >
                     {link.label}
                   </a>
@@ -690,9 +713,12 @@ export default function Navbar({ transparent = false }) {
             </ul>
           </nav>
 
-          {/* CTA. En movil ocupa la columna del centro, que es la que en
-              desktop usan los links. Envuelto en un div relativo porque de
-              ahi cuelga el panel de local desde sm. */}
+          {/* CTA. Oculto en movil (se muda al menu de pantalla completa y a
+              la barra fija de abajo, ver tm-mobile-cta-bar); desde lg ocupa
+              la columna derecha, junto a los links. El div se queda
+              siempre montado aunque el boton este oculto: de ahi cuelga el
+              panel de local, y ese panel lo puede disparar cualquier
+              data-tm-order-cta de la pagina, no solo este boton. */}
           <div className="relative col-start-2 justify-self-center lg:col-start-3 lg:justify-self-end">
             <a
               ref={ctaRef}
@@ -701,12 +727,11 @@ export default function Navbar({ transparent = false }) {
               rel="noopener"
               data-tm-order="default"
               data-tm-channel="toast"
-              className={`tm-btn tm-btn-relief tm-btn-primary px-6 py-3.5 text-base sm:px-5 sm:py-3 sm:text-sm ${
+              className={`tm-btn tm-btn-relief tm-btn-primary hidden px-5 py-3 text-[1.05rem] lg:inline-flex ${
                 isTransparent ? "tm-btn-primary-on-dark" : ""
               }`}
             >
-              <span className="sm:hidden">{t.ctaShort}</span>
-              <span className="hidden sm:inline">{t.cta}</span>
+              {t.cta}
             </a>
 
             {panelOpen && (
@@ -757,7 +782,7 @@ export default function Navbar({ transparent = false }) {
               ------------------------------------------------------------ */}
           <div
             aria-hidden="true"
-            className={`tm-logo-badge-wrap absolute left-1/2 top-0 z-10 hidden h-24 w-24 -translate-x-1/2 lg:block ${
+            className={`tm-logo-badge-wrap absolute left-1/2 top-0 z-10 h-20 w-20 -translate-x-1/2 lg:h-24 lg:w-24 ${
               scrolled ? "scale-100 opacity-100" : "scale-90 opacity-0"
             }`}
           >
@@ -825,9 +850,113 @@ export default function Navbar({ transparent = false }) {
             </ul>
           </nav>
 
+          {/* Lo que se saco de la barra compacta en movil (geotag, CTA,
+              telefono y redes) vive aca ahora: sigue disponible, solo que
+              adentro del menu en vez de compitiendo por espacio arriba. */}
+          <div className="flex flex-col gap-5 border-t border-white/10 px-6 py-6">
+            {utilityLocation && (
+              <a
+                href={utilityLocation.directionsUrl}
+                target="_blank"
+                rel="noopener"
+                data-tm-directions={utilityLocation.id}
+                onClick={() => setMenuOpen(false)}
+                className="flex items-center gap-1.5 text-sm text-hueso-100 transition-colors hover:text-maiz-300"
+              >
+                <IconPin size={15} />
+                <span className="truncate">
+                  {utilityStatus.isOpen
+                    ? t.utility(utilityLocation.name[t.langKey], utilityStatus.closesAt)
+                    : `${utilityLocation.name[t.langKey]}, ${t.opensAt(utilityStatus.opensAt)}`}
+                </span>
+                <span
+                  className={`inline-block h-1.5 w-1.5 shrink-0 rounded-full ${
+                    utilityStatus.isOpen ? "bg-olivo-300" : "bg-carbon-300"
+                  }`}
+                  aria-hidden="true"
+                />
+              </a>
+            )}
+
+            <a
+              href={cfg.orderUrl}
+              target="_blank"
+              rel="noopener"
+              data-tm-order="default"
+              data-tm-channel="toast"
+              onClick={() => setMenuOpen(false)}
+              className="tm-btn tm-btn-relief tm-btn-primary tm-btn-primary-on-dark w-full"
+            >
+              {t.cta}
+            </a>
+
+            {utilityLocation && (
+              <a
+                href={`tel:${utilityLocation.phone}`}
+                data-tm-phone={utilityLocation.id}
+                onClick={() => setMenuOpen(false)}
+                className="flex items-center gap-2 text-sm text-hueso-100 transition-colors hover:text-maiz-300"
+              >
+                <IconPhone size={16} />
+                {utilityLocation.phoneLabel}
+              </a>
+            )}
+
+            {socialLinks.length > 0 && (
+              <ul className="flex items-center gap-4" aria-label={t.social}>
+                {socialLinks.map((item) => (
+                  <li key={item.key}>
+                    <a
+                      href={item.href}
+                      target="_blank"
+                      rel="noopener"
+                      aria-label={item.label}
+                      className="block text-hueso-100 transition-colors hover:text-maiz-300"
+                    >
+                      <item.Icon size={20} />
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+
           <p className="border-t border-white/10 px-6 py-6 text-sm text-carbon-200">
             {t.tagline}
           </p>
+        </div>
+      )}
+
+      {/* Barra de CTAs fija, solo en movil. Estatica: a diferencia del
+          resto de la barra, no colapsa con el scroll ni depende del hero,
+          siempre esta ahi para las dos acciones que mas importan. Se
+          oculta mientras el menu esta abierto, porque el menu ya trae su
+          propio boton de pedido y de telefono (ver arriba) y las dos
+          barras pegadas al fondo se pisaban. */}
+      {!menuOpen && (
+        <div className="tm-mobile-cta-bar fixed inset-x-0 bottom-0 z-30 grid grid-cols-2 lg:hidden">
+          {utilityLocation && (
+            <a
+              href={`tel:${utilityLocation.phone}`}
+              data-tm-phone={utilityLocation.id}
+              className="flex items-center justify-center gap-2 border-r border-carbon-400/10 bg-hueso-100 py-4 text-sm font-bold text-carbon-400"
+            >
+              <IconPhone size={16} />
+              {t.call}
+            </a>
+          )}
+
+          <a
+            href={cfg.orderUrl}
+            target="_blank"
+            rel="noopener"
+            data-tm-order="default"
+            data-tm-channel="toast"
+            className="flex items-center justify-center gap-2 bg-carbon-400 py-4 text-sm font-bold text-hueso-100"
+          >
+            <IconBag size={16} />
+            {t.ctaShort}
+          </a>
         </div>
       )}
     </>

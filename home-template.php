@@ -17,14 +17,22 @@ $tm_img_hero_poster  = ''; // TODO: primer frame del video. Sin el, el hero se
                            // ve en carbon plano hasta que el video empieza.
 $tm_img_fresh        = tm_upload('2026/08/Tortas.webp');
 $tm_img_story        = tm_upload('2026/08/TMFachada.webp');
-$tm_img_ig_1         = ''; // TODO
-$tm_img_ig_2         = ''; // TODO
-$tm_img_ig_3         = ''; // TODO
-$tm_img_ig_4         = ''; // TODO
-$tm_img_ig_5         = ''; // TODO
-$tm_img_ig_6         = ''; // TODO
+/**
+ * TODO: reemplazar por el feed real de Instagram (fotos y clips propios).
+ * Mientras tanto son 4 tarjetas, no 6: con el mismo video repetido, 6
+ * copias se notaban demasiado y ademas dejaban cada tarjeta chica. Con
+ * 4 la grilla tiene menos columnas y cada una sale mas grande.
+ */
+$tm_img_ig_video     = tm_upload('2026/09/4LocacionesListas.mp4');
+$tm_img_ig_1         = $tm_img_ig_video;
+$tm_img_ig_2         = $tm_img_ig_video;
+$tm_img_ig_3         = $tm_img_ig_video;
+$tm_img_ig_4         = $tm_img_ig_video;
 
 $tm_img_bg           = tm_upload('2026/09/FondoVerde.png'); // Fondo de las secciones .tm-tiles.
+// Mismo video-loop del hero de /locations, ahora de fondo del bloque 06.
+$tm_img_locations_video  = tm_upload('2026/09/PhoenixSkyline-1.mp4');
+$tm_img_locations_poster = tm_upload('2026/09/LocationsMejorada.png'); // Se ve mientras carga el video.
 $tm_img_club_bg      = tm_upload('2026/09/TortasFondo.png'); // Fondo de la banda en maiz de Tortas Club.
 $tm_img_facets_bg    = tm_upload('2026/09/TortasFondo.png'); // Mismo fondo, ahora en la barra de cierre (antes tm-facets).
 
@@ -40,6 +48,13 @@ $tm_img_story_accent_bl = tm_upload('2026/09/06-Coco-Graphics-scaled.png'); // A
 $tm_img_story_accent_tl = tm_upload('2026/09/05-Coco-Graphics-scaled.png'); // Arriba-izquierda.
 $tm_img_story_accent_tr = tm_upload('2026/09/21-Coco-Graphics-scaled.png'); // Arriba-derecha.
 $tm_img_story_accent_br = tm_upload('2026/09/22-Coco-Graphics-scaled.png'); // Abajo-derecha.
+
+// Acentos de esquina del bloque 09 (Instagram), ahora que su fondo es
+// gris liso en vez del mosaico de .tm-tiles.
+$tm_img_ig_accent_tl = tm_upload('2026/09/06-Coco-Graphics-scaled.png'); // Arriba-izquierda.
+$tm_img_ig_accent_tr = tm_upload('2026/09/22-Coco-Graphics-scaled.png'); // Arriba-derecha.
+$tm_img_ig_accent_bl = tm_upload('2026/09/02-Coco-Graphics-scaled.png'); // Abajo-izquierda.
+$tm_img_ig_accent_br = tm_upload('2026/09/21-Coco-Graphics-scaled.png'); // Abajo-derecha.
 
 $tm_locations = tm_locations();
 
@@ -84,14 +99,21 @@ get_header(); ?>
   <?php endif; ?>
 
   <!-- Un solo scrim parejo: con el texto centrado ya no hay un lado
-       "de texto" que necesite mas velo que el otro. -->
-  <div class="absolute inset-0 bg-carbon-500/55" aria-hidden="true"></div>
+       "de texto" que necesite mas velo que el otro. Subido de 55% a 70%
+       por pedido del cliente: el video de fondo le restaba lectura al
+       texto blanco. -->
+  <div class="absolute inset-0 bg-carbon-500/70" aria-hidden="true"></div>
 
   <div class="relative z-10 mx-auto w-full max-w-7xl px-4 pb-14 pt-40 text-center sm:px-6">
     <div class="mx-auto max-w-2xl">
       <p class="tm-eyebrow text-maiz-300">Family owned in Phoenix since 2000</p>
 
-      <h1 class="mt-4 font-display text-[2rem] leading-[1.08] text-hueso-100 sm:text-5xl lg:text-6xl">
+      <!-- 40% mas grande que el tamano original en cada punto de quiebre
+           (2rem/3rem/3.75rem -> 2.8rem/4.2rem/5.25rem), por pedido del
+           cliente. tm-levitate-text le agrega el sube-y-baja con sombra
+           que respira (ver src/index.css), version para texto suelto de
+           .tm-levitate. -->
+      <h1 class="tm-levitate-text mt-4 font-display text-[2.8rem] leading-[1.08] text-hueso-100 sm:text-[4.2rem] lg:text-[5.25rem]">
         The torta that tastes <span class="whitespace-nowrap">like home</span>
       </h1>
 
@@ -138,37 +160,82 @@ get_header(); ?>
 </div>
 
 <!-- ============================================================
-     03  LOS FAVORITOS
-     Parcial compartido, ver template-parts/favorites-carousel.php.
-     full_height + id porque esta es la seccion a la que apunta el
-     "See the menu" del hero (#favorites); en las demas paginas el
-     mismo parcial se pide sin esos dos args.
+     03b  TODAS LAS TORTAS
+     Parcial compartido, ver template-parts/tortas-grid.php. Tortas Club
+     tambien la pide, en el lugar donde antes iba el carrusel de favoritos.
      ============================================================ -->
-<?php
-  get_template_part('template-parts/favorites-carousel', null, array(
-    'id'          => 'favorites',
-    'full_height' => true,
-  ));
-?>
+<?php get_template_part('template-parts/tortas-grid'); ?>
+
+<!-- ============================================================
+     08  RESENAS
+     ============================================================ -->
+<section class="bg-hueso-200 py-16 lg:py-24">
+  <div class="mx-auto max-w-7xl px-4 sm:px-6">
+    <h2 class="font-display text-3xl leading-tight text-carbon-400 sm:text-4xl">
+      What the neighborhood says
+    </h2>
+    <p class="mt-3 text-carbon-300">Real reviews from our four shops.</p>
+
+    <!-- Widget de Trustindex (plugin wp-reviews-plugin-for-google), jala
+         las resenas de Google directo, asi que no hay testimonios a mano
+         que mantener ni rotar aca. no-registration=google: no pide que el
+         negocio se registre en Trustindex, solo lee lo publico. -->
+    <div class="mt-12">
+      <?php echo do_shortcode('[trustindex no-registration=google]'); ?>
+    </div>
+
+    <div class="mt-12 rounded-xl bg-hueso-300 p-6 sm:flex sm:items-center sm:justify-between sm:gap-6">
+      <p class="max-w-xl text-carbon-400">
+        Been here before? Leave us a review. It takes a minute and it helps a
+        family business more than you think.
+      </p>
+      <a
+        href="<?php echo esc_url($tm_locations[0]['directionsUrl']); ?>"
+        target="_blank" rel="noopener"
+        class="tm-btn tm-btn-relief tm-btn-primary mt-5 shrink-0 sm:mt-0"
+      >Write a review</a>
+    </div>
+  </div>
+</section>
 
 <!-- ============================================================
      06  UBICACIONES
+     Fondo gris liso (bg-carbon-100) por pedido del cliente: con cuatro
+     mapas de Google adentro de las tarjetas, el mosaico de palmeras de
+     .tm-tiles le restaba limpieza a la seccion. Ahora en su lugar va el
+     mismo video-loop del hero de /locations (PhoenixSkyline-1.mp4), con
+     scrim oscuro parejo para el texto: las tarjetas de local ya son
+     opacas (bg-hueso-200), asi que solo el titulo y el hueco entre
+     tarjetas necesitan el velo.
      ============================================================ -->
-<section id="locations" class="tm-tiles min-h-svh scroll-mt-24 py-16 lg:py-24">
-  <?php if ($tm_img_bg) : ?>
+<section id="locations" class="relative isolate overflow-hidden min-h-svh scroll-mt-24 bg-carbon-400 py-16 lg:py-24">
+  <?php if ($tm_img_locations_video) : ?>
+    <video
+      class="absolute inset-0 h-full w-full object-cover"
+      autoplay muted loop playsinline
+      preload="none"
+      aria-hidden="true"
+      <?php if ($tm_img_locations_poster) : ?>poster="<?php echo esc_url($tm_img_locations_poster); ?>"<?php endif; ?>
+    >
+      <source src="<?php echo esc_url($tm_img_locations_video); ?>" type="video/mp4">
+    </video>
+  <?php elseif ($tm_img_locations_poster) : ?>
     <img
-      src="<?php echo esc_url($tm_img_bg); ?>"
+      src="<?php echo esc_url($tm_img_locations_poster); ?>"
       alt=""
       aria-hidden="true"
       loading="lazy"
-      class="tm-tiles__bg"
+      class="absolute inset-0 h-full w-full object-cover"
     >
   <?php endif; ?>
-  <div class="mx-auto max-w-7xl px-4 sm:px-6">
-    <h2 class="font-display text-3xl leading-tight text-carbon-400 sm:text-4xl">
+
+  <div class="absolute inset-0 bg-carbon-500/60" aria-hidden="true"></div>
+
+  <div class="relative z-10 mx-auto max-w-7xl px-4 sm:px-6">
+    <h2 class="font-display text-3xl leading-tight text-hueso-100 sm:text-4xl">
       Find the one closest to you
     </h2>
-    <p class="mt-3 text-carbon-300">
+    <p class="mt-3 text-hueso-100/80">
       Four shops across Phoenix, Avondale and Laveen. Open seven days a week.
     </p>
 
@@ -248,82 +315,107 @@ get_header(); ?>
       <?php endforeach; ?>
     </ul>
 
-    <a href="/locations" class="tm-btn tm-btn-ghost-dark mt-12">See all locations and hours</a>
+    <a href="/locations" class="tm-btn tm-btn-ghost-light mt-12">See all locations and hours</a>
   </div>
 </section>
 
 <!-- ============================================================
-     08  RESENAS
+     03  LOS FAVORITOS
+     Parcial compartido, ver template-parts/favorites-carousel.php.
+     full_height + id porque esta es la seccion a la que apunta el
+     "See the menu" del hero (#favorites); en las demas paginas el
+     mismo parcial se pide sin esos dos args.
      ============================================================ -->
-<section class="bg-hueso-200 py-16 lg:py-24">
-  <div class="mx-auto max-w-7xl px-4 sm:px-6">
-    <h2 class="font-display text-3xl leading-tight text-carbon-400 sm:text-4xl">
-      What the neighborhood says
-    </h2>
-    <p class="mt-3 text-carbon-300">Real reviews from our four shops.</p>
-
-    <!-- Widget de Trustindex (plugin wp-reviews-plugin-for-google), jala
-         las resenas de Google directo, asi que no hay testimonios a mano
-         que mantener ni rotar aca. no-registration=google: no pide que el
-         negocio se registre en Trustindex, solo lee lo publico. -->
-    <div class="mt-12">
-      <?php echo do_shortcode('[trustindex no-registration=google]'); ?>
-    </div>
-
-    <div class="mt-12 rounded-xl bg-hueso-300 p-6 sm:flex sm:items-center sm:justify-between sm:gap-6">
-      <p class="max-w-xl text-carbon-400">
-        Been here before? Leave us a review. It takes a minute and it helps a
-        family business more than you think.
-      </p>
-      <a
-        href="<?php echo esc_url($tm_locations[0]['directionsUrl']); ?>"
-        target="_blank" rel="noopener"
-        class="tm-btn tm-btn-relief tm-btn-primary mt-5 shrink-0 sm:mt-0"
-      >Write a review</a>
-    </div>
-  </div>
-</section>
+<?php
+  get_template_part('template-parts/favorites-carousel', null, array(
+    'id'          => 'favorites',
+    'full_height' => true,
+  ));
+?>
 
 <!-- ============================================================
      09  INSTAGRAM
+     Fondo gris oscuro liso por pedido del cliente, ya no el mosaico de
+     palmeras de .tm-tiles; despues paso a .tm-carbon-gradient junto con
+     el resto de las secciones en carbon-400 del sitio. El texto y el
+     CTA pasan a tinta clara (tm-btn-ghost-light) para seguir aprobando
+     contraste encima. Los acentos de esquina son los mismos graficos y
+     el mismo criterio que el panel oscuro del bloque 05 (opacity-20,
+     solo desde lg).
      ============================================================ -->
-<section class="tm-tiles py-16 lg:py-24">
-  <?php if ($tm_img_bg) : ?>
+<section class="tm-carbon-gradient relative overflow-hidden py-16 lg:py-24">
+  <?php if ($tm_img_ig_accent_tl) : ?>
     <img
-      src="<?php echo esc_url($tm_img_bg); ?>"
+      src="<?php echo esc_url($tm_img_ig_accent_tl); ?>"
       alt=""
       aria-hidden="true"
       loading="lazy"
-      class="tm-tiles__bg"
+      class="pointer-events-none absolute -left-8 -top-8 hidden w-32 -rotate-6 opacity-20 lg:block xl:w-40"
     >
   <?php endif; ?>
-  <div class="mx-auto max-w-7xl px-4 sm:px-6">
+  <?php if ($tm_img_ig_accent_tr) : ?>
+    <img
+      src="<?php echo esc_url($tm_img_ig_accent_tr); ?>"
+      alt=""
+      aria-hidden="true"
+      loading="lazy"
+      class="pointer-events-none absolute -right-8 -top-8 hidden w-32 rotate-6 opacity-20 lg:block xl:w-40"
+    >
+  <?php endif; ?>
+  <?php if ($tm_img_ig_accent_bl) : ?>
+    <img
+      src="<?php echo esc_url($tm_img_ig_accent_bl); ?>"
+      alt=""
+      aria-hidden="true"
+      loading="lazy"
+      class="pointer-events-none absolute -bottom-8 -left-8 hidden w-40 opacity-20 lg:block xl:w-52"
+    >
+  <?php endif; ?>
+  <?php if ($tm_img_ig_accent_br) : ?>
+    <img
+      src="<?php echo esc_url($tm_img_ig_accent_br); ?>"
+      alt=""
+      aria-hidden="true"
+      loading="lazy"
+      class="pointer-events-none absolute -bottom-8 -right-8 hidden w-40 opacity-20 lg:block xl:w-52"
+    >
+  <?php endif; ?>
+  <div class="relative z-10 mx-auto max-w-7xl px-4 sm:px-6">
     <div class="sm:flex sm:items-end sm:justify-between sm:gap-6">
       <div>
-        <h2 class="font-display text-3xl leading-tight text-carbon-400 sm:text-4xl">
+        <h2 class="font-display text-3xl leading-tight text-hueso-100 sm:text-4xl">
           Tag us, we are watching
         </h2>
-        <p class="mt-3 text-carbon-300">@tortasmanantial</p>
+        <p class="mt-3 text-hueso-100/75">@tortasmanantial</p>
       </div>
 
       <a
         href="https://www.instagram.com/tortasmanantial"
         target="_blank" rel="noopener"
-        class="tm-btn tm-btn-ghost-dark mt-6 sm:mt-0"
+        class="tm-btn tm-btn-ghost-light mt-6 sm:mt-0"
       >Follow us</a>
     </div>
 
-    <ul class="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
+    <ul class="mt-10 grid grid-cols-2 gap-4 lg:grid-cols-4">
       <?php
-        $tm_ig = array($tm_img_ig_1, $tm_img_ig_2, $tm_img_ig_3, $tm_img_ig_4, $tm_img_ig_5, $tm_img_ig_6);
+        $tm_ig = array($tm_img_ig_1, $tm_img_ig_2, $tm_img_ig_3, $tm_img_ig_4);
 
         foreach ($tm_ig as $tm_ig_index => $tm_ig_image) : ?>
         <li
           data-tm-reveal="top"
           style="transition-delay: <?php echo esc_attr($tm_ig_index * 0.07); ?>s"
-          class="tm-placeholder aspect-square overflow-hidden rounded-lg"
+          class="tm-placeholder aspect-4/5 overflow-hidden rounded-lg"
         >
-          <?php if ($tm_ig_image) : ?>
+          <?php if ($tm_ig_image && str_ends_with($tm_ig_image, '.mp4')) : ?>
+            <video
+              class="h-full w-full object-cover"
+              autoplay muted loop playsinline
+              preload="none"
+              aria-hidden="true"
+            >
+              <source src="<?php echo esc_url($tm_ig_image); ?>" type="video/mp4">
+            </video>
+          <?php elseif ($tm_ig_image) : ?>
             <img
               src="<?php echo esc_url($tm_ig_image); ?>"
               alt=""
@@ -381,12 +473,14 @@ get_header(); ?>
 <!-- ============================================================
      05  HISTORIA CORTA
      TODO: copy provisional. Se reescribe con la historia real de la
-     familia (pendiente 02 del brief maestro).
+     familia (pendiente 02 del brief maestro). El panel oscuro pasa a
+     .tm-carbon-gradient junto con el resto de las secciones en
+     carbon-400 del sitio.
      ============================================================ -->
 <section class="bg-hueso-300">
   <div class="grid lg:grid-cols-2">
     <!-- Texto a la izquierda -->
-    <div data-tm-reveal="left" class="relative overflow-hidden flex items-center justify-center bg-carbon-400 px-4 py-16 text-center sm:px-10 lg:py-24">
+    <div data-tm-reveal="left" class="tm-carbon-gradient relative overflow-hidden flex items-center justify-center px-4 py-16 text-center sm:px-10 lg:py-24">
       <?php if ($tm_img_story_accent_tl) : ?>
         <img
           src="<?php echo esc_url($tm_img_story_accent_tl); ?>"
@@ -497,11 +591,10 @@ get_header(); ?>
 
 <!-- ============================================================
      10  TRABAJA CON NOSOTROS
-     Degradado de hoja de palmera (.tm-header-leaves). El navbar lo probo
-     y volvio a fondo claro (ver .tm-header-solid en index.css), esta
-     banda se queda con el verde.
+     Degradado gris de carbon (.tm-carbon-gradient), ahora el mismo en
+     toda seccion del sitio que llevaba fondo plano en carbon-400.
      ============================================================ -->
-<section class="tm-header-leaves py-14">
+<section class="tm-carbon-gradient py-14">
   <div class="mx-auto flex max-w-7xl flex-col gap-5 px-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
     <p class="text-lg font-bold text-hueso-100">
       We are hiring at all four locations. No experience needed for most roles.

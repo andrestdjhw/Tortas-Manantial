@@ -34,13 +34,6 @@ $tm_fc_favorites = array(
   array('Licuados',     'Mexican milkshakes, thick, cold and worth the brain freeze.',  tm_upload('2026/08/LicuadoM.webp')),
 );
 
-/**
- * Cinta en loop en vez de grilla fija: dos pistas identicas, misma
- * mecanica que la cinta de texto del hero (ver 01b en home-template.php).
- * La segunda pista es una copia visual para que el loop no se note y
- * lleva inert: son links reales (data-tm-order) y no queremos que el tab
- * los visite dos veces ni que un lector de pantalla los anuncie doble.
- */
 $tm_fc_render_favorite = function ($tm_index, $tm_item, $tm_order_url) {
   list($tm_name, $tm_desc, $tm_image) = $tm_item; ?>
   <li class="w-64 shrink-0 sm:w-72">
@@ -95,20 +88,31 @@ $tm_fc_render_favorite = function ($tm_index, $tm_item, $tm_order_url) {
     <p class="mt-3 max-w-xl text-carbon-300">
       Twenty five years of the same recipe, made fresh every single order.
     </p>
+  </div>
 
-    <div class="tm-cards-3d tm-marquee tm-marquee--cards mt-12">
-      <ul class="tm-marquee__track gap-6 py-6 pr-6">
-        <?php foreach ($tm_fc_favorites as $tm_fc_index => $tm_fc_item) : ?>
-          <?php $tm_fc_render_favorite($tm_fc_index, $tm_fc_item, $tm_fc_order_url); ?>
-        <?php endforeach; ?>
-      </ul>
-      <ul class="tm-marquee__track gap-6 py-6 pr-6" inert aria-hidden="true">
-        <?php foreach ($tm_fc_favorites as $tm_fc_index => $tm_fc_item) : ?>
-          <?php $tm_fc_render_favorite($tm_fc_index, $tm_fc_item, $tm_fc_order_url); ?>
-        <?php endforeach; ?>
-      </ul>
-    </div>
+  <!-- Cinta en loop continuo, y a proposito FUERA de la columna de
+       texto de arriba: si se queda adentro del max-w-7xl, el corte de
+       cada vuelta cae en medio del contenido y se nota feo. Aca corre
+       de punta a punta de la seccion (el corte real queda en el borde
+       de la pantalla, no en medio de la pagina), mismo criterio que la
+       cinta de texto del hero. Dos pistas identicas; la segunda es
+       una copia visual para que el loop no se note y lleva inert: son
+       links reales (data-tm-order) y no queremos que el tab los visite
+       dos veces ni que un lector de pantalla los anuncie doble. -->
+  <div class="tm-cards-3d tm-marquee tm-marquee--cards mt-12">
+    <ul class="tm-marquee__track gap-6 py-6 pr-6">
+      <?php foreach ($tm_fc_favorites as $tm_fc_index => $tm_fc_item) : ?>
+        <?php $tm_fc_render_favorite($tm_fc_index, $tm_fc_item, $tm_fc_order_url); ?>
+      <?php endforeach; ?>
+    </ul>
+    <ul class="tm-marquee__track gap-6 py-6 pr-6" inert aria-hidden="true">
+      <?php foreach ($tm_fc_favorites as $tm_fc_index => $tm_fc_item) : ?>
+        <?php $tm_fc_render_favorite($tm_fc_index, $tm_fc_item, $tm_fc_order_url); ?>
+      <?php endforeach; ?>
+    </ul>
+  </div>
 
+  <div class="mx-auto max-w-7xl px-4 sm:px-6">
     <a
       href="<?php echo esc_url($tm_fc_order_url); ?>"
       target="_blank" rel="noopener"

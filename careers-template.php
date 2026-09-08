@@ -10,42 +10,52 @@
    MEDIOS DE ESTA PLANTILLA
    ========================================================================== */
 
-$tm_img_team = ''; // TODO: foto del equipo real, en el local, trabajando.
-                   // Nada de stock: es lo que hace creible la pagina.
+$tm_img_team = tm_upload('2026/09/JobApplicationForm-scaled.jpg');
 
 $tm_img_bg = tm_upload('2026/09/FondoVerde.png'); // Fondo de las secciones .tm-tiles.
+$tm_img_hero_bg = tm_upload('2026/09/TortasFondo.png'); // Fondo del hero, antes tm-facets.
+$tm_img_form_bg = $tm_img_hero_bg; // Mismo fondo, ahora detras del formulario de K3.
 
 $tm_locations = tm_locations();
 
 get_header(); ?>
 
 <!-- ============================================================
-     K0  HERO EN OLIVO
-     Hero de color plano, sin foto. Es la unica pagina del sistema que
-     conserva ese tratamiento y sirve de respiro entre paginas
-     fotograficas.
+     K0  HERO
+     Antes color plano en olivo con el patron .tm-facets; el cliente pidio
+     TortasFondo.png en su lugar (mismo fondo que ya usan las bandas de
+     Tortas Club y "Order here, not there" en la home). El texto pasa a
+     tarjeta (bg-hueso-100/90 backdrop-blur-sm) porque la foto es una
+     textura ocupada de sandwiches, mismo criterio que esas bandas.
 
      La plantilla esta en $tm_hero_templates de header.php para que no se
-     imprima el espaciador, pero la seccion NO lleva data-tm-hero: sobre
-     olivo el texto del navbar en hueso da 3.4:1 y no aprueba contraste,
-     asi que la barra se queda solida.
+     imprima el espaciador, pero la seccion NO lleva data-tm-hero: sigue
+     sin ser un hero a sangre con texto suelto encima, asi que la barra
+     se queda solida.
      ============================================================ -->
-<section class="relative isolate overflow-hidden bg-olivo-400 pb-16 pt-44 text-hueso-100 lg:pb-24">
-  <div
-    class="tm-facets [--tm-facet-bg:var(--color-olivo-400)] [--tm-facet-glow:color-mix(in_srgb,var(--color-maiz-300)_10%,transparent)] [--tm-facet-line:color-mix(in_srgb,var(--color-hueso-100)_10%,transparent)] [--tm-facet-shape:color-mix(in_srgb,var(--color-carbon-500)_35%,transparent)]"
-    aria-hidden="true"
-  ></div>
+<section class="relative isolate overflow-hidden bg-olivo-400 pb-16 pt-44 text-carbon-400 lg:pb-24">
+  <?php if ($tm_img_hero_bg) : ?>
+    <img
+      src="<?php echo esc_url($tm_img_hero_bg); ?>"
+      alt=""
+      aria-hidden="true"
+      loading="lazy"
+      class="absolute inset-0 h-full w-full object-cover"
+    >
+  <?php endif; ?>
 
   <div class="relative z-10 mx-auto max-w-7xl px-4 sm:px-6">
-    <p class="tm-eyebrow text-maiz-300">We are hiring</p>
+    <div class="max-w-xl rounded-2xl bg-hueso-100/90 p-8 shadow-xl backdrop-blur-sm">
+      <p class="tm-eyebrow">We are hiring</p>
 
-    <h1 class="mt-4 font-display text-4xl leading-[1.05] sm:text-5xl">
-      Work with us
-    </h1>
+      <h1 class="mt-4 font-display text-4xl leading-[1.05] sm:text-5xl">
+        Work with us
+      </h1>
 
-    <p class="mt-5 max-w-xl text-lg text-hueso-100/90">
-      Four shops, one team. We hire for attitude and teach the rest.
-    </p>
+      <p class="mt-5 text-lg text-carbon-300">
+        Four shops, one team. We hire for attitude and teach the rest.
+      </p>
+    </div>
   </div>
 </section>
 
@@ -100,7 +110,7 @@ get_header(); ?>
         <li
           data-tm-reveal="top"
           style="transition-delay: <?php echo esc_attr($tm_role_index * 0.1); ?>s"
-          class="rounded-xl border border-hueso-400 bg-hueso-100 p-6 shadow-sm"
+          class="tm-card-bouncy rounded-xl border border-hueso-400 bg-hueso-100 p-6 shadow-sm"
         >
           <h3 class="font-display text-xl text-carbon-400"><?php echo esc_html($tm_role[0]); ?></h3>
           <p class="mt-2 text-sm text-carbon-300"><?php echo esc_html($tm_role[1]); ?></p>
@@ -132,7 +142,7 @@ get_header(); ?>
         <li
           data-tm-reveal="top"
           style="transition-delay: <?php echo esc_attr($tm_location_index * 0.1); ?>s"
-          class="rounded-xl border border-hueso-400 bg-hueso-100 p-5"
+          class="tm-card-bouncy rounded-xl border border-hueso-400 bg-hueso-100 p-5"
         >
           <h3 class="font-display text-lg text-carbon-400">
             <?php echo esc_html($tm_location['name']['en']); ?>
@@ -170,8 +180,21 @@ get_header(); ?>
       <?php endif; ?>
     </div>
 
-    <div data-tm-reveal="right" class="flex items-center px-4 py-16 sm:px-10 lg:py-24">
-      <div class="w-full max-w-lg">
+    <div data-tm-reveal="right" class="relative isolate flex items-center justify-center overflow-hidden px-4 py-16 sm:px-10 lg:py-24">
+      <?php if ($tm_img_form_bg) : ?>
+        <img
+          src="<?php echo esc_url($tm_img_form_bg); ?>"
+          alt=""
+          aria-hidden="true"
+          loading="lazy"
+          class="absolute inset-0 h-full w-full object-cover"
+        >
+      <?php endif; ?>
+
+      <!-- Tarjeta encima del fondo, mismo criterio que el hero de arriba:
+           TortasFondo.png es una textura ocupada de sandwiches, el
+           formulario necesita una base solida para seguir siendo legible. -->
+      <div class="relative z-10 w-full max-w-lg rounded-2xl bg-hueso-100/90 p-8 shadow-xl backdrop-blur-sm">
         <h2 class="font-display text-3xl leading-tight text-carbon-400 sm:text-4xl">
           Apply now
         </h2>
