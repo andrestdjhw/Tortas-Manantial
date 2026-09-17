@@ -47,9 +47,9 @@ get_header(); ?>
   <div class="absolute inset-0 bg-carbon-500/60" aria-hidden="true"></div>
 
   <div class="relative z-10 mx-auto w-full max-w-7xl px-4 pb-14 pt-40 sm:px-6">
-    <p class="tm-eyebrow text-maiz-300">Four shops, one recipe</p>
+    <p class="tm-eyebrow text-accent-hover-soft">Four shops, one recipe</p>
 
-    <h1 class="mt-4 font-display text-4xl leading-[1.05] text-hueso-100 sm:text-5xl">
+    <h1 class="mt-4 font-display uppercase text-4xl leading-[1.05] text-hueso-100 sm:text-5xl">
       Locations and hours
     </h1>
 
@@ -69,19 +69,11 @@ get_header(); ?>
     class="pointer-events-none absolute -left-2 top-1/2 hidden w-14 -translate-y-1/2 -rotate-3 opacity-20 sm:block"
   >
   <ol class="relative mx-auto flex max-w-7xl gap-2 px-4 py-3 text-xs text-carbon-200 sm:px-6">
-    <li><a href="<?php echo esc_url(home_url('/')); ?>" class="hover:text-maiz-300">Home</a></li>
+    <li><a href="<?php echo esc_url(home_url('/')); ?>" class="hover:text-accent-hover-soft">Home</a></li>
     <li aria-hidden="true">/</li>
     <li class="text-hueso-100" aria-current="page">Locations</li>
   </ol>
 </nav>
-
-<!-- ============================================================
-     L0b  CARRUSEL DE PRODUCTOS
-     Parcial compartido, ver template-parts/favorites-carousel.php.
-     Justo antes del CTA de cierre de la pagina (Find my shop, dentro
-     de L1).
-     ============================================================ -->
-<?php get_template_part('template-parts/favorites-carousel'); ?>
 
 <!-- ============================================================
      L1  LOS CUATRO LOCALES

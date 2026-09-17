@@ -11,21 +11,71 @@
  * Autosuficiente a proposito, mismo criterio que favorites-carousel.php:
  * saca sus propios medios con tm_upload() en vez de esperar variables del
  * llamador.
+ *
+ * $args opcionales (WP 5.5+):
+ *   id  string  Ancla de la seccion. La home la usa para el "See the
+ *                menu" del hero (#menu); las demas paginas no necesitan
+ *                una.
  */
 
+$tm_tg_id         = isset($args['id']) ? $args['id'] : '';
 $tm_tg_order_url = tm_default_order_url();
 
+/**
+ * Recortes sin fondo (PNG con alpha real, mismo criterio que el resto
+ * del sitio), reemplazan las fotos de estudio con fondo blanco de
+ * antes. Jamón y Pavo comparten una sola foto (asi la mando el
+ * cliente, un solo archivo "JamonPavo..."), mismo caso que Nachos &
+ * Fries en el bloque de categorias.
+ *
+ * Precio e ingredientes salen del menu real de Toast (la pagina de
+ * pedido de la sucursal de McDowell), asi que el modal de cada torta
+ * (TortaModal, ver src/scripts) muestra lo mismo que un cliente ve ahi
+ * antes de ordenar. "Pierna con Piña" no existe como item aparte en
+ * Toast -- ahi es la misma composicion que "Hawaiiana" (pierna +
+ * piña), asi que comparten descripcion.
+ */
 $tm_tg_tortas = array(
-  array('Cubana',             tm_upload('2026/09/TortaCubana--scaled.jpg')),
-  array('Asadera',            tm_upload('2026/09/TortaAsadera-scaled.jpg')),
-  array('Jamón',              tm_upload('2026/09/TortaJamon-scaled.jpg')),
-  array('Pavo',               tm_upload('2026/09/TortaPavo-scaled.jpg')),
-  array('Pierna',             tm_upload('2026/09/TortaPierna-scaled.jpg')),
-  array('Pierna con Piña',    tm_upload('2026/09/TortaPiernaPina--scaled.jpg')),
-  array('Pollo en Escabeche', tm_upload('2026/09/TortaPolloEscabeche--scaled.jpg')),
-  array('Pollo Rojo',         tm_upload('2026/09/TortaPolloRojo-scaled.jpg')),
-  array('Hawaiana',           tm_upload('2026/09/TortaHawaiiana--scaled.jpg')),
-  array('Vegetariana',        tm_upload('2026/09/TortaVegetariana-scaled.jpg')),
+  array(
+    'Cubana', tm_upload('2026/09/TortaCubanaRecortada-scaled.png'), '$12.90',
+    'Savory pulled pork, ham and melted American cheese, with lettuce, avocado, tomato, onion, jalapeños and mayo.',
+  ),
+  array(
+    'Asadera', tm_upload('2026/09/TortaAsaderaRecortada-scaled.png'), '$14.00',
+    '8oz of carne asada with melted queso asadero, grilled onions, raw white onion, cilantro, avocado and mayo. Grilled "a la plancha" (on the griddle), not oven roasted.',
+  ),
+  array(
+    'Jamón', tm_upload('2026/09/TortaJamonPavoRecortada-scaled.png'), '$12.10',
+    'Sliced ham and cheese, with lettuce, avocado, tomato, onion, jalapeños and mayo.',
+  ),
+  array(
+    'Pavo', tm_upload('2026/09/TortaJamonPavoRecortada-scaled.png'), '$12.10',
+    'Sliced turkey, with lettuce, avocado, tomato, onion, jalapeños and mayo.',
+  ),
+  array(
+    'Pierna', tm_upload('2026/09/TortaPiernaRecortada-scaled.png'), '$12.10',
+    'Savory pulled pork, with lettuce, avocado, tomato, onion, jalapeños and mayo.',
+  ),
+  array(
+    'Pierna con Piña', tm_upload('2026/09/PiernaPinaRecortada-scaled.png'), '$13.40',
+    'Savory pulled pork with pineapple slices, lettuce, avocado, tomato, onion, jalapeños and mayo.',
+  ),
+  array(
+    'Pollo en Escabeche', tm_upload('2026/09/PolloEscabecheRecortada-scaled.png'), '$12.35',
+    'Pickled shredded chicken in a tangy oil-and-vinegar mixture with seasonings, lettuce, avocado, tomato, onion, jalapeños and mayo.',
+  ),
+  array(
+    'Pollo Rojo', tm_upload('2026/09/TortaPolloRojoRecortada-scaled.png'), '$12.35',
+    'Shredded chicken in a savory tomato-based red sauce, with lettuce, avocado, tomato, onion, jalapeños and mayo.',
+  ),
+  array(
+    'Hawaiana', tm_upload('2026/09/TortaHawaianaRecortada-scaled.png'), '$13.40',
+    'Savory pulled pork with pineapple slices, lettuce, avocado, tomato, onion, jalapeños and mayo.',
+  ),
+  array(
+    'Vegetariana', tm_upload('2026/09/TortaVegetarianaRecortada-scaled.png'), '$12.10',
+    'No meat: lettuce, avocado, tomato, onion, jalapeños, cheese and mayo.',
+  ),
 );
 
 // Dos renglones de cinco, cada uno su propia cinta en loop continuo, en
@@ -35,36 +85,80 @@ $tm_tg_tortas = array(
 $tm_tg_row1 = array_slice($tm_tg_tortas, 0, 5);
 $tm_tg_row2 = array_slice($tm_tg_tortas, 5, 5);
 
-$tm_tg_render_torta = function ($tm_torta) {
-  list($tm_torta_name, $tm_torta_image) = $tm_torta; ?>
+// Un slug por torta (sin acentos/espacios) para conectar el boton de
+// cada tarjeta con su entrada en el JSON que lee TortaModal.
+$tm_tg_slug = function ($tm_name) {
+  return sanitize_title($tm_name);
+};
+
+/**
+ * $tm_is_duplicate: esta pista es la copia "de relleno" del loop
+ * infinito (ver mas abajo), no la que un lector de pantalla debe leer.
+ * Antes esa copia iba con inert, que ademas de sacarla del arbol de
+ * accesibilidad tambien le apaga el click -- funcionaba bien cuando
+ * adentro solo habia imagen y texto sueltos, pero ahora que cada
+ * torta es un boton, la mitad de lo que el usuario ve en pantalla en
+ * cualquier momento (el loop alterna cual copia esta visible) quedaba
+ * muerta al click. Ahora la copia sigue oculta para lectores de
+ * pantalla (aria-hidden en el <ul>) y fuera del tab con tabindex="-1",
+ * pero el click si funciona.
+ */
+$tm_tg_render_torta = function ($tm_torta, $tm_is_duplicate = false) use ($tm_tg_slug) {
+  list($tm_torta_name, $tm_torta_image, $tm_torta_price, $tm_torta_ingredients) = $tm_torta; ?>
   <li class="w-52 shrink-0 sm:w-64 lg:w-72">
-    <div class="tm-placeholder aspect-square overflow-hidden rounded-xl border border-hueso-400 shadow-xl shadow-carbon-500/10">
+    <!-- Boton, no solo <li>: asi abre el modal con teclado igual que con
+         mouse, sin tener que agregarle tabindex/onclick a un elemento
+         que no es interactivo por naturaleza. Sin card ni caja en la
+         foto: es un recorte sin fondo (PNG con alpha real), mismo
+         criterio que el resto de los recortes del sitio -- nada de
+         object-cover ni aspect-square forzado (eso le cortaria pedazos
+         al recorte), solo drop-shadow siguiendo el contorno real de la
+         torta. -->
+    <button
+      type="button"
+      data-tm-torta="<?php echo esc_attr($tm_tg_slug($tm_torta_name)); ?>"
+      <?php if ($tm_is_duplicate) : ?>tabindex="-1"<?php endif; ?>
+      class="tm-card-bouncy block w-full cursor-pointer text-left"
+    >
       <img
         src="<?php echo esc_url($tm_torta_image); ?>"
         alt="<?php echo esc_attr($tm_torta_name); ?> torta"
         loading="lazy"
-        class="h-full w-full object-cover"
+        class="w-full drop-shadow-[0_15px_18px_rgba(43,43,43,0.2)]"
       >
-    </div>
-    <p class="mt-3 text-center text-base font-semibold text-carbon-400">
-      <?php echo esc_html($tm_torta_name); ?>
-    </p>
+      <p class="mt-3 text-center text-base font-semibold text-carbon-400">
+        <?php echo esc_html($tm_torta_name); ?>
+      </p>
+    </button>
   </li>
 <?php };
+
+// Mismos datos de arriba, aplanados para el modal (TortaModal.js): un
+// solo array de objetos {slug, name, image, price, ingredients} en vez
+// de que el componente tenga que reconstruir la forma desde $tm_tg_row1/2.
+$tm_tg_modal_items = array_map(function ($tm_torta) use ($tm_tg_slug) {
+  list($tm_name, $tm_image, $tm_price, $tm_ingredients) = $tm_torta;
+
+  return array(
+    'slug'        => $tm_tg_slug($tm_name),
+    'name'        => $tm_name,
+    'image'       => $tm_image,
+    'price'       => $tm_price,
+    'ingredients' => $tm_ingredients,
+  );
+}, $tm_tg_tortas);
 ?>
 <section
-  class="tm-tiles tm-tiles--pattern py-16 lg:py-24"
-  style="background-image: url('<?php echo esc_url(tm_upload('2026/09/Estampado.png')); ?>'); background-repeat: repeat; background-size: 2400px 1200px;"
+  <?php if ($tm_tg_id) : ?>id="<?php echo esc_attr($tm_tg_id); ?>"<?php endif; ?>
+  class="scroll-mt-24 bg-hueso-100 py-16 lg:py-24"
 >
-  <!-- Estampado.png es un mosaico de verdad (la imagen ya viene disenada
-       para repetirse sin costura), asi que va como background-repeat de
-       la seccion y no como <img class="tm-tiles__bg"> a sangre (esa clase
-       estira UNA imagen a lo cover, no repite un tile). .tm-tiles--pattern
-       sube el velo de .tm-tiles (::after) al 93%: un dibujo de lineas
-       distrae mas que una foto a la misma opacidad, y a este nivel el
-       estampado queda de fondo presente sin pelearse con el texto. -->
+  <!-- Antes llevaba el mosaico de Estampado.png de fondo (.tm-tiles con
+       el velo al 93%, ver .tm-tiles--pattern); el cliente pidio quitarlo
+       del todo y dejar la seccion en blanco liso, como cambio global:
+       este parcial es compartido (home y /tortas-club), asi que un solo
+       cambio aqui les llega a las dos. -->
   <div class="mx-auto max-w-7xl px-4 sm:px-6">
-    <h2 class="max-w-2xl font-display text-3xl leading-tight text-carbon-400 sm:text-4xl">
+    <h2 class="max-w-2xl tm-section-title">
       Every torta we make
     </h2>
     <p class="mt-3 max-w-xl text-carbon-300">
@@ -81,8 +175,8 @@ $tm_tg_render_torta = function ($tm_torta) {
     <ul class="tm-marquee__track gap-6 pr-6">
       <?php foreach ($tm_tg_row1 as $tm_torta) : $tm_tg_render_torta($tm_torta); endforeach; ?>
     </ul>
-    <ul class="tm-marquee__track gap-6 pr-6" inert aria-hidden="true">
-      <?php foreach ($tm_tg_row1 as $tm_torta) : $tm_tg_render_torta($tm_torta); endforeach; ?>
+    <ul class="tm-marquee__track gap-6 pr-6" aria-hidden="true">
+      <?php foreach ($tm_tg_row1 as $tm_torta) : $tm_tg_render_torta($tm_torta, true); endforeach; ?>
     </ul>
   </div>
 
@@ -90,8 +184,8 @@ $tm_tg_render_torta = function ($tm_torta) {
     <ul class="tm-marquee__track tm-marquee__track--reverse gap-6 pr-6">
       <?php foreach ($tm_tg_row2 as $tm_torta) : $tm_tg_render_torta($tm_torta); endforeach; ?>
     </ul>
-    <ul class="tm-marquee__track tm-marquee__track--reverse gap-6 pr-6" inert aria-hidden="true">
-      <?php foreach ($tm_tg_row2 as $tm_torta) : $tm_tg_render_torta($tm_torta); endforeach; ?>
+    <ul class="tm-marquee__track tm-marquee__track--reverse gap-6 pr-6" aria-hidden="true">
+      <?php foreach ($tm_tg_row2 as $tm_torta) : $tm_tg_render_torta($tm_torta, true); endforeach; ?>
     </ul>
   </div>
 
@@ -106,3 +200,16 @@ $tm_tg_render_torta = function ($tm_torta) {
     </div>
   </div>
 </section>
+
+<!-- Modal de ingredientes por torta. Vive fuera del <section> pero
+     dentro del parcial: un solo mount por pagina (este parcial solo se
+     llama una vez por plantilla), escucha clicks en cualquier
+     [data-tm-torta] via delegacion de eventos, asi que no le importa si
+     el boton que lo dispara esta en la primera pista o en su copia
+     duplicada del loop (ver nota en $tm_tg_render_torta sobre por que
+     esa copia ya no lleva inert). -->
+<div
+  id="tm-torta-modal"
+  data-tortas="<?php echo esc_attr(wp_json_encode($tm_tg_modal_items, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE)); ?>"
+  data-order-url="<?php echo esc_url($tm_tg_order_url); ?>"
+></div>

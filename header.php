@@ -10,14 +10,12 @@
 
     <?php
       /**
-       * Plantillas cuyo contenido sube hasta el borde superior: no se les
-       * imprime el espaciador y el hero pasa por detras del navbar.
-       *
-       * Ojo, esto no obliga a que la barra sea transparente. El componente
-       * Navbar solo se vuelve transparente si encuentra [data-tm-hero] en el
-       * DOM. Una plantilla puede estar aqui y no llevar ese atributo: es lo
-       * que hay que hacer cuando el hero es claro, porque el texto del navbar
-       * va en hueso y sobre un fondo claro no aprueba contraste.
+       * El navbar ya no se vuelve transparente en ningun lado (antes lo
+       * hacia sobre el hero de estas plantillas); se quedo solo la otra
+       * mitad de lo que resolvia esta lista: que plantillas suben su
+       * contenido hasta el borde superior sin el espaciador generico de
+       * abajo, porque ya traen su propio padding-top pensado para
+       * despejar la barra fija (el hero, o el bloque que haga sus veces).
        */
       $tm_hero_templates = array(
         'home-template.php',
@@ -38,7 +36,7 @@
       }
     ?>
 
-    <div id="tm-navbar" data-transparent="<?php echo $tm_has_hero ? 'true' : 'false'; ?>"></div>
+    <div id="tm-navbar"></div>
 
     <!-- Riel de redes sociales, fijo a la izquierda. Mismo criterio de
          montaje que el navbar: un div vacio que React llena, position:fixed
@@ -47,13 +45,16 @@
 
     <?php
       /**
-       * Reserva de altura. Con hero no hace falta, porque el hero pasa por
-       * debajo de la barra flotante. Sin hero si, o el contenido queda tapado.
-       * Se suma el offset de la admin bar para que el calculo sirva tambien
-       * con sesion iniciada.
+       * Reserva de altura para las plantillas que no traen su propio
+       * padding-top: el navbar es fixed (sale del flujo), asi que sin
+       * esto su primer bloque de contenido queda tapado debajo de la
+       * barra. Su alto es una sola fila (--tm-header-h, 5rem) desde que
+       * se quito la fila superior que colapsaba con el scroll. Se suma
+       * el offset de la admin bar para que el calculo sirva tambien con
+       * sesion iniciada.
        */
       if (!$tm_has_hero) : ?>
-      <div style="height: calc(var(--tm-admin-h, 0px) + 9rem);" aria-hidden="true"></div>
+      <div style="height: calc(var(--tm-admin-h, 0px) + 5rem);" aria-hidden="true"></div>
     <?php endif; ?>
 
     <main id="main">

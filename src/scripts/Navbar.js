@@ -11,7 +11,6 @@ import {
   IconFacebook,
   IconGoogle,
   IconInstagram,
-  IconMail,
   IconMenu,
   IconMoped,
   IconPhone,
@@ -226,7 +225,7 @@ function LocationPanel({ t, locations, nearestId, onClose, triggerRef }) {
             <li key={location.id}>
               <div className="rounded-xl bg-carbon-500 p-3.5">
                 {isNearest && (
-                  <p className="tm-eyebrow mb-1.5 flex items-center gap-1 text-maiz-300">
+                  <p className="tm-eyebrow mb-1.5 flex items-center gap-1 text-accent-hover-soft">
                     <IconPin size={14} />
                     {t.closest}
                   </p>
@@ -306,7 +305,7 @@ function LocationPanel({ t, locations, nearestId, onClose, triggerRef }) {
 /*  Navbar                                                             */
 /* ------------------------------------------------------------------ */
 
-export default function Navbar({ transparent = false }) {
+export default function Navbar() {
   const cfg = getConfig();
 
   /**
@@ -329,45 +328,12 @@ export default function Navbar({ transparent = false }) {
   const brand = getBrand();
   const t = { ...COPY[cfg.lang], langKey: cfg.lang };
 
-  const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [panelOpen, setPanelOpen] = useState(false);
   const [coords, setCoords] = useState(null);
   const [askedForLocation, setAskedForLocation] = useState(false);
-  const [heroPresent, setHeroPresent] = useState(false);
 
   const ctaRef = useRef(null);
-
-  /**
-   * Red de seguridad. PHP dice si la plantilla deberia tener hero, pero la
-   * barra solo se vuelve transparente si el hero existe de verdad en el DOM.
-   * Sin esto, cualquier plantilla mal marcada deja el logo blanco sobre fondo
-   * blanco y la barra tapando el contenido.
-   */
-  useEffect(() => {
-    setHeroPresent(Boolean(document.querySelector("[data-tm-hero]")));
-  }, []);
-
-  /* Estado de scroll. El brief fija el umbral en 80px. */
-  useEffect(() => {
-    let frame = null;
-
-    function onScroll() {
-      if (frame) return;
-      frame = window.requestAnimationFrame(() => {
-        setScrolled(window.scrollY > 80);
-        frame = null;
-      });
-    }
-
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-      if (frame) window.cancelAnimationFrame(frame);
-    };
-  }, []);
 
   useScrollLock(menuOpen || panelOpen);
 
@@ -416,9 +382,12 @@ export default function Navbar({ transparent = false }) {
   }, [requestLocation]);
 
   /**
-   * El panel ya no lo abre el CTA del navbar, que ahora va directo a Toast.
-   * Sigue vivo y lo abren los CTA de las plantillas marcados con
-   * data-tm-order-cta (hero de la home, cierre de Locations).
+   * Abre el panel de seleccion de local. La usa directo el CTA del
+   * navbar (ver mas abajo) y tambien cualquier CTA de las plantillas
+   * .php marcado con data-tm-order-cta (por ahora solo el cierre de
+   * /locations, "Find my shop") via el listener de arriba -- dos
+   * caminos al mismo resultado, uno adentro del componente y otro por
+   * delegacion de eventos para markup que React no controla.
    */
   function openPanel() {
     setMenuOpen(false);
@@ -436,20 +405,6 @@ export default function Navbar({ transparent = false }) {
     ? ordered.find((location) => getStatus(location).isOpen) || ordered[0]
     : null;
   const utilityStatus = utilityLocation ? getStatus(utilityLocation) : null;
-
-  /* Transparente solo donde hay hero, y solo hasta pasar el umbral de scroll. */
-  const isTransparent = transparent && heroPresent && !scrolled && !menuOpen;
-  /* La fila superior lleva el logo, asi que se muestra siempre que no haya
-     scroll, aunque falte el geotag. */
-  const showTopRow = !scrolled;
-
-  /* Tinta del contenido del navbar: hueso sobre el hero (isTransparent),
-     carbon sobre el fondo claro solido. Un solo lugar para decidirlo en
-     vez de repetir el ternario en cada link. */
-  const navTone = isTransparent ? "text-hueso-100" : "text-carbon-400";
-  const navHover = isTransparent ? "hover:text-maiz-300" : "hover:text-olivo-400";
-  const navUnderline = isTransparent ? "after:bg-maiz-300" : "after:bg-olivo-400";
-  const topRowLogo = isTransparent ? cfg.logoLight : cfg.logo;
 
   /* Redes disponibles. Las que no tengan URL simplemente no aparecen. */
   const socialLinks = [
@@ -478,33 +433,22 @@ export default function Navbar({ transparent = false }) {
     <>
       <a
         href="#main"
-        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[70] focus:rounded-lg focus:bg-maiz-300 focus:px-4 focus:py-2 focus:font-bold focus:text-carbon-400"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[70] focus:rounded-lg focus:bg-maiz-300 focus:px-4 focus:py-2 focus:font-bold focus:text-hueso-100"
       >
         {t.skip}
       </a>
 
-      <header
-        className={`tm-header fixed inset-x-0 z-50 transition-shadow duration-300 ${
-          isTransparent ? "" : "shadow-lg"
-        }`}
-      >
-        {/* Fondo en degradado, capa aparte y no background del header:
-            un background-image no hace fundido via transition-colors (eso
-            solo anima background-color), asi que el fundido de "aparece al
-            scrollear" sale de animar la opacity de esta capa en vez del
-            fondo directo. */}
-        <span
-          aria-hidden="true"
-          className={`tm-header-solid pointer-events-none absolute inset-0 -z-10 transition-opacity duration-300 ${
-            isTransparent ? "opacity-0" : "opacity-100"
-          }`}
-        />
-
-        {/* Elementos de apoyo, solo con el fondo claro puesto: sobre el
-            hero compiten con la foto, aca tienen aire de sobra en los
-            gutters del contenedor ancho. Reusan las mismas graficas del
-            footer, no hacia falta pedir mas URLs. */}
-        {!isTransparent && cfg.footerGraphics[0] && (
+      {/* Una sola fila, siempre solida y siempre pegada arriba: sin la
+          transparencia que llevaba sobre el hero, sin la fila superior
+          que colapsaba al hacer scroll y sin la insignia animada que
+          bajaba al centro (esas tres cosas se quitaron por pedido del
+          cliente). El logo pasa a la izquierda, al lugar que antes
+          ocupaba el geotag; el geotag se saco de aca, pero sigue
+          disponible en el menu movil. */}
+      <header className="tm-header tm-header-solid fixed inset-x-0 z-50 shadow-lg">
+        {/* Elementos de apoyo, mismas graficas del footer, no hacia
+            falta pedir mas URLs. */}
+        {cfg.footerGraphics[0] && (
           <img
             src={cfg.footerGraphics[0]}
             alt=""
@@ -512,7 +456,7 @@ export default function Navbar({ transparent = false }) {
             className="pointer-events-none absolute left-2 top-1/2 hidden w-10 -translate-y-1/2 opacity-20 xl:block"
           />
         )}
-        {!isTransparent && cfg.footerGraphics[1] && (
+        {cfg.footerGraphics[1] && (
           <img
             src={cfg.footerGraphics[1]}
             alt=""
@@ -521,297 +465,108 @@ export default function Navbar({ transparent = false }) {
           />
         )}
 
-        {/* ------------------------------------------------------------
-            Fila superior. Telefono y correo a la izquierda, logo al centro,
-            redes a la derecha. Colapsa completa al hacer scroll.
-            ------------------------------------------------------------ */}
-        <div
-          className={`overflow-hidden transition-all duration-300 ${
-            showTopRow ? "h-20 opacity-100" : "h-0 opacity-0"
-          } ${
-            isTransparent
-              ? "border-b border-white/20"
-              : "border-b border-carbon-400/10 bg-hueso-200/70"
-          }`}
-          aria-hidden={!showTopRow}
-        >
-          <div className={`mx-auto grid h-20 max-w-7xl grid-cols-[1fr_auto_1fr] items-center gap-3 px-4 text-xs sm:gap-4 sm:px-6 ${navTone}`}>
-            {/* Izquierda: telefono y correo. Oculto en movil: el telefono
-                se muda al menu de pantalla completa y a la barra fija de
-                abajo (ver tm-mobile-cta-bar), asi que aca solo hace falta
-                desde lg. */}
-            <div className="hidden min-w-0 items-center gap-4 lg:flex">
-              {utilityLocation && (
-                <a
-                  href={`tel:${utilityLocation.phone}`}
-                  data-tm-phone={utilityLocation.id}
-                  aria-label={`${t.call} ${utilityLocation.phoneLabel}`}
-                  className={`flex shrink-0 items-center gap-1.5 transition-colors ${navHover}`}
-                >
-                  <IconPhone size={14} />
-                  <span className="hidden sm:inline">
-                    {utilityLocation.phoneLabel}
-                  </span>
-                </a>
-              )}
+        {/* grid en movil (3 columnas: relleno invisible / logo / hamburguesa,
+            el mismo ancho a los lados para que el logo quede centrado de
+            verdad), flex de siempre desde lg: ahi ya no hace falta
+            centrar nada, el layout vuelve a logo-izquierda + links +
+            CTA-derecha con justify-between. */}
+        <div className="mx-auto grid h-20 max-w-7xl grid-cols-[2.5rem_1fr_2.5rem] items-center gap-4 px-4 sm:px-6 lg:flex lg:justify-between">
+          {/* Relleno invisible, mismo ancho que la hamburguesa: sin esto
+              el logo se centra respecto de un renglon donde solo el lado
+              derecho pesa (la hamburguesa) y queda corrido hacia la
+              izquierda. Solo existe en movil. */}
+          <div aria-hidden="true" className="lg:hidden" />
 
-              {brand.email && (
-                <a
-                  href={`mailto:${brand.email}`}
-                  aria-label={t.emailAria}
-                  className={`hidden min-w-0 items-center gap-1.5 transition-colors md:flex ${navHover}`}
-                >
-                  <IconMail size={14} />
-                  <span className="truncate">{brand.email}</span>
-                </a>
+          {/* Logo, centrado en movil, izquierda desde lg */}
+          <a
+            href={cfg.homeUrl}
+            aria-label={t.home}
+            className="flex w-full shrink-0 items-center justify-center lg:w-auto lg:justify-start"
+          >
+            {cfg.logo ? (
+              <img
+                src={cfg.logo}
+                alt="Tortas Manantial"
+                width="200"
+                height="60"
+                className="h-14 w-auto sm:h-16"
+              />
+            ) : (
+              <span className="font-display text-lg font-bold leading-none text-carbon-400 sm:text-xl">
+                Tortas Manantial
+              </span>
+            )}
+          </a>
+
+          {/* Links, desde lg. Ya no se parten en dos mitades con un
+              hueco al centro: eso era para dejarle sitio a la insignia
+              que bajaba ahi, y esa animacion se quito. */}
+          <nav
+            className="hidden lg:flex lg:items-center lg:gap-7"
+            aria-label={t.langKey === "es" ? "Principal" : "Primary"}
+          >
+            {t.links.map((link) => (
+              <a
+                key={link.href}
+                {...linkProps(link)}
+                className="relative text-[1.05rem] font-medium text-carbon-400 transition-colors after:absolute after:-bottom-1.5 after:left-0 after:h-0.5 after:w-0 after:bg-olivo-400 after:transition-all hover:text-olivo-400 hover:after:w-full"
+              >
+                {link.label}
+              </a>
+            ))}
+          </nav>
+
+          {/* CTA + hamburguesa, derecha */}
+          <div className="flex w-full shrink-0 items-center justify-end gap-3 lg:w-auto lg:justify-normal">
+            {/* El div se queda siempre montado aunque el boton este oculto
+                en movil: de ahi cuelga el panel de local, y ese panel lo
+                puede disparar cualquier data-tm-order-cta de la pagina,
+                no solo este boton.
+
+                Este boton en particular ya no va directo a Toast: por
+                pedido del cliente, abre el mismo panel de seleccion de
+                local que "Find my shop" en el cierre de /locations (ahi
+                el usuario ve sus 4 opciones ordenadas por cercania en
+                vez de caer siempre en el local de McDowell). openPanel
+                hace lo mismo que el listener de data-tm-order-cta, solo
+                que sin pasar por el evento de click en document: este
+                boton ya vive dentro del componente que tiene el estado. */}
+            <div className="relative">
+              <button
+                ref={ctaRef}
+                type="button"
+                onClick={openPanel}
+                className="tm-btn tm-btn-relief tm-btn-primary hidden px-5 py-3 text-[1.05rem] lg:inline-flex"
+              >
+                <IconBag size={18} />
+                {t.cta}
+              </button>
+
+              {panelOpen && (
+                <LocationPanel
+                  t={t}
+                  locations={ordered}
+                  nearestId={nearestId}
+                  onClose={() => setPanelOpen(false)}
+                  triggerRef={ctaRef}
+                />
               )}
             </div>
 
-            {/* Centro: logo en reposo. col-start-2 explicito porque en
-                movil el telefono y las redes de los costados estan en
-                display:none: sin el, el grid los saca de la fila de
-                acomodo automatico y el logo cae en la primera columna
-                libre (la 1) en vez de quedarse en el medio. */}
-            <a
-              href={cfg.homeUrl}
-              aria-label={t.home}
-              tabIndex={showTopRow ? 0 : -1}
-              className="col-start-2 flex shrink-0 items-center justify-center"
+            {/* Hamburguesa, solo movil */}
+            <button
+              type="button"
+              onClick={() => {
+                setPanelOpen(false);
+                setMenuOpen((open) => !open);
+              }}
+              aria-expanded={menuOpen}
+              aria-controls="tm-mobile-menu"
+              aria-label={menuOpen ? t.closeMenu : t.openMenu}
+              className="rounded-lg p-2 text-carbon-400 lg:hidden"
             >
-              {topRowLogo ? (
-                <img
-                  src={topRowLogo}
-                  alt="Tortas Manantial"
-                  width="200"
-                  height="60"
-                  className="h-14 w-auto sm:h-16"
-                />
-              ) : (
-                <span className={`font-display text-lg font-bold leading-none sm:text-xl ${navTone}`}>
-                  Tortas Manantial
-                </span>
-              )}
-            </a>
-
-            {/* Derecha: redes. Solo se pintan las que tengan URL. Oculto en
-                movil, se muda al menu de pantalla completa. */}
-            <ul
-              className="hidden shrink-0 items-center justify-end gap-3 lg:flex"
-              aria-label={t.social}
-            >
-              {socialLinks.map((item) => (
-                <li key={item.key}>
-                  <a
-                    href={item.href}
-                    target="_blank"
-                    rel="noopener"
-                    aria-label={item.label}
-                    tabIndex={showTopRow ? 0 : -1}
-                    className={`block transition-colors ${navHover}`}
-                  >
-                    <item.Icon size={18} />
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-
-        {/* ------------------------------------------------------------
-            Barra principal. Geotag a la izquierda, links al centro,
-            CTA a la derecha.
-            ------------------------------------------------------------ */}
-        {/* Rejilla de tres columnas con laterales iguales (1fr cada una).
-              Con justify-between los links se corrian del centro segun lo
-              largo que fuera el geotag, y la insignia, que va en left-1/2,
-              nunca coincidia con el hueco. */}
-          <div className="relative mx-auto grid h-16 max-w-7xl grid-cols-[1fr_auto_1fr] items-center gap-4 px-4 sm:px-6">
-          {/* Geotag del local abierto o mas cercano.
-              Va a Maps (directionsUrl), no a pageUrl: el icono es un pin y
-              lo que la gente espera al tocarlo es como llegar, no la ficha
-              del local (esa ya esta en el link "Locations" del menu).
-              Oculto en movil, se muda al menu de pantalla completa. */}
-          {utilityLocation ? (
-            <a
-              href={utilityLocation.directionsUrl}
-              target="_blank"
-              rel="noopener"
-              data-tm-directions={utilityLocation.id}
-              className={`col-start-1 hidden min-w-0 items-center gap-1.5 text-[0.9rem] transition-colors sm:text-[1.05rem] lg:flex ${navTone} ${navHover}`}
-            >
-              <IconPin size={15} />
-
-              {/* Un solo texto: esta "a" solo se muestra desde lg (ver
-                  className de arriba), asi que la version corta que
-                  llevaba para movil ya no aplica. */}
-              <span className="truncate">
-                {utilityStatus.isOpen
-                  ? t.utility(
-                      utilityLocation.name[t.langKey],
-                      utilityStatus.closesAt
-                    )
-                  : `${utilityLocation.name[t.langKey]}, ${t.opensAt(
-                      utilityStatus.opensAt
-                    )}`}
-              </span>
-
-              <span
-                className={`inline-block h-1.5 w-1.5 shrink-0 rounded-full ${
-                  utilityStatus.isOpen ? "bg-olivo-300" : "bg-carbon-300"
-                }`}
-                aria-hidden="true"
-              />
-            </a>
-          ) : (
-            <span />
-          )}
-
-          {/* Links, centro, desde lg.
-              Van partidos en dos mitades con un hueco al centro: es donde
-              baja la insignia al hacer scroll. El hueco se abre y se cierra
-              con ella, asi que sin scroll los links quedan juntos. */}
-          <nav
-            className="hidden lg:col-start-2 lg:flex lg:items-center lg:justify-self-center"
-            aria-label={t.langKey === "es" ? "Principal" : "Primary"}
-          >
-            {/* Mitad izquierda, anclada a la derecha de su columna */}
-            <ul className="flex w-52 items-center justify-end gap-7">
-              {t.links.slice(0, Math.ceil(t.links.length / 2)).map((link) => (
-                <li key={link.href}>
-                  <a
-                    {...linkProps(link)}
-                    className={`relative text-[1.05rem] font-semibold transition-colors after:absolute after:-bottom-1.5 after:left-0 after:h-0.5 after:w-0 after:transition-all hover:after:w-full ${navTone} ${navHover} ${navUnderline}`}
-                  >
-                    {link.label}
-                  </a>
-                </li>
-              ))}
-
-            </ul>
-
-            {/* Hueco de la insignia. Se abre al hacer scroll, que es cuando
-                el circulo baja a ocuparlo. */}
-            <div
-              aria-hidden="true"
-              className={`shrink-0 transition-all duration-300 ${
-                scrolled ? "w-28" : "w-8"
-              }`}
-            />
-
-            {/* Mitad derecha, anclada a la izquierda de su columna */}
-            <ul className="flex w-52 items-center justify-start gap-7">
-              {t.links.slice(Math.ceil(t.links.length / 2)).map((link) => (
-                <li key={link.href}>
-                  <a
-                    {...linkProps(link)}
-                    className={`relative text-[1.05rem] font-semibold transition-colors after:absolute after:-bottom-1.5 after:left-0 after:h-0.5 after:w-0 after:transition-all hover:after:w-full ${navTone} ${navHover} ${navUnderline}`}
-                  >
-                    {link.label}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </nav>
-
-          {/* CTA. Oculto en movil (se muda al menu de pantalla completa y a
-              la barra fija de abajo, ver tm-mobile-cta-bar); desde lg ocupa
-              la columna derecha, junto a los links. El div se queda
-              siempre montado aunque el boton este oculto: de ahi cuelga el
-              panel de local, y ese panel lo puede disparar cualquier
-              data-tm-order-cta de la pagina, no solo este boton. */}
-          <div className="relative col-start-2 justify-self-center lg:col-start-3 lg:justify-self-end">
-            <a
-              ref={ctaRef}
-              href={cfg.orderUrl}
-              target="_blank"
-              rel="noopener"
-              data-tm-order="default"
-              data-tm-channel="toast"
-              className={`tm-btn tm-btn-relief tm-btn-primary hidden px-5 py-3 text-[1.05rem] lg:inline-flex ${
-                isTransparent ? "tm-btn-primary-on-dark" : ""
-              }`}
-            >
-              {t.cta}
-            </a>
-
-            {panelOpen && (
-              <LocationPanel
-                t={t}
-                locations={ordered}
-                nearestId={nearestId}
-                onClose={() => setPanelOpen(false)}
-                triggerRef={ctaRef}
-              />
-            )}
-          </div>
-
-          {/* Hamburguesa, pegada al borde derecho */}
-          <button
-            type="button"
-            onClick={() => {
-              setPanelOpen(false);
-              setMenuOpen((open) => !open);
-            }}
-            aria-expanded={menuOpen}
-            aria-controls="tm-mobile-menu"
-            aria-label={menuOpen ? t.closeMenu : t.openMenu}
-            className={`col-start-3 -mr-2 justify-self-end rounded-lg p-2 lg:hidden ${navTone}`}
-          >
-            {menuOpen ? <IconClose /> : <IconMenu />}
-          </button>
-
-          {/* ------------------------------------------------------------
-              Insignia. Al hacer scroll el logo se encierra en un circulo
-              anclado al borde SUPERIOR de la barra, asi que la mitad de
-              abajo asoma y la de arriba queda dentro. Colgado del borde
-              inferior se veia suelto sobre el hero.
-
-              Es un segundo elemento y no el mismo logo de la fila de arriba:
-              mover un nodo entre dos contenedores con layouts distintos no
-              se puede animar de forma estable.
-
-              El circulo se arma como una torta en corte: dos rodajas
-              (.tm-torta-slice) asoman detras en diagonal, y el logo
-              "posa" en el circulo del frente. Las rodajas van como
-              hermanas del link y no como pseudo-elementos suyos porque
-              un pseudo-elemento no puede pintarse detras del propio
-              fondo de su dueno, que es justo el truco que hacia
-              funcionar esto con box-shadow. Con hermanas, el fondo
-              opaco del link de encima las tapa salvo en el borde que
-              asoma, que es el efecto que buscamos.
-              ------------------------------------------------------------ */}
-          <div
-            aria-hidden="true"
-            className={`tm-logo-badge-wrap absolute left-1/2 top-0 z-10 h-20 w-20 -translate-x-1/2 lg:h-24 lg:w-24 ${
-              scrolled ? "scale-100 opacity-100" : "scale-90 opacity-0"
-            }`}
-          >
-            <span className="tm-torta-slice tm-torta-slice--bottom"></span>
-            <span className="tm-torta-slice tm-torta-slice--filling"></span>
-
-            <a
-              href={cfg.homeUrl}
-              aria-label={t.home}
-              aria-hidden={!scrolled}
-              tabIndex={scrolled ? 0 : -1}
-              className={`tm-logo-badge absolute inset-0 flex items-center justify-center rounded-full p-3.5 ${
-                scrolled ? "pointer-events-auto" : "pointer-events-none"
-              }`}
-            >
-              {cfg.logoLight ? (
-                <img
-                  src={cfg.logoLight}
-                  alt=""
-                  width="200"
-                  height="60"
-                  className="h-auto w-full"
-                />
-              ) : (
-                <span className="text-center font-display text-xs font-bold leading-none text-hueso-100">
-                  TM
-                </span>
-              )}
-            </a>
+              {menuOpen ? <IconClose /> : <IconMenu />}
+            </button>
           </div>
         </div>
       </header>
@@ -832,7 +587,7 @@ export default function Navbar({ transparent = false }) {
                   <a
                     {...linkProps(link)}
                     onClick={() => setMenuOpen(false)}
-                    className="block py-5 font-display text-2xl text-hueso-100 transition-colors hover:text-maiz-300"
+                    className="block py-5 font-display text-2xl text-hueso-100 transition-colors hover:text-accent-hover-soft"
                   >
                     {link.label}
                   </a>
@@ -842,7 +597,7 @@ export default function Navbar({ transparent = false }) {
                 <a
                   href="/careers"
                   onClick={() => setMenuOpen(false)}
-                  className="block py-5 font-display text-2xl text-hueso-100 transition-colors hover:text-maiz-300"
+                  className="block py-5 font-display text-2xl text-hueso-100 transition-colors hover:text-accent-hover-soft"
                 >
                   {t.langKey === "es" ? "Trabaja con Nosotros" : "Careers"}
                 </a>
@@ -861,7 +616,7 @@ export default function Navbar({ transparent = false }) {
                 rel="noopener"
                 data-tm-directions={utilityLocation.id}
                 onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-1.5 text-sm text-hueso-100 transition-colors hover:text-maiz-300"
+                className="flex items-center gap-1.5 text-sm text-hueso-100 transition-colors hover:text-accent-hover-soft"
               >
                 <IconPin size={15} />
                 <span className="truncate">
@@ -895,7 +650,7 @@ export default function Navbar({ transparent = false }) {
                 href={`tel:${utilityLocation.phone}`}
                 data-tm-phone={utilityLocation.id}
                 onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2 text-sm text-hueso-100 transition-colors hover:text-maiz-300"
+                className="flex items-center gap-2 text-sm text-hueso-100 transition-colors hover:text-accent-hover-soft"
               >
                 <IconPhone size={16} />
                 {utilityLocation.phoneLabel}
@@ -911,7 +666,7 @@ export default function Navbar({ transparent = false }) {
                       target="_blank"
                       rel="noopener"
                       aria-label={item.label}
-                      className="block text-hueso-100 transition-colors hover:text-maiz-300"
+                      className="block text-hueso-100 transition-colors hover:text-accent-hover-soft"
                     >
                       <item.Icon size={20} />
                     </a>

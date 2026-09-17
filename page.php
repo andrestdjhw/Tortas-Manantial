@@ -12,7 +12,7 @@ get_header(); ?>
 <!-- Migas de pan -->
 <nav class="tm-weave" aria-label="Breadcrumb">
   <ol class="mx-auto flex max-w-7xl gap-2 px-4 py-3 text-xs text-carbon-200 sm:px-6">
-    <li><a href="<?php echo esc_url(home_url('/')); ?>" class="hover:text-maiz-300">Home</a></li>
+    <li><a href="<?php echo esc_url(home_url('/')); ?>" class="hover:text-accent-hover-soft">Home</a></li>
     <li aria-hidden="true">/</li>
     <li class="text-hueso-100" aria-current="page"><?php the_title(); ?></li>
   </ol>
@@ -21,7 +21,7 @@ get_header(); ?>
 <article class="bg-hueso-100 py-16 lg:py-24">
   <div class="mx-auto max-w-3xl px-4 sm:px-6">
     <?php while (have_posts()) : the_post(); ?>
-      <h1 class="font-display text-4xl leading-tight text-carbon-400 sm:text-5xl">
+      <h1 class="font-display uppercase text-4xl leading-tight text-carbon-400 sm:text-5xl">
         <?php the_title(); ?>
       </h1>
 

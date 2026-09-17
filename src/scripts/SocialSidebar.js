@@ -3,8 +3,9 @@ import { BRAND } from "./locations";
 import { IconFacebook, IconGoogle, IconInstagram, IconTikTok } from "./icons";
 
 /**
- * Riel flotante de redes sociales, pegado al borde izquierdo de la
- * ventana mientras se hace scroll. Vive aparte de Navbar y Footer porque
+ * Riel flotante de redes sociales, pegado al borde derecho de la
+ * ventana mientras se hace scroll (antes iba a la izquierda, se cambio
+ * por pedido del cliente). Vive aparte de Navbar y Footer porque
  * su logica de aparicion es distinta a la de ambos: no depende de si hay
  * scroll (como el navbar) ni esta atado al pie de pagina, sino de si el
  * hero de la plantilla ya salio de la vista.
@@ -120,10 +121,10 @@ export default function SocialSidebar() {
   return (
     <nav
       aria-label={t.follow}
-      className={`fixed left-4 top-1/2 z-20 hidden -translate-y-1/2 flex-col items-center gap-3 transition-all duration-500 ease-out sm:flex lg:left-6 ${
+      className={`fixed right-4 top-1/2 z-20 hidden -translate-y-1/2 flex-col items-center gap-3 transition-all duration-500 ease-out sm:flex lg:right-6 ${
         visible
           ? "translate-x-0 opacity-100"
-          : "pointer-events-none -translate-x-6 opacity-0"
+          : "pointer-events-none translate-x-6 opacity-0"
       }`}
     >
       <ul className="flex flex-col items-center gap-3">

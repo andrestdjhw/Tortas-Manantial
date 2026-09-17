@@ -82,7 +82,7 @@ $tm_fc_render_favorite = function ($tm_index, $tm_item, $tm_order_url) {
     >
   <?php endif; ?>
   <div class="mx-auto max-w-7xl px-4 sm:px-6">
-    <h2 class="max-w-2xl font-display text-3xl leading-tight text-carbon-400 sm:text-4xl">
+    <h2 class="max-w-2xl tm-section-title">
       The ones everybody comes back for
     </h2>
     <p class="mt-3 max-w-xl text-carbon-300">

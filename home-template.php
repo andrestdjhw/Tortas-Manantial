@@ -2,7 +2,13 @@
 /**
  * Template Name: Home
  *
- * Bloques 01 a 11 del Copy & Brief de la homepage.
+ * Bloques del Copy & Brief de la homepage. Los numeros de bloque no se
+ * corrieron al mover o quitar secciones (siguen sin corresponder 1 a 1
+ * con el orden real en pantalla), asi que se puede ubicar cada una en
+ * el documento externo aunque cambien de lugar entre plantillas.
+ * Bloques 07 (Tortas Club), 10 (Trabaja con Nosotros), 11 (FAQ) y 02
+ * (Barra de valor) se movieron a our-story-template.php por pedido del
+ * cliente, todo lo que va despues del bloque 09 (Instagram) en home.
  * El navbar (00) y el footer (12) son componentes de React.
  */
 
@@ -12,42 +18,53 @@
    Cada bloque tiene su fallback, asi que la pagina no se rompe.
    ========================================================================== */
 
-$tm_img_hero_video   = tm_upload('2026/08/TortasManantialHeroCompressed.mp4');
-$tm_img_hero_poster  = ''; // TODO: primer frame del video. Sin el, el hero se
-                           // ve en carbon plano hasta que el video empieza.
-$tm_img_fresh        = tm_upload('2026/08/Tortas.webp');
-$tm_img_story        = tm_upload('2026/08/TMFachada.webp');
+$tm_video_hero = tm_upload('2026/09/TortasManantialHeroCompressedSinAnimacion.mp4'); // Fondo del hero, en vez del remolino .tm-hero-swirl.
+
 /**
- * TODO: reemplazar por el feed real de Instagram (fotos y clips propios).
- * Mientras tanto son 4 tarjetas, no 6: con el mismo video repetido, 6
- * copias se notaban demasiado y ademas dejaban cada tarjeta chica. Con
- * 4 la grilla tiene menos columnas y cada una sale mas grande.
+ * Bloque 09b, CATERING Y TORTAS CLUB. Barra angosta despues de Instagram
+ * que solo empuja a la pagina propia de cada una (/catering,
+ * /tortas-club); ninguna de las dos repite el formulario completo aca.
+ * Las fotos son las mismas que ya usa cada pagina propia como foto
+ * principal, para no pedirle una tercera foto al cliente para lo mismo.
  */
-$tm_img_ig_video     = tm_upload('2026/09/4LocacionesListas.mp4');
-$tm_img_ig_1         = $tm_img_ig_video;
-$tm_img_ig_2         = $tm_img_ig_video;
-$tm_img_ig_3         = $tm_img_ig_video;
-$tm_img_ig_4         = $tm_img_ig_video;
+$tm_img_catering_promo = tm_upload('2026/09/BannerJobApplication-scaled.webp'); // Foto generica de catering (la pagina /catering ahora usa su propio slideshow en C2).
+$tm_img_club_promo     = tm_upload('2026/09/Catering1-scaled.jpg'); // Foto para la vitrina de Tortas Club, por pedido del cliente.
+$tm_img_catering_club_bg = tm_upload('2026/09/TortasFondo.png'); // Mismo fondo que llevan los bloques de formulario (K3 de /careers, C2 de /catering, etc.), por pedido del cliente.
+
+// Graficos de apoyo a los costados del FAQ de cierre. Mismo par que usa
+// el FAQ de /our-story.
+$tm_img_faq_left  = tm_upload('2026/09/02-Coco-Graphics-scaled.png');
+$tm_img_faq_right = tm_upload('2026/09/03-Coco-Graphics-scaled.png');
+
+/**
+ * Bloque 12, TRABAJA CON NOSOTROS. Cierra la home con el formulario de
+ * aplicacion, foto del equipo a un lado igual que en /careers (K3):
+ * mismo criterio, misma foto, para que la promesa "trabaja con nosotros"
+ * se vea igual sin importar donde el visitante la encuentre primero.
+ */
+$tm_img_job_team = tm_upload('2026/09/tortasmanantialteamweb.png');
+$tm_img_job_bg   = tm_upload('2026/09/TortasFondo.png'); // Mismo fondo detras del formulario que en /careers.
+
+/**
+ * Bloque 01c, CATEGORIAS. Fotos recortadas sin fondo, una por categoria.
+ * Nachos y Fries comparten una sola foto (asi la mando el cliente, un
+ * archivo "NACHOS_FRIES..."), asi que esas dos categorias se unieron en
+ * "Nachos & Fries" mas abajo en vez de repetir la misma imagen dos veces
+ * bajo nombres distintos.
+ */
+$tm_img_cat_tortas       = tm_upload('2026/09/TortasCategorySection-scaled.png');
+$tm_img_cat_sandwiches   = tm_upload('2026/09/SANDWICHES_Category_Section-scaled.png');
+$tm_img_cat_nachos_fries = tm_upload('2026/09/NACHOS_FRIES_Category_Section--scaled.png');
+$tm_img_cat_desserts     = tm_upload('2026/09/DESERTS_Category_Section-scaled.png');
+$tm_img_cat_aguas        = tm_upload('2026/09/AGUAS_FRESCAS_Category_Section-scaled.png');
+$tm_img_cat_licuados     = tm_upload('2026/09/LICUADOS_Category_Section-scaled.png');
+$tm_img_cat_jugos        = tm_upload('2026/09/JUGOS_Category_Section-scaled.png');
+
 
 $tm_img_bg           = tm_upload('2026/09/FondoVerde.png'); // Fondo de las secciones .tm-tiles.
 // Mismo video-loop del hero de /locations, ahora de fondo del bloque 06.
 $tm_img_locations_video  = tm_upload('2026/09/PhoenixSkyline-1.mp4');
 $tm_img_locations_poster = tm_upload('2026/09/LocationsMejorada.png'); // Se ve mientras carga el video.
-$tm_img_club_bg      = tm_upload('2026/09/TortasFondo.png'); // Fondo de la banda en maiz de Tortas Club.
-$tm_img_facets_bg    = tm_upload('2026/09/TortasFondo.png'); // Mismo fondo, ahora en la barra de cierre (antes tm-facets).
-
-// Graficos de apoyo a los costados del FAQ. Mismo par en Tortas Club.
-$tm_img_faq_left     = tm_upload('2026/09/02-Coco-Graphics-scaled.png');
-$tm_img_faq_right    = tm_upload('2026/09/03-Coco-Graphics-scaled.png');
-
-// Mismo grafico de apoyo, ahora como acento en la esquina del panel de
-// texto de los bloques 04 y 05 (el otro lado de cada uno es foto, ahi no
-// entra un acento sin taparla).
-$tm_img_fresh_bg     = tm_upload('2026/09/FondoAguasFrescas.png'); // Fondo del panel de texto de 04.
-$tm_img_story_accent_bl = tm_upload('2026/09/06-Coco-Graphics-scaled.png'); // Abajo-izquierda.
-$tm_img_story_accent_tl = tm_upload('2026/09/05-Coco-Graphics-scaled.png'); // Arriba-izquierda.
-$tm_img_story_accent_tr = tm_upload('2026/09/21-Coco-Graphics-scaled.png'); // Arriba-derecha.
-$tm_img_story_accent_br = tm_upload('2026/09/22-Coco-Graphics-scaled.png'); // Abajo-derecha.
 
 // Acentos de esquina del bloque 09 (Instagram), ahora que su fondo es
 // gris liso en vez del mosaico de .tm-tiles.
@@ -73,51 +90,57 @@ get_header(); ?>
 
 <!-- ============================================================
      01  HERO
-     El video y los scrims van sin z-index negativo a proposito: un hijo
-     en z negativo se pinta por debajo del fondo de su propio contenedor,
-     y el bg-carbon-400 de la seccion lo taparia. El orden lo dan el orden
-     del markup y el z-10 del contenido.
+     Video de fondo (en vez de .tm-hero-swirl, el remolino gris/blanco
+     de antes) con un velo oscuro encima (filtro overlay) para que el
+     texto siga leyendose parejo sin importar que tan clara o ocupada
+     salga cada escena del video. Al volver a fondo oscuro, el texto
+     vuelve a tinta clara y los botones recuperan el modificador
+     "-on-dark"/"-light" que usan el resto de los heroes oscuros del
+     sitio (our-story, tortas-club, locations).
      ============================================================ -->
 <section data-tm-hero class="relative flex min-h-[calc(100svh-3rem)] items-center overflow-hidden bg-carbon-400">
-  <?php if ($tm_img_hero_video) : ?>
+  <?php if ($tm_video_hero) : ?>
     <video
       class="absolute inset-0 h-full w-full object-cover"
       autoplay muted loop playsinline
       preload="auto"
       aria-hidden="true"
-      <?php if ($tm_img_hero_poster) : ?>poster="<?php echo esc_url($tm_img_hero_poster); ?>"<?php endif; ?>
     >
-      <source src="<?php echo esc_url($tm_img_hero_video); ?>" type="video/mp4">
+      <source src="<?php echo esc_url($tm_video_hero); ?>" type="video/mp4">
     </video>
-  <?php elseif ($tm_img_hero_poster) : ?>
-    <img
-      src="<?php echo esc_url($tm_img_hero_poster); ?>"
-      alt=""
-      class="absolute inset-0 h-full w-full object-cover"
-      fetchpriority="high"
-    >
   <?php endif; ?>
 
-  <!-- Un solo scrim parejo: con el texto centrado ya no hay un lado
-       "de texto" que necesite mas velo que el otro. Subido de 55% a 70%
-       por pedido del cliente: el video de fondo le restaba lectura al
-       texto blanco. -->
-  <div class="absolute inset-0 bg-carbon-500/70" aria-hidden="true"></div>
+  <!-- Filtro oscuro (velo), por pedido del cliente: sin esto el texto
+       claro pierde contraste en las escenas mas iluminadas del video. -->
+  <div class="absolute inset-0 bg-carbon-500/60" aria-hidden="true"></div>
 
-  <div class="relative z-10 mx-auto w-full max-w-7xl px-4 pb-14 pt-40 text-center sm:px-6">
-    <div class="mx-auto max-w-2xl">
-      <p class="tm-eyebrow text-maiz-300">Family owned in Phoenix since 2000</p>
+  <div class="relative z-10 mx-auto w-full max-w-7xl px-4 pb-14 pt-28 sm:px-6">
+    <!-- Centrado a todo lo ancho, ya no en 2 columnas: el cliente quito
+         la foto que iba a la derecha (antes un slideshow, balanceaba el
+         texto alineado a la izquierda), asi que el bloque entero pasa a
+         centrado, en vez de quedarse pegado a la izquierda sin nada del
+         otro lado. -->
+    <div class="mx-auto max-w-2xl text-center">
+      <p class="tm-eyebrow text-accent-hover-soft">Family owned in Phoenix since 2000</p>
 
       <!-- 40% mas grande que el tamano original en cada punto de quiebre
            (2rem/3rem/3.75rem -> 2.8rem/4.2rem/5.25rem), por pedido del
            cliente. tm-levitate-text le agrega el sube-y-baja con sombra
            que respira (ver src/index.css), version para texto suelto de
-           .tm-levitate. -->
-      <h1 class="tm-levitate-text mt-4 font-display text-[2.8rem] leading-[1.08] text-hueso-100 sm:text-[4.2rem] lg:text-[5.25rem]">
-        The torta that tastes <span class="whitespace-nowrap">like home</span>
+           .tm-levitate. "Torta Shop," en el tono claro de acento
+           (--color-accent-hover-soft): el verde exacto del hover de los
+           botones pierde contraste sobre el video oscuro, mismo criterio
+           que el resto del texto claro-sobre-oscuro del sitio.
+
+           uppercase + font-black (peso 900, ver functions.php) + tracking
+           tight: tratamiento tipo poster que pidio el cliente con una
+           referencia, mismo espiritu que "H1 - Black 900" de esa
+           referencia pero con nuestro copy. -->
+      <h1 class="tm-levitate-text mt-4 font-display text-[2.8rem] font-black uppercase leading-[1.05] tracking-tight text-hueso-100 sm:text-[4.2rem] lg:text-[5.25rem]">
+        Your Local <span class="text-accent-hover-soft">Torta Shop,</span> every order <span class="whitespace-nowrap">made fresh</span>
       </h1>
 
-      <p class="mx-auto mt-5 max-w-xl text-lg text-hueso-100/90">
+      <p class="mx-auto mt-5 max-w-xl text-lg text-hueso-100/85">
         Fresh bread, real sazón, made to order. Four neighborhood shops across
         Phoenix, Avondale and Laveen, open seven days a week.
       </p>
@@ -127,16 +150,16 @@ get_header(); ?>
           href="<?php echo esc_url($tm_order_url); ?>"
           target="_blank" rel="noopener"
           data-tm-order="default" data-tm-channel="toast"
-          class="tm-btn tm-btn-relief tm-btn-primary tm-btn-primary-on-dark"
+          class="tm-btn tm-btn-relief tm-btn-primary"
         >
           Order direct
         </a>
-        <a href="#favorites" class="tm-btn tm-btn-ghost-light">
+        <a href="#menu" class="tm-btn tm-btn-ghost-light">
           See the menu
         </a>
       </div>
 
-      <p class="mt-4 text-sm text-hueso-100/75">
+      <p class="mt-4 text-sm text-hueso-100/70">
         Order direct and your money stays with the family, not the app.
       </p>
     </div>
@@ -148,30 +171,177 @@ get_header(); ?>
      Cierra el hero. Su alto (3rem) se descuenta del alto del hero, asi
      que hero y cinta juntos ocupan exactamente el viewport.
      ============================================================ -->
-<div class="tm-marquee h-12 items-center bg-carbon-400" aria-hidden="true">
+<div class="tm-marquee tm-ribbon-bevel h-12 items-center" aria-hidden="true">
   <?php for ($tm_i = 0; $tm_i < 2; $tm_i++) : ?>
     <div class="tm-marquee__track">
       <?php for ($tm_j = 0; $tm_j < 4; $tm_j++) : ?>
         <span class="tm-eyebrow px-6 text-maiz-300">Every order made fresh</span>
-        <span class="tm-eyebrow px-6 text-hueso-100">Hecho al momento</span>
+        <span class="tm-eyebrow px-6 text-olivo-400">Hecho al momento</span>
       <?php endfor; ?>
     </div>
   <?php endfor; ?>
 </div>
 
 <!-- ============================================================
-     03b  TODAS LAS TORTAS
-     Parcial compartido, ver template-parts/tortas-grid.php. Tortas Club
-     tambien la pide, en el lugar donde antes iba el carrusel de favoritos.
+     01c  CATEGORIAS
+     Seccion nueva, no viene del Copy & Brief original. Una foto
+     recortada sin fondo por categoria (nada de tarjeta ni object-cover
+     alrededor, mismo criterio que la foto del hero).
+
+     Carrusel "coverflow" (una centrada y grande, dos a cada lado mas
+     chicas, avanza sola cada 2 segundos) en vez de la fila con scroll
+     de antes, por pedido del cliente con una referencia. Es un
+     componente de React (CategoryCarousel, ver src/scripts) y no PHP +
+     CSS porque necesita sabor cual item esta al centro en cada momento
+     para decidir el tamano/opacidad de los demas. Los datos van en un
+     atributo JSON en vez de tm_upload() por item repetido en el markup.
      ============================================================ -->
-<?php get_template_part('template-parts/tortas-grid'); ?>
+<section class="overflow-hidden pt-16 pb-8 lg:pt-24 lg:pb-12">
+  <div class="mx-auto max-w-7xl px-4 sm:px-6">
+    <h2 class="max-w-2xl tm-section-title">
+      Menu highlights
+    </h2>
+    <p class="mt-3 max-w-xl text-carbon-300">
+      Fresh favorites from across our menu.
+    </p>
+  </div>
+
+  <?php
+    $tm_categories = array(
+      array('name' => 'Tortas', 'image' => $tm_img_cat_tortas),
+      array('name' => 'Sandwiches', 'image' => $tm_img_cat_sandwiches),
+      array('name' => 'Nachos & Fries', 'image' => $tm_img_cat_nachos_fries),
+      array('name' => 'Desserts', 'image' => $tm_img_cat_desserts),
+      array('name' => 'Aguas Frescas', 'image' => $tm_img_cat_aguas),
+      array('name' => 'Licuados', 'image' => $tm_img_cat_licuados),
+      array('name' => 'Jugos', 'image' => $tm_img_cat_jugos),
+    );
+  ?>
+  <div
+    id="tm-category-carousel"
+    class="mt-4"
+    data-categories="<?php echo esc_attr(wp_json_encode($tm_categories, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE)); ?>"
+  ></div>
+
+  <div class="mx-auto max-w-7xl px-4 text-center sm:px-6">
+    <a
+      href="<?php echo esc_url($tm_order_url); ?>"
+      target="_blank" rel="noopener"
+      data-tm-order="default" data-tm-channel="toast"
+      class="tm-btn tm-btn-relief tm-btn-primary mt-2"
+    >See Full Menu</a>
+  </div>
+</section>
+
+<!-- ============================================================
+     09b  CATERING Y TORTAS CLUB
+     Barra angosta, no vitrina grande: dos mitades separadas por una
+     linea vertical (solo desde sm, en movil se apilan y la linea se
+     vuelve horizontal), cada una con su titulo en verde, una linea de
+     apoyo, un boton rojo y su foto. Reemplazo los dos bloques 01d/01e
+     que iban justo despues del hero, y de ahi paso a vivir despues de
+     Instagram; el cliente termino de pedir que se quedara justo despues
+     de la primera seccion real del hero (01c Categorias) en vez de mas
+     abajo. Mismos enlaces y fotos de siempre, solo cambia donde vive.
+
+     Fondo en TortasFondo.png, mismo criterio que los bloques de
+     formulario del sitio (K3 de /careers, C2 de /catering, "Trabaja con
+     nosotros" de esta misma pagina): la textura va a sangre detras y el
+     contenido vive en una tarjeta clara semitransparente encima, para
+     que el texto siga siendo legible sobre una foto ocupada.
+
+     El padding de la seccion crecio en varias rondas antes de este
+     fondo (llego a pt-32/pb-44/lg:pt-40/lg:pb-60); con la tarjeta
+     encima de una textura visible, ese mismo padding se leia como
+     demasiado margen vacio alrededor de la tarjeta, no como una
+     seccion "grande". Se recorto de vuelta a algo mas cercano al
+     original y el contenedor paso de max-w-7xl a max-w-[100rem]: la
+     tarjeta ahora ocupa mas del ancho de la seccion, asi que el hueco
+     a los lados (entre la tarjeta y el borde real de la pantalla)
+     tambien se nota menos.
+     ============================================================ -->
+<section class="relative isolate overflow-hidden pt-10 pb-14 lg:pt-14 lg:pb-20">
+  <?php if ($tm_img_catering_club_bg) : ?>
+    <img
+      src="<?php echo esc_url($tm_img_catering_club_bg); ?>"
+      alt=""
+      aria-hidden="true"
+      loading="lazy"
+      class="absolute inset-0 h-full w-full object-cover"
+    >
+  <?php endif; ?>
+
+  <div class="relative z-10 mx-auto max-w-[100rem] px-4 sm:px-6">
+    <div class="rounded-2xl bg-hueso-100/90 p-6 shadow-xl backdrop-blur-sm sm:p-10">
+      <div class="grid gap-10 divide-y divide-carbon-200 sm:grid-cols-2 sm:gap-0 sm:divide-x sm:divide-y-0">
+        <!-- flex flex-wrap solo en movil (una sola columna, si no cabe
+             la foto se baja sin problema); desde sm pasa a grid de 2
+             columnas (1fr + auto): el texto ya no puede empujar toda la
+             fila a un wrap, se envuelve el solo dentro de su columna.
+             Sin esto, "Good food for every occasion." (mas largo que el
+             subtitulo de Tortas Club) hacia que la foto de Catering se
+             bajara de renglon y la de Tortas Club no, un lado se veia
+             distinto del otro. -->
+        <div data-tm-reveal="left" class="flex flex-wrap items-center justify-between gap-6 sm:grid sm:grid-cols-[1fr_auto] sm:pr-10">
+          <div>
+            <h3 class="tm-section-title">
+              Catering
+            </h3>
+            <p class="tm-eyebrow mt-3 text-carbon-300">Good food for every occasion.</p>
+            <a href="/catering" class="tm-btn tm-btn-relief tm-btn-primary mt-6 inline-flex items-center gap-2">
+              Start your order
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+            </a>
+          </div>
+          <!-- w y h fijos (no w-auto + max-w-[]): con w-auto el ancho
+               salia de la proporcion natural de cada foto a esa altura,
+               y como esta foto y la de Tortas Club no comparten
+               proporcion, una quedaba mucho mas ancha que la otra -- se
+               notaba en que una se bajaba de renglon (flex-wrap) y la
+               otra no. Con w fijo las dos ocupan la misma caja exacta
+               (object-cover recorta lo que sobre) y el bloque se ve
+               simetrico. -->
+          <?php if ($tm_img_catering_promo) : ?>
+            <img
+              src="<?php echo esc_url($tm_img_catering_promo); ?>"
+              alt="Catering trays from Tortas Manantial"
+              loading="lazy"
+              class="h-52 w-68 shrink-0 rounded-lg object-cover shadow-lg sm:h-64 sm:w-84"
+            >
+          <?php endif; ?>
+        </div>
+
+        <div data-tm-reveal="right" class="flex flex-wrap items-center justify-between gap-6 pt-10 sm:grid sm:grid-cols-[1fr_auto] sm:pl-10 sm:pt-0">
+          <div>
+            <h3 class="tm-section-title">
+              Tortas Club
+            </h3>
+            <p class="tm-eyebrow mt-3 text-carbon-300">Good food goes further.</p>
+            <a href="/tortas-club" class="tm-btn tm-btn-relief tm-btn-primary mt-6 inline-flex items-center gap-2">
+              Join now
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+            </a>
+          </div>
+          <?php if ($tm_img_club_promo) : ?>
+            <img
+              src="<?php echo esc_url($tm_img_club_promo); ?>"
+              alt="Food from Tortas Manantial"
+              loading="lazy"
+              class="h-52 w-68 shrink-0 rounded-lg object-cover shadow-lg sm:h-64 sm:w-84"
+            >
+          <?php endif; ?>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
 <!-- ============================================================
      08  RESENAS
      ============================================================ -->
 <section class="bg-hueso-200 py-16 lg:py-24">
   <div class="mx-auto max-w-7xl px-4 sm:px-6">
-    <h2 class="font-display text-3xl leading-tight text-carbon-400 sm:text-4xl">
+    <h2 class="tm-section-title">
       What the neighborhood says
     </h2>
     <p class="mt-3 text-carbon-300">Real reviews from our four shops.</p>
@@ -232,7 +402,7 @@ get_header(); ?>
   <div class="absolute inset-0 bg-carbon-500/60" aria-hidden="true"></div>
 
   <div class="relative z-10 mx-auto max-w-7xl px-4 sm:px-6">
-    <h2 class="font-display text-3xl leading-tight text-hueso-100 sm:text-4xl">
+    <h2 class="tm-section-title-inverse text-hueso-100">
       Find the one closest to you
     </h2>
     <p class="mt-3 text-hueso-100/80">
@@ -320,20 +490,6 @@ get_header(); ?>
 </section>
 
 <!-- ============================================================
-     03  LOS FAVORITOS
-     Parcial compartido, ver template-parts/favorites-carousel.php.
-     full_height + id porque esta es la seccion a la que apunta el
-     "See the menu" del hero (#favorites); en las demas paginas el
-     mismo parcial se pide sin esos dos args.
-     ============================================================ -->
-<?php
-  get_template_part('template-parts/favorites-carousel', null, array(
-    'id'          => 'favorites',
-    'full_height' => true,
-  ));
-?>
-
-<!-- ============================================================
      09  INSTAGRAM
      Fondo gris oscuro liso por pedido del cliente, ya no el mosaico de
      palmeras de .tm-tiles; despues paso a .tm-carbon-gradient junto con
@@ -383,7 +539,7 @@ get_header(); ?>
   <div class="relative z-10 mx-auto max-w-7xl px-4 sm:px-6">
     <div class="sm:flex sm:items-end sm:justify-between sm:gap-6">
       <div>
-        <h2 class="font-display text-3xl leading-tight text-hueso-100 sm:text-4xl">
+        <h2 class="tm-section-title-inverse text-hueso-100">
           Tag us, we are watching
         </h2>
         <p class="mt-3 text-hueso-100/75">@tortasmanantial</p>
@@ -396,219 +552,36 @@ get_header(); ?>
       >Follow us</a>
     </div>
 
-    <ul class="mt-10 grid grid-cols-2 gap-4 lg:grid-cols-4">
-      <?php
-        $tm_ig = array($tm_img_ig_1, $tm_img_ig_2, $tm_img_ig_3, $tm_img_ig_4);
-
-        foreach ($tm_ig as $tm_ig_index => $tm_ig_image) : ?>
-        <li
-          data-tm-reveal="top"
-          style="transition-delay: <?php echo esc_attr($tm_ig_index * 0.07); ?>s"
-          class="tm-placeholder aspect-4/5 overflow-hidden rounded-lg"
-        >
-          <?php if ($tm_ig_image && str_ends_with($tm_ig_image, '.mp4')) : ?>
-            <video
-              class="h-full w-full object-cover"
-              autoplay muted loop playsinline
-              preload="none"
-              aria-hidden="true"
-            >
-              <source src="<?php echo esc_url($tm_ig_image); ?>" type="video/mp4">
-            </video>
-          <?php elseif ($tm_ig_image) : ?>
-            <img
-              src="<?php echo esc_url($tm_ig_image); ?>"
-              alt=""
-              loading="lazy"
-              class="h-full w-full object-cover"
-            >
-          <?php endif; ?>
-        </li>
-      <?php endforeach; ?>
-    </ul>
-  </div>
-</section>
-
-<!-- ============================================================
-     04  HECHO AL MOMENTO
-     ============================================================ -->
-<section class="bg-hueso-200">
-  <div class="grid lg:grid-cols-2">
-    <div data-tm-reveal="left" class="tm-placeholder min-h-64 lg:min-h-[32rem]">
-      <?php if ($tm_img_fresh) : ?>
-        <img
-          src="<?php echo esc_url($tm_img_fresh); ?>"
-          alt="Bread going on the grill"
-          loading="lazy"
-          class="h-full w-full object-cover"
-        >
-      <?php endif; ?>
-    </div>
-
-    <div data-tm-reveal="right" class="relative overflow-hidden flex items-center justify-center bg-hueso-200 px-4 py-16 text-center sm:px-10 lg:py-24">
-      <?php if ($tm_img_fresh_bg) : ?>
-        <img
-          src="<?php echo esc_url($tm_img_fresh_bg); ?>"
-          alt=""
-          aria-hidden="true"
-          loading="lazy"
-          class="absolute inset-0 h-full w-full object-cover"
-        >
-      <?php endif; ?>
-      <div class="relative z-10 max-w-lg rounded-2xl bg-hueso-100/90 p-8 shadow-xl backdrop-blur-sm">
-        <h2 class="font-display text-3xl leading-tight text-carbon-400 sm:text-4xl">
-          Every order made fresh
-        </h2>
-        <p class="mt-5 text-lg text-carbon-300">
-          Nothing sits under a lamp. The bread hits the grill when you order,
-          the fruit gets cut the same morning, and the sazón has not changed
-          since the year 2000. That is the whole trick, and there is no
-          shortcut to it.
-        </p>
-      </div>
+    <!-- Feed real de Instagram via el plugin Trustindex (Widgets for
+         Social Photo Feed), mismo criterio que el widget de resenas de
+         Google del bloque 08 (do_shortcode en vez de tarjetas a mano).
+         Reemplaza la grilla de 4 placeholders con el mismo video
+         repetido que iba aca antes. -->
+    <div class="mt-10" data-tm-reveal="top">
+      <?php echo do_shortcode('[trustindex-feed-instagram]'); ?>
     </div>
   </div>
 </section>
 
 <!-- ============================================================
-     05  HISTORIA CORTA
-     TODO: copy provisional. Se reescribe con la historia real de la
-     familia (pendiente 02 del brief maestro). El panel oscuro pasa a
-     .tm-carbon-gradient junto con el resto de las secciones en
-     carbon-400 del sitio.
+     03b  TODAS LAS TORTAS
+     Parcial compartido, ver template-parts/tortas-grid.php. Tortas Club
+     tambien la pide. Se movio al final de la pagina (antes iba justo
+     despues del hero) por pedido del cliente. id="menu" porque esta
+     sigue siendo la seccion a la que apunta el "See the menu" del hero
+     (#menu) -- el ancla funciona igual sin importar donde caiga la
+     seccion en la pagina.
      ============================================================ -->
-<section class="bg-hueso-300">
-  <div class="grid lg:grid-cols-2">
-    <!-- Texto a la izquierda -->
-    <div data-tm-reveal="left" class="tm-carbon-gradient relative overflow-hidden flex items-center justify-center px-4 py-16 text-center sm:px-10 lg:py-24">
-      <?php if ($tm_img_story_accent_tl) : ?>
-        <img
-          src="<?php echo esc_url($tm_img_story_accent_tl); ?>"
-          alt=""
-          aria-hidden="true"
-          loading="lazy"
-          class="pointer-events-none absolute -left-8 -top-8 hidden w-32 -rotate-6 opacity-20 lg:block xl:w-40"
-        >
-      <?php endif; ?>
-      <?php if ($tm_img_story_accent_tr) : ?>
-        <img
-          src="<?php echo esc_url($tm_img_story_accent_tr); ?>"
-          alt=""
-          aria-hidden="true"
-          loading="lazy"
-          class="pointer-events-none absolute -right-8 -top-8 hidden w-32 rotate-6 opacity-20 lg:block xl:w-40"
-        >
-      <?php endif; ?>
-      <?php if ($tm_img_story_accent_bl) : ?>
-        <img
-          src="<?php echo esc_url($tm_img_story_accent_bl); ?>"
-          alt=""
-          aria-hidden="true"
-          loading="lazy"
-          class="pointer-events-none absolute -bottom-8 -left-8 hidden w-40 opacity-20 lg:block xl:w-52"
-        >
-      <?php endif; ?>
-      <?php if ($tm_img_story_accent_br) : ?>
-        <img
-          src="<?php echo esc_url($tm_img_story_accent_br); ?>"
-          alt=""
-          aria-hidden="true"
-          loading="lazy"
-          class="pointer-events-none absolute -bottom-8 -right-8 hidden w-40 opacity-20 lg:block xl:w-52"
-        >
-      <?php endif; ?>
-      <div class="relative z-10 max-w-lg">
-        <p class="tm-eyebrow text-maiz-300">Since 2000</p>
-        <h2 class="mt-4 font-display text-3xl leading-tight text-hueso-100 sm:text-4xl">
-          One family, one recipe, four neighborhoods
-        </h2>
-        <p class="mt-5 text-lg text-hueso-100/80">
-          We opened one small shop in Phoenix with a family recipe and a lot of
-          nerve. Twenty five years later there are four of us across the west
-          Valley, and the recipe has not moved an inch. What grew was the number
-          of families who call this their spot.
-        </p>
-        <a href="/our-story" class="tm-btn tm-btn-ghost-light mt-8">Read our story</a>
-      </div>
-    </div>
-
-    <!-- Imagen a sangre, toda la mitad derecha.
-         En movil va debajo del texto, no encima: la historia es lo que
-         justifica la foto, no al reves. -->
-    <div data-tm-reveal="right" class="tm-placeholder order-last min-h-64 lg:min-h-[32rem]">
-      <?php if ($tm_img_story) : ?>
-        <img
-          src="<?php echo esc_url($tm_img_story); ?>"
-          alt="The family behind Tortas Manantial"
-          loading="lazy"
-          class="h-full w-full object-cover"
-        >
-      <?php endif; ?>
-    </div>
-  </div>
-</section>
-
-<!-- ============================================================
-     07  TORTAS CLUB
-     La unica banda grande en maiz de toda la home. Si el color se
-     repite, deja de ser una senal.
-     TODO: el campo de celular no se publica hasta cerrar el registro
-     A2P 10DLC (pendiente del brief).
-     ============================================================ -->
-<section class="relative isolate overflow-hidden bg-maiz-300 py-16 text-carbon-400 lg:py-24">
-  <?php if ($tm_img_club_bg) : ?>
-    <img
-      src="<?php echo esc_url($tm_img_club_bg); ?>"
-      alt=""
-      class="absolute inset-0 h-full w-full object-cover"
-      loading="lazy"
-    >
-  <?php endif; ?>
-
-  <div class="relative z-10 mx-auto grid max-w-7xl gap-10 px-4 sm:px-6 lg:grid-cols-2 lg:items-center">
-    <div data-tm-reveal="left" class="rounded-2xl bg-hueso-100/90 p-8 shadow-xl backdrop-blur-sm">
-      <p class="tm-eyebrow">Tortas Club</p>
-      <h2 class="mt-4 font-display text-3xl leading-tight sm:text-4xl">
-        Eat here often? Start getting paid for it
-      </h2>
-      <p class="mt-5 max-w-lg text-lg">
-        Points on every order, a free torta on your birthday, and first word on
-        new items and specials. Free to join, takes about twenty seconds.
-      </p>
-    </div>
-
-    <div data-tm-reveal="right" class="tm-levitate rounded-2xl bg-carbon-400 p-6 text-hueso-100 sm:p-8">
-      <div id="tm-club-form"></div>
-
-      <noscript>
-        <p class="text-sm">
-          Sign up at the counter on your next visit, or call your closest shop.
-        </p>
-      </noscript>
-    </div>
-  </div>
-</section>
-
-<!-- ============================================================
-     10  TRABAJA CON NOSOTROS
-     Degradado gris de carbon (.tm-carbon-gradient), ahora el mismo en
-     toda seccion del sitio que llevaba fondo plano en carbon-400.
-     ============================================================ -->
-<section class="tm-carbon-gradient py-14">
-  <div class="mx-auto flex max-w-7xl flex-col gap-5 px-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
-    <p class="text-lg font-bold text-hueso-100">
-      We are hiring at all four locations. No experience needed for most roles.
-    </p>
-    <a href="/careers" class="tm-btn tm-btn-relief tm-btn-primary shrink-0">Apply now</a>
-  </div>
-</section>
+<?php get_template_part('template-parts/tortas-grid', null, array('id' => 'menu')); ?>
 
 <!-- ============================================================
      11  PREGUNTAS FRECUENTES
-     Acordeon nativo: funciona sin JavaScript y las respuestas estan
-     en el HTML aunque este cerrado, para que Google las lea.
-     Las preguntas pendientes de confirmar con el cliente estan
-     listadas en el TODO de abajo, no publicadas a medias.
+     Cierra la home, despues del grid de tortas, por pedido del cliente.
+     Mismo acordeon nativo (funciona sin JavaScript, las respuestas
+     quedan en el HTML aunque este cerrado) y el mismo set de preguntas
+     que el FAQ de /our-story: son las preguntas del sitio completo, no
+     algo especifico de la historia de la familia, asi que tiene sentido
+     que vivan en las dos paginas.
      ============================================================ -->
 <section class="relative overflow-hidden bg-hueso-200 py-16 lg:py-24">
   <?php if ($tm_img_faq_left) : ?>
@@ -630,7 +603,7 @@ get_header(); ?>
     >
   <?php endif; ?>
   <div class="relative z-10 mx-auto max-w-3xl px-4 sm:px-6">
-    <h2 class="font-display text-3xl leading-tight text-carbon-400 sm:text-4xl">
+    <h2 class="tm-section-title">
       Questions we get a lot
     </h2>
 
@@ -685,16 +658,6 @@ get_header(); ?>
           'Almost always, at all four locations. Kitchen, counter and management roles. Most of them need no previous experience, just the willingness to learn.',
         ),
       );
-
-      /**
-       * TODO: estas quedan fuera hasta que el cliente confirme. Son las que
-       * mas se preguntan, asi que conviene cerrarlas pronto:
-       *   - Is the menu the same at every location?
-       *   - Do you cater or take large group orders?
-       *   - Do you have vegetarian options?
-       *   - Do you serve breakfast? (McDowell abre a las 7am)
-       *   - Is there parking / dine in at every shop?
-       */
     ?>
 
     <div class="mt-10 divide-y divide-hueso-400 border-y border-hueso-400">
@@ -737,42 +700,56 @@ get_header(); ?>
 </script>
 
 <!-- ============================================================
-     02  BARRA DE VALOR DEL PEDIDO DIRECTO
-     Va al final de la pagina: es el ultimo argumento antes de salir.
-     Conserva el numero 02 del Copy & Brief para no romper la referencia.
-     TODO BLOQUEANTE: la columna 1 promete "mismo precio, sin recargo".
-     No publicar hasta confirmar la politica de precio por canal.
-     Si el precio directo no es igual al del local, cambiar por
-     "No third party fees" y quitar la promesa de precio.
+     12  TRABAJA CON NOSOTROS (FORMULARIO)
+     Cierre de la pagina, foto del equipo a la izquierda y formulario a
+     la derecha, mismo patron que K3 de /careers (misma foto, mismo
+     fondo detras de la tarjeta del formulario).
      ============================================================ -->
-<section class="relative isolate overflow-hidden bg-maiz-300 py-16 text-carbon-400">
-  <?php if ($tm_img_facets_bg) : ?>
-    <img
-      src="<?php echo esc_url($tm_img_facets_bg); ?>"
-      alt=""
-      class="absolute inset-0 h-full w-full object-cover"
-      loading="lazy"
-    >
-  <?php endif; ?>
+<section class="bg-hueso-300">
+  <div class="grid lg:grid-cols-2">
+    <!-- Fondo blanco liso (bg-hueso-100 en vez de tm-placeholder), pero la
+         foto vuelve a llenar la caja a sangre (h-full w-full object-cover)
+         como antes. -->
+    <div data-tm-reveal="left" class="min-h-64 bg-hueso-100 lg:min-h-144">
+      <?php if ($tm_img_job_team) : ?>
+        <img
+          src="<?php echo esc_url($tm_img_job_team); ?>"
+          alt="The team at Tortas Manantial"
+          loading="lazy"
+          class="h-full w-full object-cover"
+        >
+      <?php endif; ?>
+    </div>
 
-  <div class="relative z-10 mx-auto max-w-7xl px-4 sm:px-6">
-    <div class="rounded-2xl bg-hueso-100/90 p-8 shadow-xl backdrop-blur-sm">
-      <p class="tm-eyebrow">Order here, not there</p>
+    <div data-tm-reveal="right" class="relative isolate flex items-center justify-center overflow-hidden px-4 py-16 sm:px-10 lg:py-24">
+      <?php if ($tm_img_job_bg) : ?>
+        <img
+          src="<?php echo esc_url($tm_img_job_bg); ?>"
+          alt=""
+          aria-hidden="true"
+          loading="lazy"
+          class="absolute inset-0 h-full w-full object-cover"
+        >
+      <?php endif; ?>
 
-      <div class="mt-6 grid gap-6 sm:grid-cols-3">
-        <p class="text-lg font-semibold">Same price, no app markup</p>
-        <p class="text-lg font-semibold">Ready faster, straight from our kitchen</p>
-        <p class="text-lg font-semibold">Every order earns Tortas Club points</p>
+      <div class="relative z-10 w-full max-w-lg rounded-2xl bg-hueso-100/90 p-8 shadow-xl backdrop-blur-sm">
+        <p class="tm-eyebrow">We are hiring</p>
+        <h2 class="mt-4 tm-section-title">
+          Work with us
+        </h2>
+        <p class="mt-3 text-carbon-300">
+          Four shops, one team. It takes a couple of minutes, no resume needed.
+        </p>
+
+        <div id="tm-careers-form" class="mt-8"></div>
+
+        <noscript>
+          <p class="mt-8 text-carbon-300">
+            Ask for an application at the counter of the shop closest to you,
+            or call and we will take your information over the phone.
+          </p>
+        </noscript>
       </div>
-
-      <a
-        href="<?php echo esc_url($tm_order_url); ?>"
-        target="_blank" rel="noopener"
-        data-tm-order="default" data-tm-channel="toast"
-        class="tm-btn tm-btn-relief tm-btn-primary mt-8"
-      >
-        Start your order
-      </a>
     </div>
   </div>
 </section>

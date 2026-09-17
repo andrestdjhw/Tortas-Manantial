@@ -15,7 +15,7 @@
    MEDIOS DE ESTA PLANTILLA
    ========================================================================== */
 
-$tm_img_hero = tm_upload('2026/09/TortasMejorada.png');
+$tm_img_hero = tm_upload('2026/09/BannerJobApplication-scaled.webp');
 
 $tm_img_bg = tm_upload('2026/09/FondoVerde.png'); // Fondo de las secciones .tm-tiles.
 
@@ -53,9 +53,9 @@ get_header(); ?>
   <div class="absolute inset-0 bg-carbon-500/50" aria-hidden="true"></div>
 
   <div class="relative z-10 mx-auto w-full max-w-7xl px-4 sm:px-6">
-    <p class="tm-eyebrow text-maiz-300">Free to join</p>
+    <p class="tm-eyebrow text-accent-hover-soft">Free to join</p>
 
-    <h1 class="mt-4 font-display text-4xl leading-[1.05] text-hueso-100 sm:text-5xl">
+    <h1 class="mt-4 font-display uppercase text-4xl leading-[1.05] text-hueso-100 sm:text-5xl">
       Tortas Club
     </h1>
 
@@ -75,7 +75,7 @@ get_header(); ?>
     class="pointer-events-none absolute -right-2 top-1/2 hidden w-14 -translate-y-1/2 rotate-6 opacity-20 sm:block"
   >
   <ol class="relative mx-auto flex max-w-7xl gap-2 px-4 py-3 text-xs text-carbon-200 sm:px-6">
-    <li><a href="<?php echo esc_url(home_url('/')); ?>" class="hover:text-maiz-300">Home</a></li>
+    <li><a href="<?php echo esc_url(home_url('/')); ?>" class="hover:text-accent-hover-soft">Home</a></li>
     <li aria-hidden="true">/</li>
     <li class="text-hueso-100" aria-current="page">Tortas Club</li>
   </ol>
@@ -95,7 +95,7 @@ get_header(); ?>
     >
   <?php endif; ?>
   <div class="mx-auto max-w-7xl px-4 sm:px-6">
-    <h2 class="font-display text-3xl leading-tight text-carbon-400 sm:text-4xl">
+    <h2 class="tm-section-title">
       How it works
     </h2>
 
@@ -108,13 +108,13 @@ get_header(); ?>
         );
 
         foreach ($tm_steps as $tm_index => $tm_step) : ?>
-        <li class="tm-card-3d relative overflow-hidden rounded-xl border border-hueso-400 bg-hueso-100 p-6 shadow-xl shadow-carbon-500/10">
+        <li class="tm-card-3d relative overflow-hidden rounded-xl bg-maiz-300 p-6 text-hueso-100 shadow-xl shadow-carbon-500/20">
           <div class="tm-card-3d__lift">
-            <p class="font-display text-4xl text-maiz-400"><?php echo esc_html($tm_index + 1); ?></p>
-            <h3 class="mt-3 font-display text-xl text-carbon-400">
+            <p class="font-display text-4xl text-hueso-100"><?php echo esc_html($tm_index + 1); ?></p>
+            <h3 class="mt-3 font-display text-xl text-hueso-100">
               <?php echo esc_html($tm_step[0]); ?>
             </h3>
-            <p class="mt-2 text-carbon-300"><?php echo esc_html($tm_step[1]); ?></p>
+            <p class="mt-2 text-hueso-100/80"><?php echo esc_html($tm_step[1]); ?></p>
           </div>
         </li>
       <?php endforeach; ?>
@@ -128,21 +128,13 @@ get_header(); ?>
 </section>
 
 <!-- ============================================================
-     C1b  TODAS LAS TORTAS
-     Parcial compartido, ver template-parts/tortas-grid.php. Reemplazo el
-     carrusel de favoritos aca por pedido del cliente. Justo antes del CTA
-     de cierre de la pagina (el alta al club).
-     ============================================================ -->
-<?php get_template_part('template-parts/tortas-grid'); ?>
-
-<!-- ============================================================
      C2  ALTA
      Mismo componente React que el bloque 07 de la home.
      ============================================================ -->
 <section class="bg-hueso-300 py-16 lg:py-24">
   <div class="mx-auto grid max-w-7xl gap-10 px-4 sm:px-6 lg:grid-cols-2 lg:items-center">
     <div data-tm-reveal="left">
-      <h2 class="font-display text-3xl leading-tight text-carbon-400 sm:text-4xl">
+      <h2 class="tm-section-title">
         Join the club
       </h2>
       <p class="mt-5 max-w-lg text-lg text-carbon-300">
@@ -186,7 +178,7 @@ get_header(); ?>
     >
   <?php endif; ?>
   <div class="relative z-10 mx-auto max-w-3xl px-4 sm:px-6">
-    <h2 class="font-display text-3xl leading-tight text-carbon-400 sm:text-4xl">
+    <h2 class="tm-section-title">
       About the program
     </h2>
 
@@ -268,5 +260,13 @@ get_header(); ?>
 <script type="application/ld+json">
   <?php echo wp_json_encode($tm_faq_schema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE); ?>
 </script>
+
+<!-- ============================================================
+     C1b  TODAS LAS TORTAS
+     Parcial compartido, ver template-parts/tortas-grid.php. Se movio al
+     final de la pagina (antes iba justo despues de "Como funciona") por
+     pedido del cliente.
+     ============================================================ -->
+<?php get_template_part('template-parts/tortas-grid'); ?>
 
 <?php get_footer();

@@ -11,22 +11,39 @@
 
 @theme {
   /* ---------- Tipografia ----------
+     Sistema completo que paso el cliente con una referencia:
+       - Barlow Condensed para titulares (--font-display), en tres pesos
+         segun el nivel (h1 900, h2 800, h3 700, ver mas abajo en este
+         mismo @layer base).
+       - Inter para todo lo demas (--font-sans): texto corrido en 500,
+         navegacion en 500, botones en 700. Reemplazo a Lato.
      --font-sans pisa la sans por defecto de Tailwind, asi que todo el
-     cuerpo del sitio cambia sin tocar el markup.
-     --font-display se usa en titulares con la utilidad font-display.
-
-     Boogaloo y Electrolize traen un solo peso (400). No usarlas con
-     font-bold: el navegador sintetiza la negrita y se ve embarrado. */
-  --font-sans: "Lato", ui-sans-serif, system-ui, sans-serif;
-  --font-display: "Boogaloo", ui-sans-serif, system-ui, sans-serif;
+     cuerpo del sitio cambia sin tocar el markup salvo donde el peso
+     necesita ser explicito (ver body, .tm-btn, y los links del navbar). */
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Barlow Condensed", ui-sans-serif, system-ui, sans-serif;
   --font-alt: "Arimo", ui-sans-serif, system-ui, sans-serif;
   --font-tech: "Electrolize", ui-sans-serif, system-ui, sans-serif;
 
-  /* ---------- Paleta oficial Tortas Manantial ---------- */
-  --color-maiz-100: #faf6de;
-  --color-maiz-200: #f1e7a8;
-  --color-maiz-300: #e4d568; /* color de marca */
-  --color-maiz-400: #c4b348;
+  /* ---------- Paleta oficial Tortas Manantial ----------
+     El nombre "maiz" (maiz/amarillo) se quedo del amarillo original;
+     ahora la escala es de rojo. Cambiar el nombre de la variable
+     hubiera significado tocar bg-maiz-300, text-maiz-300, hover:text-
+     maiz-300, etc. en unos 25 puntos entre .php y .js sin ganar nada,
+     asi que se quedo el nombre y cambiaron los valores.
+
+     300 es el rojo de marca exacto que pidio el cliente (#CC0100) y se
+     usa en botones, fondos e texto sobre claro. 200 es un rojo/coral
+     mas claro para el mismo rol que antes cubria el amarillo: texto de
+     acento sobre fondo oscuro (eyebrows del hero, footer, hover del
+     menu, badge del panel de ubicaciones) donde el 300 puro no aprueba
+     contraste (ronda 1.5-2.4:1 contra esos fondos; el 200 da 5:1+). 100
+     y 400 son tinte suave y rojo oscuro, decorativos, sin requisito de
+     contraste estricto. */
+  --color-maiz-100: #fbdedd;
+  --color-maiz-200: #f7b3b2;
+  --color-maiz-300: #cc0100; /* color de marca */
+  --color-maiz-400: #a30100;
 
   --color-olivo-100: #eef2e4;
   --color-olivo-200: #c9d6ae;
@@ -58,8 +75,18 @@
   --color-ink-inverse: var(--color-hueso-100);
 
   --color-accent: var(--color-maiz-300);
-  --color-accent-hover: var(--color-maiz-400);
+  /* No es maiz-400 (rojo oscuro): el hover de los botones primarios lo
+     pidio el cliente en un verde-amarillo especifico, no en una sombra
+     mas oscura del mismo rojo. */
+  --color-accent-hover: #90b500;
   --color-accent-soft: var(--color-maiz-100);
+  /* Version clara del verde de arriba, mismo rol que maiz-200 tenia para
+     el rojo: texto de acento sobre fondo oscuro (eyebrows, footer, hover
+     del menu movil, etc.), donde el #90b500 puro no aprueba contraste.
+     Reemplazo del rosa/coral que llevaba antes esa misma funcion, por
+     pedido del cliente ("en lugar de ese rosado usemos el verde del
+     hover"). */
+  --color-accent-hover-soft: #d6e88f;
 
   --color-fresh: var(--color-olivo-300);
   --color-fresh-text: var(--color-olivo-400);
@@ -67,9 +94,13 @@
 
   --color-rule: var(--color-hueso-400);
 
-  /* ---------- Medidas del navbar ---------- */
-  --tm-bar-h: 4rem; /* 64px, barra principal */
-  --tm-top-h: 5rem; /* 80px, fila superior con el logo */
+  /* ---------- Medidas del navbar ----------
+     Una sola fila desde que se quito la fila superior y la insignia
+     animada al hacer scroll. El valor no se consume por CSS var() en
+     ningun lado (el alto real sale de la utilidad h-20 en Navbar.js);
+     queda documentado aca para que el espaciador de header.php (que si
+     necesita el numero a mano, en PHP) no se desincronice si cambia. */
+  --tm-header-h: 5rem; /* 80px */
 }
 
 @layer base {
@@ -129,6 +160,33 @@
     overflow-x: hidden;
     background-color: var(--color-surface);
     color: var(--color-ink);
+    /* "Body - Medium 500" del sistema tipografico que paso el cliente.
+       Va en body y no en un layer de utilidades porque tiene que ser el
+       peso por default de todo el texto corrido del sitio, no algo que
+       cada parrafo tenga que pedir con una clase. */
+    font-weight: 500;
+  }
+
+  /* ------------------------------------------------------------------
+     Jerarquia de peso por nivel de titular, del mismo sistema
+     tipografico ("H1 - Black 900", "H2 - ExtraBold 800", "H3 - Bold
+     700"). Va sobre la etiqueta semantica y no sobre .font-display
+     porque asi se aplica sola en cualquier h1/h2/h3 del sitio, existente
+     o nuevo, sin tener que acordarse de agregar font-black/font-extrabold
+     a mano en cada plantilla. Una clase font-* puesta a mano en el
+     markup (como el font-black del h1 del hero) sigue ganando por venir
+     despues en la cascada de utilidades.
+     ------------------------------------------------------------------ */
+  h1 {
+    font-weight: 900;
+  }
+
+  h2 {
+    font-weight: 800;
+  }
+
+  h3 {
+    font-weight: 700;
   }
 
   /* Foco visible en todo el sitio, requisito del brief */
@@ -237,14 +295,22 @@
     box-shadow: 0 0 0 0 var(--tm-relief);
   }
 
-  /* Primario: maiz con tinta carbon. El unico que lleva barrido de brillo. */
+  /* Primario: rojo de marca, verde al hover. --color-accent/-hover ya
+     son ese rojo y ese verde (ver @theme arriba), asi que el boton solo
+     los referencia en vez de repetir el hex.
+
+     El texto cambia de claro a oscuro entre los dos estados porque
+     ninguno de los dos tonos aprueba contraste con la misma tinta: el
+     rojo necesita texto claro, el verde-amarillo necesita texto oscuro.
+     Es el unico boton con relieve al que le hace falta este cambio. */
   .tm-btn-primary {
     background-color: var(--color-accent);
-    color: var(--color-ink);
+    color: var(--color-ink-inverse);
   }
 
   .tm-btn-primary:hover {
     background-color: var(--color-accent-hover);
+    color: var(--color-ink);
   }
 
   /* Secundario de accion: olivo. Se usa el paso 400 y no el 300 porque el
@@ -316,27 +382,6 @@
   /* Sin movimiento: se conservan color y sombra de reposo, se retiran el
      desplazamiento y el barrido. */
   @media (prefers-reduced-motion: reduce) {
-    .tm-logo-badge-wrap,
-    .tm-logo-badge,
-    .tm-torta-slice {
-      transition-property: opacity;
-    }
-
-    .tm-logo-badge-wrap:has(.tm-logo-badge:hover) .tm-logo-badge,
-    .tm-logo-badge-wrap:has(.tm-logo-badge:active) .tm-logo-badge {
-      transform: none;
-    }
-
-    .tm-logo-badge-wrap:has(.tm-logo-badge:hover) .tm-torta-slice--bottom,
-    .tm-logo-badge-wrap:has(.tm-logo-badge:active) .tm-torta-slice--bottom {
-      transform: translate(6px, 6px);
-    }
-
-    .tm-logo-badge-wrap:has(.tm-logo-badge:hover) .tm-torta-slice--filling,
-    .tm-logo-badge-wrap:has(.tm-logo-badge:active) .tm-torta-slice--filling {
-      transform: translate(3px, 3px);
-    }
-
     .tm-btn-relief:hover,
     .tm-btn-relief:active {
       transform: none;
@@ -362,14 +407,18 @@
 
 
   /* ------------------------------------------------------------------
-     Slideshow del hero
-     Crossfade en CSS puro, sin JS ni libreria. Cuatro capas apiladas con
-     la misma animacion y el arranque escalonado con animation-delay.
+     Slideshow de fotos a sangre (crossfade en CSS puro, sin JS ni
+     libreria). Nacio pensado para el hero pero ahi no se llego a usar;
+     ahora vive en el bloque de foto+formulario de /catering (3 fotos de
+     catering). Capas apiladas con la misma animacion y el arranque
+     escalonado con animation-delay.
 
      La duracion total se reparte entre las capas: cada una esta visible
-     una cuarta parte del ciclo y cruza con la siguiente en la transicion.
-     Si se agregan o quitan imagenes hay que ajustar los porcentajes de
-     tm-crossfade y los delays del template.
+     un tercio del ciclo (100/3) y cruza con la siguiente en la
+     transicion. Si se agregan o quitan imagenes hay que ajustar los
+     porcentajes de tm-crossfade y los delays del template -- el ancho
+     de cada tramo es 100/N, y el punto de fundido queda a un 84% de ese
+     ancho (mismo ratio visible:fundido que el original de 4 capas).
 
      Los keyframes arrancan en opacity 1 y la base es 0: asi la primera
      capa se ve desde el primer frame y las demas, que estan en su periodo
@@ -388,7 +437,7 @@
     height: 100%;
     object-fit: cover;
     opacity: 0;
-    animation: tm-crossfade 28s linear infinite;
+    animation: tm-crossfade 21s linear infinite;
   }
 
   @keyframes tm-crossfade {
@@ -396,10 +445,10 @@
       opacity: 1;
       scale: 1;
     }
-    21% {
+    28% {
       opacity: 1;
     }
-    25% {
+    33.33% {
       opacity: 0;
     }
     96% {
@@ -440,114 +489,6 @@
       var(--color-hueso-100) 40%,
       var(--tm-glow-color) 100%
     );
-  }
-
-  /* ------------------------------------------------------------------
-     Insignia del logo
-     Mismo lenguaje de relieve que los botones, pero con tres capas:
-     el disco en carbon, un aro en hueso y el maiz al borde, desplazados en
-     diagonal. Las sombras solidas siguen el border-radius, asi que los
-     aros salen circulares sin nodos extra.
-
-     El desplazamiento va en transform y no en translate: las utilidades
-     de Tailwind 4 (-translate-x-1/2, scale-*) usan las propiedades
-     translate y scale, asi que transform queda libre y las tres se
-     componen sin pisarse.
-     ------------------------------------------------------------------ */
-  /* ------------------------------------------------------------------
-     Insignia = torta en corte.
-     Tres capas en diagonal, de atras hacia adelante: pan de abajo,
-     relleno (carne y jitomate) y pan de arriba, con el logo posando
-     encima de ese pan de arriba.
-
-     El truco de sticker de siempre (copias que asoman detras al
-     desplazarse) ya no puede hacerse con box-shadow ni con pseudo-
-     elementos: ninguno de los dos puede pintarse DETRAS del propio
-     fondo de .tm-logo-badge, y aqui cada capa necesita su propio
-     degradado. Por eso las dos rebanadas de atras (.tm-torta-slice)
-     son hermanas del link en el markup (ver Navbar.js), no hijas: el
-     fondo opaco del link las tapa por completo salvo en el borde que
-     el translate() deja asomando, que es justo el efecto buscado.
-
-     El hover/active se resuelve con :has() sobre el link, ya que las
-     rebanadas van antes que el en el DOM y :hover no llega hacia
-     atras con el combinador de hermanos.
-
-     Unica excepcion del tema a "los colores salen de la paleta": una
-     torta no se lee como tal en maiz/olivo/carbon, asi que estas tres
-     capas llevan tonos de pan y jitomate reales, fijos aqui.
-     ------------------------------------------------------------------ */
-  .tm-logo-badge-wrap {
-    transition:
-      opacity 300ms ease-out,
-      scale 300ms ease-out;
-  }
-
-  .tm-logo-badge {
-    background: linear-gradient(160deg, #d9a154, #a8672c); /* pan de arriba */
-    transition: transform 150ms ease-out;
-  }
-
-  .tm-torta-slice {
-    position: absolute;
-    inset: 0;
-    border-radius: 50%;
-    pointer-events: none;
-    transition: transform 150ms ease-out;
-  }
-
-  /* Pan de abajo: la rebanada mas lejana. */
-  .tm-torta-slice--bottom {
-    background: linear-gradient(160deg, #b9793a, #6b3d1a);
-    transform: translate(6px, 6px);
-  }
-
-  /* Relleno: carne (cafe) con trozos redondos de jitomate (rojo,
-     tienen que leerse como rodaja) y una capa fina de lechuga (olivo,
-     ya sale de la paleta) pegada al borde exterior, mas delgada que
-     el cafe de fondo. Todo agrupado cerca de la esquina inferior
-     derecha a proposito: es la unica zona que el asomo diagonal llega
-     a destapar, y se nota mas al hacer hover, que es cuando el hueco
-     crece. */
-  .tm-torta-slice--filling {
-    background:
-      radial-gradient(circle at 78% 80%, #c0392b 0 11%, transparent 12%),
-      radial-gradient(circle at 85% 90%, #c0392b 0 7%, transparent 8%),
-      radial-gradient(circle at 91% 83%, #c0392b 0 6%, transparent 7%),
-      radial-gradient(
-        circle at 50% 50%,
-        transparent 93%,
-        var(--color-olivo-300) 94%,
-        var(--color-olivo-200) 97%,
-        var(--color-olivo-300) 100%
-      ),
-      linear-gradient(135deg, #6f4226, #46280f);
-    transform: translate(3px, 3px);
-  }
-
-  @media (hover: hover) {
-    .tm-logo-badge-wrap:has(.tm-logo-badge:hover) .tm-logo-badge,
-    .tm-logo-badge-wrap:has(.tm-logo-badge:focus-visible) .tm-logo-badge {
-      transform: translate(-3px, -3px);
-    }
-
-    .tm-logo-badge-wrap:has(.tm-logo-badge:hover) .tm-torta-slice--bottom,
-    .tm-logo-badge-wrap:has(.tm-logo-badge:focus-visible) .tm-torta-slice--bottom {
-      transform: translate(10px, 10px);
-    }
-
-    .tm-logo-badge-wrap:has(.tm-logo-badge:hover) .tm-torta-slice--filling,
-    .tm-logo-badge-wrap:has(.tm-logo-badge:focus-visible) .tm-torta-slice--filling {
-      transform: translate(5px, 5px);
-    }
-
-    .tm-logo-badge-wrap:has(.tm-logo-badge:active) .tm-logo-badge {
-      transform: translate(3px, 3px);
-    }
-
-    .tm-logo-badge-wrap:has(.tm-logo-badge:active) .tm-torta-slice {
-      transform: translate(0, 0);
-    }
   }
 
   /* ------------------------------------------------------------------
@@ -692,7 +633,7 @@
      .tm-header-solid mas abajo), asi que no lo usa.
      ------------------------------------------------------------------ */
   .tm-carbon-gradient {
-    background: linear-gradient(180deg, var(--color-carbon-300), var(--color-carbon-400) 55%, var(--color-carbon-500));
+    background: linear-gradient(180deg, var(--color-carbon-500), #000000);
   }
 
   /* ------------------------------------------------------------------
@@ -953,6 +894,28 @@
   }
 
   /* ------------------------------------------------------------------
+     Variante de la cinta de texto que cierra el hero: blanco a gris en
+     vez de carbon solido, con un quiebre de luz a la mitad (blanco ->
+     gris -> blanco -> gris mas oscuro) que simula un bisel metalico,
+     mas dos inset shadow (uno claro arriba, uno oscuro abajo) que le
+     dan el relieve 3D. El texto de adentro ya no va en hueso/maiz claro
+     (pensado para fondo oscuro): un rojo y un verde, los dos con
+     contraste de sobra sobre el fondo claro.
+
+     El fondo era un degradado de 4 paradas (blanco/gris/blanco/gris mas
+     oscuro) buscando el efecto de bisel metalico; el cliente lo sintio
+     con demasiado tono y pidio dejarlo en un solo color liso. El
+     inset box-shadow se queda: es un filo de luz/sombra muy sutil, no
+     un segundo tono, y es lo unico que le queda de relieve a la cinta.
+     ------------------------------------------------------------------ */
+  .tm-ribbon-bevel {
+    background: var(--color-hueso-200);
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.9),
+      inset 0 -2px 3px rgb(0 0 0 / 0.15);
+  }
+
+  /* ------------------------------------------------------------------
      Variante de la cinta para tarjetas clicables (favoritos).
      Volvio a la cinta en loop continuo (se probaron scroll-snap con
      avance a saltos y un difuminado en los bordes; ninguna de las dos
@@ -1014,6 +977,7 @@
   .tm-marquee--tortas:focus-within .tm-marquee__track {
     animation-play-state: paused;
   }
+
 
   .tm-btn-ghost-light {
     border: 2px solid var(--color-ink-inverse);
@@ -1174,6 +1138,71 @@
     font-weight: 700;
     letter-spacing: 0.16em;
     text-transform: uppercase;
+  }
+
+  /* ------------------------------------------------------------------
+     Titulo de seccion, tratamiento global. Nacio en el bloque 09b
+     (Catering / Tortas Club) y de ahi el cliente pidio que fuera EL
+     titulo de toda seccion con fondo claro del sitio, no solo de esa: en
+     verde, mayusculas y mas grande que el h2 "leading-tight" de antes.
+     Para las pocas secciones de fondo oscuro (Ubicaciones, Instagram) el
+     verde no se pidio, asi que esas usan .tm-section-title-inverse
+     (mismo tamano y mayusculas, sin el color). El cliente despues pidio
+     mayusculas en TODOS los titulos del sitio, asi que los h1 de hero
+     de cada pagina interna llevan la clase uppercase directo (no valia
+     la pena una clase nueva solo para eso, ya traen su propio tamano
+     por plantilla). No toca los titulos por item que se repiten dentro
+     de una lista (nombre de cada local, cada card de rol, etc.): esos
+     siguen siendo texto normal, otro nivel de la jerarquia. */
+  .tm-section-title {
+    font-family: var(--font-display);
+    font-size: 2.25rem;
+    font-weight: 900;
+    line-height: 1;
+    text-transform: uppercase;
+    color: var(--color-accent-hover);
+  }
+
+  .tm-section-title-inverse {
+    font-family: var(--font-display);
+    font-size: 2.25rem;
+    line-height: 1.15;
+    text-transform: uppercase;
+  }
+
+  @media (min-width: 40rem) {
+    .tm-section-title,
+    .tm-section-title-inverse {
+      font-size: 3rem;
+    }
+  }
+
+  /* ------------------------------------------------------------------
+     Modal de ingredientes por torta (template-parts/tortas-grid.php +
+     TortaModal.js). Entrada corta en vez de aparecer de golpe: la
+     pantalla completa de overlay+panel es un cambio grande de golpe,
+     un poco de escala/opacidad ayuda a que se lea como que "abrio"
+     desde donde se hizo click, no que reemplazo la pantalla entera.
+     ------------------------------------------------------------------ */
+  @keyframes tm-modal-in {
+    from {
+      opacity: 0;
+      transform: scale(0.96) translateY(0.5rem);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+  }
+
+  .tm-modal-panel {
+    animation: tm-modal-in 0.2s ease-out;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .tm-modal-panel {
+      animation: none;
+    }
   }
 
   /* ------------------------------------------------------------------

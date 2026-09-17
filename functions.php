@@ -222,15 +222,15 @@ function tm_load_fonts() {
   wp_enqueue_style(
     'tm-fonts',
     /**
-     * TODO: esta URL carga cuatro familias y todos los pesos de Lato y
-     * Arimo. Son bastantes kilobytes de fuente para un sitio que se abre
-     * en el telefono. Cuando se cierre la eleccion tipografica, recortar
-     * a lo que se use de verdad. Por ejemplo, solo Boogaloo mas Lato en
-     * 400 y 700:
+     * TODO: esta URL carga varias familias que ya no se usan (Arimo,
+     * Electrolize) mas todos los pesos de las que si. Son bastantes
+     * kilobytes de fuente para un sitio que se abre en el telefono.
+     * Cuando se cierre la eleccion tipografica, recortar a lo que se
+     * use de verdad. Por ejemplo, solo Barlow Condensed mas Inter:
      *
-     * https://fonts.googleapis.com/css2?family=Boogaloo&family=Lato:wght@400;700&display=swap
+     * https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;900&family=Inter:wght@400;500;600;700&display=swap
      */
-    'https://fonts.googleapis.com/css2?family=Arimo:ital,wght@0,400..700;1,400..700&family=Boogaloo&family=Electrolize&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap',
+    'https://fonts.googleapis.com/css2?family=Arimo:ital,wght@0,400..700;1,400..700&family=Barlow+Condensed:wght@400;500;600;700;800;900&family=Electrolize&family=Inter:wght@400;500;600;700&display=swap',
     array(),
     null
   );

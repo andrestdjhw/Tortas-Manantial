@@ -17,7 +17,13 @@
    MEDIOS DE ESTA PLANTILLA
    ========================================================================== */
 
-$tm_img_spread = tm_upload('2026/09/BannerJobApplication-scaled.webp');
+// Slideshow del bloque C2, por pedido del cliente (antes una sola foto
+// estatica). Crossfade en CSS puro, ver .tm-slideshow en src/index.css.
+$tm_img_catering_slides = array_values(array_filter(array(
+  tm_upload('2026/09/Catering1-scaled.jpg'),
+  tm_upload('2026/09/Catering2-scaled.jpg'),
+  tm_upload('2026/09/Catering3-scaled.jpg'),
+)));
 
 $tm_img_bg = tm_upload('2026/09/FondoVerde.png'); // Fondo de las secciones .tm-tiles.
 $tm_img_hero_bg = tm_upload('2026/09/TortasFondo.png'); // Fondo del hero.
@@ -46,7 +52,7 @@ get_header(); ?>
     <div class="max-w-xl rounded-2xl bg-hueso-100/90 p-8 shadow-xl backdrop-blur-sm">
       <p class="tm-eyebrow">Catering</p>
 
-      <h1 class="mt-4 font-display text-4xl leading-[1.05] sm:text-5xl">
+      <h1 class="mt-4 font-display uppercase text-4xl leading-[1.05] sm:text-5xl">
         Feed the whole crew
       </h1>
 
@@ -68,7 +74,7 @@ get_header(); ?>
     class="pointer-events-none absolute -right-2 top-1/2 hidden w-14 -translate-y-1/2 rotate-3 opacity-20 sm:block"
   >
   <ol class="relative mx-auto flex max-w-7xl gap-2 px-4 py-3 text-xs text-carbon-200 sm:px-6">
-    <li><a href="<?php echo esc_url(home_url('/')); ?>" class="hover:text-maiz-300">Home</a></li>
+    <li><a href="<?php echo esc_url(home_url('/')); ?>" class="hover:text-accent-hover-soft">Home</a></li>
     <li aria-hidden="true">/</li>
     <li class="text-hueso-100" aria-current="page">Catering</li>
   </ol>
@@ -88,7 +94,7 @@ get_header(); ?>
     >
   <?php endif; ?>
   <div class="mx-auto max-w-7xl px-4 sm:px-6">
-    <h2 class="font-display text-3xl leading-tight text-carbon-400 sm:text-4xl">
+    <h2 class="tm-section-title">
       Good for any size crowd
     </h2>
     <p class="mt-3 max-w-2xl text-carbon-300">
@@ -127,27 +133,29 @@ get_header(); ?>
 </section>
 
 <!-- ============================================================
-     C1b  TODAS LAS TORTAS
-     Parcial compartido, ver template-parts/tortas-grid.php. Vitrina del
-     producto justo antes del formulario de cotizacion.
-     ============================================================ -->
-<?php get_template_part('template-parts/tortas-grid'); ?>
-
-<!-- ============================================================
      C2  FOTO Y FORMULARIO
      Mismo tratamiento que K3 de /careers: fondo en TortasFondo.png con
-     el formulario en tarjeta encima.
+     el formulario en tarjeta encima. Va antes de la vitrina de tortas
+     por pedido del cliente (antes iba despues). La foto de la izquierda
+     ahora es un slideshow de 3 fotos de catering (antes una sola foto
+     fija), crossfade puro en CSS: ver .tm-slideshow en src/index.css.
      ============================================================ -->
 <section class="bg-hueso-300">
   <div class="grid lg:grid-cols-2">
-    <div data-tm-reveal="left" class="tm-placeholder tm-shine-loop relative overflow-hidden min-h-64 lg:min-h-[36rem]">
-      <?php if ($tm_img_spread) : ?>
-        <img
-          src="<?php echo esc_url($tm_img_spread); ?>"
-          alt="A catering spread from Tortas Manantial"
-          loading="lazy"
-          class="h-full w-full object-cover"
-        >
+    <div data-tm-reveal="left" class="tm-placeholder tm-shine-loop relative overflow-hidden min-h-64 lg:min-h-144">
+      <?php if ($tm_img_catering_slides) : ?>
+        <div class="tm-slideshow">
+          <?php foreach ($tm_img_catering_slides as $tm_slide_index => $tm_slide_src) : ?>
+            <img
+              src="<?php echo esc_url($tm_slide_src); ?>"
+              alt="<?php echo $tm_slide_index === 0 ? 'A catering spread from Tortas Manantial' : ''; ?>"
+              <?php echo $tm_slide_index === 0 ? '' : 'aria-hidden="true"'; ?>
+              loading="<?php echo $tm_slide_index === 0 ? 'eager' : 'lazy'; ?>"
+              style="animation-delay: <?php echo esc_attr($tm_slide_index * 7); ?>s"
+              class="tm-slideshow__img"
+            >
+          <?php endforeach; ?>
+        </div>
       <?php endif; ?>
     </div>
 
@@ -163,7 +171,7 @@ get_header(); ?>
       <?php endif; ?>
 
       <div class="relative z-10 w-full max-w-lg rounded-2xl bg-hueso-100/90 p-8 shadow-xl backdrop-blur-sm">
-        <h2 class="font-display text-3xl leading-tight text-carbon-400 sm:text-4xl">
+        <h2 class="tm-section-title">
           Request a quote
         </h2>
         <p class="mt-3 text-carbon-300">
@@ -183,6 +191,12 @@ get_header(); ?>
     </div>
   </div>
 </section>
+
+<!-- ============================================================
+     C1b  TODAS LAS TORTAS
+     Parcial compartido, ver template-parts/tortas-grid.php.
+     ============================================================ -->
+<?php get_template_part('template-parts/tortas-grid'); ?>
 
 <?php
   $tm_schema = array(

@@ -10,11 +10,11 @@
    MEDIOS DE ESTA PLANTILLA
    ========================================================================== */
 
-$tm_img_team = tm_upload('2026/09/JobApplicationForm-scaled.jpg');
+$tm_img_team = tm_upload('2026/09/tortasmanantialteamweb.png');
 
 $tm_img_bg = tm_upload('2026/09/FondoVerde.png'); // Fondo de las secciones .tm-tiles.
 $tm_img_hero_bg = tm_upload('2026/09/TortasFondo.png'); // Fondo del hero, antes tm-facets.
-$tm_img_form_bg = $tm_img_hero_bg; // Mismo fondo, ahora detras del formulario de K3.
+$tm_img_form_bg = $tm_img_hero_bg; // Mismo fondo, otra vez detras del formulario de K3.
 
 $tm_locations = tm_locations();
 
@@ -48,7 +48,7 @@ get_header(); ?>
     <div class="max-w-xl rounded-2xl bg-hueso-100/90 p-8 shadow-xl backdrop-blur-sm">
       <p class="tm-eyebrow">We are hiring</p>
 
-      <h1 class="mt-4 font-display text-4xl leading-[1.05] sm:text-5xl">
+      <h1 class="mt-4 font-display uppercase text-4xl leading-[1.05] sm:text-5xl">
         Work with us
       </h1>
 
@@ -69,7 +69,7 @@ get_header(); ?>
     class="pointer-events-none absolute -right-2 top-1/2 hidden w-14 -translate-y-1/2 -rotate-6 opacity-20 sm:block"
   >
   <ol class="relative mx-auto flex max-w-7xl gap-2 px-4 py-3 text-xs text-carbon-200 sm:px-6">
-    <li><a href="<?php echo esc_url(home_url('/')); ?>" class="hover:text-maiz-300">Home</a></li>
+    <li><a href="<?php echo esc_url(home_url('/')); ?>" class="hover:text-accent-hover-soft">Home</a></li>
     <li aria-hidden="true">/</li>
     <li class="text-hueso-100" aria-current="page">Careers</li>
   </ol>
@@ -89,7 +89,7 @@ get_header(); ?>
     >
   <?php endif; ?>
   <div class="mx-auto max-w-7xl px-4 sm:px-6">
-    <h2 class="font-display text-3xl leading-tight text-carbon-400 sm:text-4xl">
+    <h2 class="tm-section-title">
       What we hire for
     </h2>
     <p class="mt-3 max-w-2xl text-carbon-300">
@@ -133,7 +133,7 @@ get_header(); ?>
      ============================================================ -->
 <section class="bg-hueso-200 py-16 lg:py-24">
   <div class="mx-auto max-w-7xl px-4 sm:px-6">
-    <h2 class="font-display text-3xl leading-tight text-carbon-400 sm:text-4xl">
+    <h2 class="tm-section-title">
       Four shops across the west Valley
     </h2>
 
@@ -158,18 +158,14 @@ get_header(); ?>
 </section>
 
 <!-- ============================================================
-     K2b  CARRUSEL DE PRODUCTOS
-     Parcial compartido, ver template-parts/favorites-carousel.php.
-     Justo antes del CTA de cierre de la pagina (aplicar).
-     ============================================================ -->
-<?php get_template_part('template-parts/favorites-carousel'); ?>
-
-<!-- ============================================================
      K3  FOTO DEL EQUIPO Y FORMULARIO
      ============================================================ -->
 <section class="bg-hueso-300">
   <div class="grid lg:grid-cols-2">
-    <div data-tm-reveal="left" class="tm-placeholder min-h-64 lg:min-h-[36rem]">
+    <!-- Fondo blanco liso (bg-hueso-100 en vez de tm-placeholder), pero la
+         foto vuelve a llenar la caja a sangre (h-full w-full object-cover)
+         como antes. -->
+    <div data-tm-reveal="left" class="min-h-64 bg-hueso-100 lg:min-h-144">
       <?php if ($tm_img_team) : ?>
         <img
           src="<?php echo esc_url($tm_img_team); ?>"
@@ -195,7 +191,7 @@ get_header(); ?>
            TortasFondo.png es una textura ocupada de sandwiches, el
            formulario necesita una base solida para seguir siendo legible. -->
       <div class="relative z-10 w-full max-w-lg rounded-2xl bg-hueso-100/90 p-8 shadow-xl backdrop-blur-sm">
-        <h2 class="font-display text-3xl leading-tight text-carbon-400 sm:text-4xl">
+        <h2 class="tm-section-title">
           Apply now
         </h2>
         <p class="mt-3 text-carbon-300">
