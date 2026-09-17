@@ -135,7 +135,8 @@ get_header(); ?>
               Every day, <?php echo esc_html($tm_status['opensAt']); ?> to <?php echo esc_html($tm_status['closesAt']); ?>
             </p>
 
-            <div class="mt-6 grid grid-cols-3 gap-2">
+            <p class="tm-eyebrow mt-6 text-carbon-300">Pickup</p>
+            <div class="mt-2 grid grid-cols-2 gap-2">
               <a
                 href="<?php echo esc_url($tm_location['orderUrl']); ?>"
                 target="_blank" rel="noopener"
@@ -145,18 +146,37 @@ get_header(); ?>
               >Order direct</a>
 
               <a
+                href="tel:<?php echo esc_attr($tm_location['phone']); ?>"
+                data-tm-phone="<?php echo esc_attr($tm_location['id']); ?>"
+                class="tm-btn tm-btn-relief tm-btn-muted flex-col gap-1 px-2 py-2.5 text-[11px] leading-tight"
+              >Call</a>
+            </div>
+
+            <p class="tm-eyebrow mt-4 text-carbon-300">Delivery</p>
+            <div class="mt-2 grid grid-cols-3 gap-2">
+              <a
+                href="<?php echo esc_url($tm_location['grubhubUrl']); ?>"
+                target="_blank" rel="noopener"
+                data-tm-order="<?php echo esc_attr($tm_location['id']); ?>"
+                data-tm-channel="grubhub"
+                class="tm-btn tm-btn-relief tm-btn-fresh flex-col gap-1 px-2 py-2.5 text-[11px] leading-tight"
+              >Grubhub</a>
+
+              <a
+                href="<?php echo esc_url($tm_location['seamlessUrl']); ?>"
+                target="_blank" rel="noopener"
+                data-tm-order="<?php echo esc_attr($tm_location['id']); ?>"
+                data-tm-channel="seamless"
+                class="tm-btn tm-btn-relief tm-btn-fresh flex-col gap-1 px-2 py-2.5 text-[11px] leading-tight"
+              >Seamless</a>
+
+              <a
                 href="<?php echo esc_url($tm_location['uberUrl']); ?>"
                 target="_blank" rel="noopener"
                 data-tm-order="<?php echo esc_attr($tm_location['id']); ?>"
                 data-tm-channel="ubereats"
                 class="tm-btn tm-btn-relief tm-btn-fresh flex-col gap-1 px-2 py-2.5 text-[11px] leading-tight"
               >Uber Eats</a>
-
-              <a
-                href="tel:<?php echo esc_attr($tm_location['phone']); ?>"
-                data-tm-phone="<?php echo esc_attr($tm_location['id']); ?>"
-                class="tm-btn tm-btn-relief tm-btn-muted flex-col gap-1 px-2 py-2.5 text-[11px] leading-tight"
-              >Call</a>
             </div>
 
             <div class="mt-4 flex flex-wrap gap-x-6 gap-y-2 text-sm font-semibold text-olivo-400">

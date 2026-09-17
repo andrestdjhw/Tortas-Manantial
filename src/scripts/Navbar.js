@@ -33,9 +33,11 @@ const COPY = {
       { label: "Our Story", href: "/our-story" },
       { label: "Tortas Club", href: "/tortas-club" },
     ],
-    cta: "Order Direct",
-    ctaShort: "Order",
+    cta: "Order Pickup",
+    ctaShort: "Pickup",
+    ctaDelivery: "Order Delivery",
     panelTitle: "Where are you eating today?",
+    panelTitleDelivery: "Which location is delivering?",
     panelClose: "Close",
     closest: "Closest to you",
     openUntil: (h) => `Open until ${h}`,
@@ -43,6 +45,7 @@ const COPY = {
     order: "Order",
     orderDirect: "Order direct",
     noFees: "Direct orders skip the app fees.",
+    deliveryNote: "Delivery orders go through each app's own checkout.",
     utility: (name, h) => `Open until ${h} at ${name}`,
     call: "Call",
     openMenu: "Open menu",
@@ -66,9 +69,11 @@ const COPY = {
       { label: "Nuestra Historia", href: "/our-story" },
       { label: "Tortas Club", href: "/tortas-club" },
     ],
-    cta: "Ordena Directo",
-    ctaShort: "Ordena",
+    cta: "Ordena para Recoger",
+    ctaShort: "Recoger",
+    ctaDelivery: "Pide a Domicilio",
     panelTitle: "¿Dónde comes hoy?",
+    panelTitleDelivery: "¿Qué local te va a entregar?",
     panelClose: "Cerrar",
     closest: "El más cerca de ti",
     openUntil: (h) => `Abierto hasta las ${h}`,
@@ -76,6 +81,7 @@ const COPY = {
     order: "Ordena",
     orderDirect: "Ordena directo",
     noFees: "Ordenar directo evita las comisiones de la app.",
+    deliveryNote: "Los pedidos a domicilio se hacen desde cada app.",
     utility: (name, h) => `Abierto hasta las ${h} en ${name}`,
     call: "Llamar",
     openMenu: "Abrir menú",
@@ -163,7 +169,8 @@ function useScrollLock(active) {
 /*  Panel de seleccion de local                                        */
 /* ------------------------------------------------------------------ */
 
-function LocationPanel({ t, locations, nearestId, onClose, triggerRef }) {
+function LocationPanel({ t, locations, nearestId, onClose, triggerRef, mode }) {
+  const isDelivery = mode === "delivery";
   const panelRef = useRef(null);
   const firstLinkRef = useRef(null);
 
@@ -198,11 +205,13 @@ function LocationPanel({ t, locations, nearestId, onClose, triggerRef }) {
       ref={panelRef}
       role="dialog"
       aria-modal="true"
-      aria-label={t.panelTitle}
+      aria-label={isDelivery ? t.panelTitleDelivery : t.panelTitle}
       className="tm-location-panel fixed inset-x-3 z-[60] max-h-[80svh] overflow-y-auto rounded-2xl border border-carbon-500 bg-carbon-400 p-4 text-hueso-100 shadow-2xl sm:absolute sm:inset-x-auto sm:right-0 sm:w-[26rem] sm:p-5"
     >
       <div className="mb-4 flex items-start justify-between gap-4">
-        <h2 className="text-lg font-bold leading-snug">{t.panelTitle}</h2>
+        <h2 className="text-lg font-bold leading-snug">
+          {isDelivery ? t.panelTitleDelivery : t.panelTitle}
+        </h2>
         <button
           type="button"
           onClick={() => {
@@ -252,45 +261,88 @@ function LocationPanel({ t, locations, nearestId, onClose, triggerRef }) {
                   </span>
                 </p>
 
-                <div className="mt-3 grid grid-cols-3 gap-2">
-                  <a
-                    ref={isNearest || location.id === locations[0].id ? firstLinkRef : null}
-                    href={location.orderUrl}
-                    target="_blank"
-                    rel="noopener"
-                    data-tm-order={location.id}
-                    data-tm-channel="toast"
-                    className="tm-btn tm-btn-relief tm-btn-primary tm-btn-primary-on-dark flex-col gap-1 px-2 py-2.5 text-[11px] leading-tight"
-                  >
-                    <IconBag size={18} />
-                    <span>{t.orderDirect}</span>
-                  </a>
+                <div
+                  className={`mt-3 grid gap-2 ${
+                    isDelivery ? "grid-cols-3" : "grid-cols-2"
+                  }`}
+                >
+                  {isDelivery ? (
+                    <>
+                      <a
+                        ref={
+                          isNearest || location.id === locations[0].id
+                            ? firstLinkRef
+                            : null
+                        }
+                        href={location.grubhubUrl}
+                        target="_blank"
+                        rel="noopener"
+                        data-tm-order={location.id}
+                        data-tm-channel="grubhub"
+                        className="tm-btn tm-btn-relief tm-btn-relief-on-dark tm-btn-fresh flex-col gap-1 px-2 py-2.5 text-[11px] leading-tight"
+                      >
+                        <IconMoped size={18} />
+                        <span>Grubhub</span>
+                      </a>
 
-                  <a
-                    href={location.uberUrl}
-                    target="_blank"
-                    rel="noopener"
-                    data-tm-order={location.id}
-                    data-tm-channel="ubereats"
-                    className="tm-btn tm-btn-relief tm-btn-relief-on-dark tm-btn-fresh flex-col gap-1 px-2 py-2.5 text-[11px] leading-tight"
-                  >
-                    <IconMoped size={18} />
-                    <span>Uber Eats</span>
-                  </a>
+                      <a
+                        href={location.seamlessUrl}
+                        target="_blank"
+                        rel="noopener"
+                        data-tm-order={location.id}
+                        data-tm-channel="seamless"
+                        className="tm-btn tm-btn-relief tm-btn-relief-on-dark tm-btn-fresh flex-col gap-1 px-2 py-2.5 text-[11px] leading-tight"
+                      >
+                        <IconMoped size={18} />
+                        <span>Seamless</span>
+                      </a>
 
-                  <a
-                    href={`tel:${location.phone}`}
-                    data-tm-phone={location.id}
-                    className="tm-btn tm-btn-relief tm-btn-relief-on-dark tm-btn-muted flex-col gap-1 px-2 py-2.5 text-[11px] leading-tight"
-                    aria-label={`${t.call} ${location.name[t.langKey]}`}
-                  >
-                    <IconPhone size={18} />
-                    <span>{t.call}</span>
-                  </a>
+                      <a
+                        href={location.uberUrl}
+                        target="_blank"
+                        rel="noopener"
+                        data-tm-order={location.id}
+                        data-tm-channel="ubereats"
+                        className="tm-btn tm-btn-relief tm-btn-relief-on-dark tm-btn-fresh flex-col gap-1 px-2 py-2.5 text-[11px] leading-tight"
+                      >
+                        <IconMoped size={18} />
+                        <span>Uber Eats</span>
+                      </a>
+                    </>
+                  ) : (
+                    <>
+                      <a
+                        ref={
+                          isNearest || location.id === locations[0].id
+                            ? firstLinkRef
+                            : null
+                        }
+                        href={location.orderUrl}
+                        target="_blank"
+                        rel="noopener"
+                        data-tm-order={location.id}
+                        data-tm-channel="toast"
+                        className="tm-btn tm-btn-relief tm-btn-primary tm-btn-primary-on-dark flex-col gap-1 px-2 py-2.5 text-[11px] leading-tight"
+                      >
+                        <IconBag size={18} />
+                        <span>{t.orderDirect}</span>
+                      </a>
+
+                      <a
+                        href={`tel:${location.phone}`}
+                        data-tm-phone={location.id}
+                        className="tm-btn tm-btn-relief tm-btn-relief-on-dark tm-btn-muted flex-col gap-1 px-2 py-2.5 text-[11px] leading-tight"
+                        aria-label={`${t.call} ${location.name[t.langKey]}`}
+                      >
+                        <IconPhone size={18} />
+                        <span>{t.call}</span>
+                      </a>
+                    </>
+                  )}
                 </div>
 
                 <p className="mt-2 text-center text-[11px] text-carbon-200">
-                  {t.noFees}
+                  {isDelivery ? t.deliveryNote : t.noFees}
                 </p>
               </div>
             </li>
@@ -329,13 +381,15 @@ export default function Navbar() {
   const t = { ...COPY[cfg.lang], langKey: cfg.lang };
 
   const [menuOpen, setMenuOpen] = useState(false);
-  const [panelOpen, setPanelOpen] = useState(false);
+  /* null | "pickup" | "delivery": que panel de local esta abierto, si hay uno. */
+  const [activePanel, setActivePanel] = useState(null);
   const [coords, setCoords] = useState(null);
   const [askedForLocation, setAskedForLocation] = useState(false);
 
   const ctaRef = useRef(null);
+  const deliveryCtaRef = useRef(null);
 
-  useScrollLock(menuOpen || panelOpen);
+  useScrollLock(menuOpen || Boolean(activePanel));
 
   /* Geolocalizacion: solo se pide cuando el usuario abre el panel, nunca al cargar. */
   const requestLocation = useCallback(() => {
@@ -373,7 +427,7 @@ export default function Navbar() {
 
       event.preventDefault();
       setMenuOpen(false);
-      setPanelOpen(true);
+      setActivePanel("pickup");
       requestLocation();
     }
 
@@ -389,9 +443,9 @@ export default function Navbar() {
    * caminos al mismo resultado, uno adentro del componente y otro por
    * delegacion de eventos para markup que React no controla.
    */
-  function openPanel() {
+  function openPanel(mode) {
     setMenuOpen(false);
-    setPanelOpen(true);
+    setActivePanel(mode);
     requestLocation();
   }
 
@@ -518,37 +572,62 @@ export default function Navbar() {
 
           {/* CTA + hamburguesa, derecha */}
           <div className="flex w-full shrink-0 items-center justify-end gap-3 lg:w-auto lg:justify-normal">
-            {/* El div se queda siempre montado aunque el boton este oculto
-                en movil: de ahi cuelga el panel de local, y ese panel lo
-                puede disparar cualquier data-tm-order-cta de la pagina,
-                no solo este boton.
+            {/* Los dos div se quedan siempre montados aunque el boton este
+                oculto en movil: de ahi cuelga el panel de cada uno, y el de
+                pickup ademas lo puede disparar cualquier data-tm-order-cta
+                de la pagina, no solo su boton.
 
-                Este boton en particular ya no va directo a Toast: por
-                pedido del cliente, abre el mismo panel de seleccion de
-                local que "Find my shop" en el cierre de /locations (ahi
-                el usuario ve sus 4 opciones ordenadas por cercania en
-                vez de caer siempre en el local de McDowell). openPanel
-                hace lo mismo que el listener de data-tm-order-cta, solo
-                que sin pasar por el evento de click en document: este
-                boton ya vive dentro del componente que tiene el estado. */}
+                Ninguno de los dos botones va directo a un link: por pedido
+                del cliente, cada uno abre su propio panel de seleccion de
+                local (mismo patron que "Find my shop" en el cierre de
+                /locations), asi el usuario ve sus 4 opciones ordenadas por
+                cercania en vez de caer siempre en el local de McDowell.
+                openPanel(mode) hace lo mismo que el listener de
+                data-tm-order-cta para el modo "pickup", solo que sin pasar
+                por el evento de click en document: estos botones ya viven
+                dentro del componente que tiene el estado. */}
             <div className="relative">
               <button
                 ref={ctaRef}
                 type="button"
-                onClick={openPanel}
+                onClick={() => openPanel("pickup")}
                 className="tm-btn tm-btn-relief tm-btn-primary hidden px-5 py-3 text-[1.05rem] lg:inline-flex"
               >
                 <IconBag size={18} />
                 {t.cta}
               </button>
 
-              {panelOpen && (
+              {activePanel === "pickup" && (
                 <LocationPanel
                   t={t}
                   locations={ordered}
                   nearestId={nearestId}
-                  onClose={() => setPanelOpen(false)}
+                  onClose={() => setActivePanel(null)}
                   triggerRef={ctaRef}
+                  mode="pickup"
+                />
+              )}
+            </div>
+
+            <div className="relative">
+              <button
+                ref={deliveryCtaRef}
+                type="button"
+                onClick={() => openPanel("delivery")}
+                className="tm-btn tm-btn-relief tm-btn-fresh hidden px-5 py-3 text-[1.05rem] lg:inline-flex"
+              >
+                <IconMoped size={18} />
+                {t.ctaDelivery}
+              </button>
+
+              {activePanel === "delivery" && (
+                <LocationPanel
+                  t={t}
+                  locations={ordered}
+                  nearestId={nearestId}
+                  onClose={() => setActivePanel(null)}
+                  triggerRef={deliveryCtaRef}
+                  mode="delivery"
                 />
               )}
             </div>
@@ -557,7 +636,7 @@ export default function Navbar() {
             <button
               type="button"
               onClick={() => {
-                setPanelOpen(false);
+                setActivePanel(null);
                 setMenuOpen((open) => !open);
               }}
               aria-expanded={menuOpen}
