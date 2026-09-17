@@ -159,7 +159,7 @@ get_header(); ?>
                 target="_blank" rel="noopener"
                 data-tm-order="<?php echo esc_attr($tm_location['id']); ?>"
                 data-tm-channel="grubhub"
-                class="tm-btn tm-btn-relief tm-btn-fresh flex-col gap-1 px-2 py-2.5 text-[11px] leading-tight"
+                class="tm-btn tm-btn-relief tm-btn-grubhub flex-col gap-1 px-2 py-2.5 text-[11px] leading-tight"
               >Grubhub</a>
 
               <a
@@ -167,7 +167,7 @@ get_header(); ?>
                 target="_blank" rel="noopener"
                 data-tm-order="<?php echo esc_attr($tm_location['id']); ?>"
                 data-tm-channel="seamless"
-                class="tm-btn tm-btn-relief tm-btn-fresh flex-col gap-1 px-2 py-2.5 text-[11px] leading-tight"
+                class="tm-btn tm-btn-relief tm-btn-seamless flex-col gap-1 px-2 py-2.5 text-[11px] leading-tight"
               >Seamless</a>
 
               <a
@@ -175,7 +175,7 @@ get_header(); ?>
                 target="_blank" rel="noopener"
                 data-tm-order="<?php echo esc_attr($tm_location['id']); ?>"
                 data-tm-channel="ubereats"
-                class="tm-btn tm-btn-relief tm-btn-fresh flex-col gap-1 px-2 py-2.5 text-[11px] leading-tight"
+                class="tm-btn tm-btn-relief tm-btn-ubereats flex-col gap-1 px-2 py-2.5 text-[11px] leading-tight"
               >Uber Eats</a>
             </div>
 

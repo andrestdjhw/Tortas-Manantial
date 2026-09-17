@@ -176,14 +176,18 @@ export default function Footer() {
 
       <div className="relative z-10 mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:py-16">
         <div className="grid gap-0 lg:grid-cols-3 lg:gap-10">
-          {/* Ubicaciones. Enlazan a la pagina del local, nunca a Toast:
-              la pagina de ubicacion es la que rankea. */}
+          {/* Ubicaciones. Enlazan a Google Maps: las paginas /locations/*
+              todavia no existen, asi que hasta que existan el link util
+              es el de direcciones. */}
           <Column title={t.locations} id="tm-footer-locations">
             <ul className="flex flex-col gap-3">
               {LOCATIONS.map((location) => (
                 <li key={location.id}>
                   <a
-                    href={location.pageUrl}
+                    href={location.directionsUrl}
+                    target="_blank"
+                    rel="noopener"
+                    data-tm-directions={location.id}
                     className="group block text-sm transition-colors hover:text-accent-hover-soft"
                   >
                     <span className="font-semibold">

@@ -336,6 +336,38 @@
     color: var(--color-carbon-500);
   }
 
+  /* Delivery, uno por servicio. Colores de marca de cada app, para que se
+     distingan de un vistazo en vez de repetir el mismo verde tres veces.
+     Grubhub y Uber Eats llevan texto oscuro porque su naranja/verde de
+     marca no aprueban contraste con texto claro. Seamless no publica guia
+     de marca, se usa un vino oscuro consistente con su sello historico. */
+  .tm-btn-grubhub {
+    background-color: #ff5501;
+    color: var(--color-carbon-500);
+  }
+
+  .tm-btn-grubhub:hover {
+    background-color: #e64d00;
+  }
+
+  .tm-btn-seamless {
+    background-color: #8c1d31;
+    color: var(--color-ink-inverse);
+  }
+
+  .tm-btn-seamless:hover {
+    background-color: #711727;
+  }
+
+  .tm-btn-ubereats {
+    background-color: #06c167;
+    color: var(--color-carbon-500);
+  }
+
+  .tm-btn-ubereats:hover {
+    background-color: #05a357;
+  }
+
   /* Sobre fondo oscuro el relieve va en claro, si no se pierde.
      Hueso para el primario, carbon-200 para los secundarios: tres sombras
      blancas juntas gritan demasiado. */

@@ -6,6 +6,7 @@ import {
   sortByProximity,
 } from "./locations";
 import {
+  IconBadgeCheck,
   IconBag,
   IconClose,
   IconFacebook,
@@ -16,6 +17,7 @@ import {
   IconPhone,
   IconPin,
   IconTikTok,
+  IconUtensils,
 } from "./icons";
 
 /* ------------------------------------------------------------------ */
@@ -206,7 +208,7 @@ function LocationPanel({ t, locations, nearestId, onClose, triggerRef, mode }) {
       role="dialog"
       aria-modal="true"
       aria-label={isDelivery ? t.panelTitleDelivery : t.panelTitle}
-      className="tm-location-panel fixed inset-x-3 z-[60] max-h-[80svh] overflow-y-auto rounded-2xl border border-carbon-500 bg-carbon-400 p-4 text-hueso-100 shadow-2xl sm:absolute sm:inset-x-auto sm:right-0 sm:w-[26rem] sm:p-5"
+      className="tm-location-panel fixed inset-x-3 z-[60] max-h-[80svh] overflow-y-auto rounded-2xl border border-white/15 bg-black/75 p-4 text-hueso-100 shadow-2xl backdrop-blur-xl backdrop-saturate-150 sm:absolute sm:inset-x-auto sm:right-0 sm:w-[26rem] sm:p-5"
     >
       <div className="mb-4 flex items-start justify-between gap-4">
         <h2 className="text-lg font-bold leading-snug">
@@ -232,7 +234,7 @@ function LocationPanel({ t, locations, nearestId, onClose, triggerRef, mode }) {
 
           return (
             <li key={location.id}>
-              <div className="rounded-xl bg-carbon-500 p-3.5">
+              <div className="rounded-xl border border-white/10 bg-black/50 p-3.5">
                 {isNearest && (
                   <p className="tm-eyebrow mb-1.5 flex items-center gap-1 text-accent-hover-soft">
                     <IconPin size={14} />
@@ -279,9 +281,9 @@ function LocationPanel({ t, locations, nearestId, onClose, triggerRef, mode }) {
                         rel="noopener"
                         data-tm-order={location.id}
                         data-tm-channel="grubhub"
-                        className="tm-btn tm-btn-relief tm-btn-relief-on-dark tm-btn-fresh flex-col gap-1 px-2 py-2.5 text-[11px] leading-tight"
+                        className="tm-btn tm-btn-relief tm-btn-relief-on-dark tm-btn-grubhub flex-col gap-1 px-2 py-2.5 text-[11px] leading-tight"
                       >
-                        <IconMoped size={18} />
+                        <IconUtensils size={18} />
                         <span>Grubhub</span>
                       </a>
 
@@ -291,9 +293,9 @@ function LocationPanel({ t, locations, nearestId, onClose, triggerRef, mode }) {
                         rel="noopener"
                         data-tm-order={location.id}
                         data-tm-channel="seamless"
-                        className="tm-btn tm-btn-relief tm-btn-relief-on-dark tm-btn-fresh flex-col gap-1 px-2 py-2.5 text-[11px] leading-tight"
+                        className="tm-btn tm-btn-relief tm-btn-relief-on-dark tm-btn-seamless flex-col gap-1 px-2 py-2.5 text-[11px] leading-tight"
                       >
-                        <IconMoped size={18} />
+                        <IconBadgeCheck size={18} />
                         <span>Seamless</span>
                       </a>
 
@@ -303,9 +305,9 @@ function LocationPanel({ t, locations, nearestId, onClose, triggerRef, mode }) {
                         rel="noopener"
                         data-tm-order={location.id}
                         data-tm-channel="ubereats"
-                        className="tm-btn tm-btn-relief tm-btn-relief-on-dark tm-btn-fresh flex-col gap-1 px-2 py-2.5 text-[11px] leading-tight"
+                        className="tm-btn tm-btn-relief tm-btn-relief-on-dark tm-btn-ubereats flex-col gap-1 px-2 py-2.5 text-[11px] leading-tight"
                       >
-                        <IconMoped size={18} />
+                        <IconBag size={18} />
                         <span>Uber Eats</span>
                       </a>
                     </>

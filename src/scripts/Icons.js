@@ -74,10 +74,10 @@ export function IconMail({ size = 18 }) {
   );
 }
 
-/** Bolsa de pedido, para el canal directo. */
-export function IconBag({ size = 18 }) {
+/** Bolsa de pedido, para el canal directo y para Uber Eats. */
+export function IconBag({ size = 18, className }) {
   return (
-    <svg viewBox="0 0 24 24" width={size} height={size} {...base}>
+    <svg viewBox="0 0 24 24" width={size} height={size} className={className} {...base}>
       <path d="M5.4 8h13.2l-1 11.2a2 2 0 0 1-2 1.8H8.4a2 2 0 0 1-2-1.8z" />
       <path d="M8.8 8V6.4a3.2 3.2 0 0 1 6.4 0V8" />
     </svg>
@@ -93,6 +93,27 @@ export function IconMoped({ size = 18 }) {
       <path d="M8.6 17.5h6.8" />
       <path d="M18 14.9V9.4a2 2 0 0 0-2-2h-1.6" />
       <path d="M3.6 6h2.2a3 3 0 0 1 3 3v5.4" />
+    </svg>
+  );
+}
+
+/** Cubiertos cruzados, para el boton de Grubhub. */
+export function IconUtensils({ size = 18 }) {
+  return (
+    <svg viewBox="0 0 24 24" width={size} height={size} {...base}>
+      <path d="M7 3v6.5a1.8 1.8 0 0 0 3.6 0V3" />
+      <path d="M8.8 3v18" />
+      <path d="M17 3c-1.4 0-2.5 1.7-2.5 5.2 0 2.4 1 3.6 2 4.1v9.2" />
+    </svg>
+  );
+}
+
+/** Sello con check, para el boton de Seamless. */
+export function IconBadgeCheck({ size = 18 }) {
+  return (
+    <svg viewBox="0 0 24 24" width={size} height={size} {...base}>
+      <path d="M12 3.2l2 1.7 2.6-.4 1 2.4 2.4 1-.4 2.6 1.7 2-1.7 2 .4 2.6-2.4 1-1 2.4-2.6-.4-2 1.7-2-1.7-2.6.4-1-2.4-2.4-1 .4-2.6L3.2 12l1.7-2-.4-2.6 2.4-1 1-2.4 2.6.4z" />
+      <path d="M8.8 12.2l2.1 2.1 4.3-4.3" />
     </svg>
   );
 }
