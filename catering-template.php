@@ -115,10 +115,10 @@ get_header(); ?>
         <li
           data-tm-reveal="top"
           style="transition-delay: <?php echo esc_attr($tm_catering_index * 0.1); ?>s"
-          class="tm-card-bouncy rounded-xl border border-hueso-400 bg-hueso-100 p-6 shadow-sm"
+          class="tm-card-bouncy rounded-xl bg-maiz-300 p-6 text-hueso-100 shadow-sm"
         >
-          <h3 class="font-display text-xl text-carbon-400"><?php echo esc_html($tm_catering_type[0]); ?></h3>
-          <p class="mt-2 text-sm text-carbon-300"><?php echo esc_html($tm_catering_type[1]); ?></p>
+          <h3 class="font-display text-xl text-hueso-100"><?php echo esc_html($tm_catering_type[0]); ?></h3>
+          <p class="mt-2 text-sm text-hueso-100/80"><?php echo esc_html($tm_catering_type[1]); ?></p>
         </li>
       <?php endforeach; ?>
     </ul>

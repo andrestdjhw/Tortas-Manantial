@@ -141,8 +141,9 @@ get_header(); ?>
         Eat here often? Start getting paid for it
       </h2>
       <p class="mt-5 max-w-lg text-lg">
-        Points on every order, a free torta on your birthday, and first word on
-        new items and specials. Free to join, takes about twenty seconds.
+        Points on every order, $5 off on your birthday, a free torta at 150
+        points, and first word on new items and specials. Free to join,
+        takes about twenty seconds.
       </p>
     </div>
 
@@ -243,11 +244,11 @@ get_header(); ?>
         ),
         array(
           'What is the Tortas Club?',
-          'Our free loyalty program. You earn points on every direct order, get a free torta on your birthday, and hear about new items before anyone else. Signing up takes about twenty seconds.',
+          'Our free loyalty program. You earn points on every direct order, get $5 off on your birthday, a free torta once you reach 150 points, and hear about new items before anyone else. Signing up takes about twenty seconds.',
         ),
         array(
           'What exactly is a torta?',
-          'A Mexican sandwich on bolillo bread, toasted on the grill and layered generously. Ours follow a family recipe that has not changed since we opened in the year 2000.',
+          'A Mexican sandwich on a special made bread, layered generously and oven toasted to perfection. Our tortas follow a secret family recipe that has not changed since the year 2000.',
         ),
         array(
           'Are you hiring?',

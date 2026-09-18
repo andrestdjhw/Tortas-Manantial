@@ -162,7 +162,7 @@ $tm_tg_modal_items = array_map(function ($tm_torta) use ($tm_tg_slug) {
       Every torta we make
     </h2>
     <p class="mt-3 max-w-xl text-carbon-300">
-      Ten fillings, one bolillo, made the same way since the year 2000.
+      Ten fillings, one house bread, made the same way since the year 2000.
     </p>
   </div>
 

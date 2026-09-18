@@ -121,7 +121,7 @@ get_header(); ?>
          centrado, en vez de quedarse pegado a la izquierda sin nada del
          otro lado. -->
     <div class="mx-auto max-w-2xl text-center">
-      <p class="tm-eyebrow text-accent-hover-soft">Family owned in Phoenix since 2000</p>
+      <p class="tm-eyebrow text-accent-hover">Family owned since 2000</p>
 
       <!-- 40% mas grande que el tamano original en cada punto de quiebre
            (2rem/3rem/3.75rem -> 2.8rem/4.2rem/5.25rem), por pedido del
@@ -137,30 +137,15 @@ get_header(); ?>
            referencia, mismo espiritu que "H1 - Black 900" de esa
            referencia pero con nuestro copy. -->
       <h1 class="tm-levitate-text mt-4 font-display text-[2.8rem] font-black uppercase leading-[1.05] tracking-tight text-hueso-100 sm:text-[4.2rem] lg:text-[5.25rem]">
-        Your Local <span class="text-accent-hover-soft">Torta Shop,</span> every order <span class="whitespace-nowrap">made fresh</span>
+        More than <span class="text-accent-hover">Tortas.</span>
       </h1>
 
-      <p class="mx-auto mt-5 max-w-xl text-lg text-hueso-100/85">
-        Fresh bread, real sazón, made to order. Four neighborhood shops across
-        Phoenix, Avondale and Laveen, open seven days a week.
+      <p class="mx-auto mt-6 max-w-xl text-[0.87rem] leading-tight text-hueso-100/85 sm:text-[1.3rem] lg:text-[1.62rem]">
+        Tradition, flavor, and memories that taste like home.
       </p>
 
-      <div class="mt-8 flex flex-wrap items-center justify-center gap-3">
-        <a
-          href="<?php echo esc_url($tm_order_url); ?>"
-          target="_blank" rel="noopener"
-          data-tm-order="default" data-tm-channel="toast"
-          class="tm-btn tm-btn-relief tm-btn-primary"
-        >
-          Order direct
-        </a>
-        <a href="#menu" class="tm-btn tm-btn-ghost-light">
-          See the menu
-        </a>
-      </div>
-
-      <p class="mt-4 text-sm text-hueso-100/70">
-        Order direct and your money stays with the family, not the app.
+      <p class="mt-3 text-base text-hueso-100/70 sm:text-lg">
+        Like the torta your mom used to pack for your lunch.
       </p>
     </div>
   </div>
@@ -316,7 +301,7 @@ get_header(); ?>
             <h3 class="tm-section-title">
               Tortas Club
             </h3>
-            <p class="tm-eyebrow mt-3 text-carbon-300">Good food goes further.</p>
+            <p class="tm-eyebrow mt-3 text-carbon-300">$5 off your birthday, free torta at 150 points.</p>
             <a href="/tortas-club" class="tm-btn tm-btn-relief tm-btn-primary mt-6 inline-flex items-center gap-2">
               Join now
               <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
@@ -667,11 +652,11 @@ get_header(); ?>
         ),
         array(
           'What is the Tortas Club?',
-          'Our free loyalty program. You earn points on every direct order, get a free torta on your birthday, and hear about new items before anyone else. Signing up takes about twenty seconds.',
+          'Our free loyalty program. You earn points on every direct order, get $5 off on your birthday, a free torta once you reach 150 points, and hear about new items before anyone else. Signing up takes about twenty seconds.',
         ),
         array(
           'What exactly is a torta?',
-          'A Mexican sandwich on bolillo bread, toasted on the grill and layered generously. Ours follow a family recipe that has not changed since we opened in the year 2000.',
+          'A Mexican sandwich on a special made bread, layered generously and oven toasted to perfection. Our tortas follow a secret family recipe that has not changed since the year 2000.',
         ),
         array(
           'Are you hiring?',

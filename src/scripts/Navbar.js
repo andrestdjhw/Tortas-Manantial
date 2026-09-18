@@ -31,9 +31,9 @@ const COPY = {
     home: "Tortas Manantial, home",
     links: [
       { label: "Catering", href: "/catering" },
+      { label: "Tortas Club", href: "/tortas-club" },
       { label: "Locations", href: "/locations" },
       { label: "Our Story", href: "/our-story" },
-      { label: "Tortas Club", href: "/tortas-club" },
     ],
     cta: "Order Pickup",
     ctaShort: "Pickup",
@@ -67,9 +67,9 @@ const COPY = {
     home: "Tortas Manantial, inicio",
     links: [
       { label: "Catering", href: "/catering" },
+      { label: "Tortas Club", href: "/tortas-club" },
       { label: "Ubicaciones", href: "/locations" },
       { label: "Nuestra Historia", href: "/our-story" },
-      { label: "Tortas Club", href: "/tortas-club" },
     ],
     cta: "Ordena para Recoger",
     ctaShort: "Recoger",

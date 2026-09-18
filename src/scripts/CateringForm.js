@@ -1,14 +1,15 @@
 import React, { useState } from "react";
+import emailjs from "@emailjs/browser";
 import { LOCATIONS } from "./locations";
 import { IconArrow } from "./icons";
 
 /**
  * Formulario de catering. Pagina /catering.
  *
- * Mismo mecanismo que CareersForm.js: guarda cada solicitud como entrada
- * privada en WordPress y dispara el hook tm_catering_inquiry. Cuando el
- * cliente diga a que correo o a que persona deben llegar estas, se
- * engancha ahi sin tocar este componente.
+ * Mismo mecanismo que CareersForm.js: el envio real es por EmailJS (service/
+ * template ids y public key confirmados por el cliente, ver tm_emailjs() en
+ * functions.php), y ademas se guarda una copia en WordPress como entrada
+ * privada, best-effort.
  */
 
 const COPY = {
@@ -55,11 +56,15 @@ const COPY = {
 
 function getConfig() {
   const cfg = typeof window !== "undefined" ? window.tmData || {} : {};
+  const emailjsCfg = cfg.emailjs || {};
 
   return {
     lang: cfg.lang === "es" ? "es" : "en",
     restUrl: cfg.restUrl || "",
     nonce: cfg.nonce || "",
+    emailjsServiceId: emailjsCfg.serviceId || "",
+    emailjsTemplateId: emailjsCfg.cateringTemplateId || "",
+    emailjsPublicKey: emailjsCfg.publicKey || "",
   };
 }
 
@@ -98,19 +103,45 @@ export default function CateringForm() {
       return;
     }
 
+    // Honeypot: si un bot lo relleno, se responde como si hubiera ido bien
+    // pero no se manda nada, ni el correo ni la copia en WordPress.
+    if (values.company) {
+      setStatus("success");
+      return;
+    }
+
     setStatus("loading");
 
-    try {
-      const response = await fetch(`${cfg.restUrl}catering`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "X-WP-Nonce": cfg.nonce,
-        },
-        body: JSON.stringify(values),
-      });
+    const location = LOCATIONS.find((item) => item.id === values.location);
 
-      if (!response.ok) throw new Error("request failed");
+    // Copia en WordPress, best-effort: si falla no bloquea el correo de
+    // abajo, que es la notificacion que de verdad le llega al negocio.
+    fetch(`${cfg.restUrl}catering`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-WP-Nonce": cfg.nonce,
+      },
+      body: JSON.stringify(values),
+    }).catch(() => {});
+
+    try {
+      await emailjs.send(
+        cfg.emailjsServiceId,
+        cfg.emailjsTemplateId,
+        {
+          from_name: values.name,
+          phone: values.phone,
+          from_email: values.email,
+          reply_to: values.email,
+          event_date: values.eventDate,
+          guests: values.guests,
+          event_type: values.eventType,
+          location: location ? location.name[cfg.lang] : values.location,
+          details: values.details,
+        },
+        { publicKey: cfg.emailjsPublicKey }
+      );
 
       setStatus("success");
     } catch (error) {

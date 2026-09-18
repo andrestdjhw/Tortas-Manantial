@@ -4,11 +4,13 @@
  *
  * Seccion 2.5 del Copy & Brief de paginas internas.
  *
- * TODO BLOQUEANTE: la mecanica del programa esta sin confirmar (pendiente 09
- * del brief maestro). Antes de publicar hay que cerrar como se acumulan y se
- * canjean los puntos, con que plataforma, y si los pedidos por app acumulan
- * o no. La letra chica de abajo es una promesa verificable: un cliente la
- * puede reclamar en el mostrador.
+ * TODO BLOQUEANTE: falta cerrar parte de la mecanica del programa (pendiente
+ * 09 del brief maestro). Confirmado por el cliente via SMS: $5 de descuento
+ * en el cumpleanos, y una torta gratis al llegar a 150 puntos. Todavia sin
+ * confirmar: cuantos puntos se ganan por dolar, con que plataforma, si los
+ * pedidos por app acumulan o no, si los puntos expiran, y como consulta el
+ * cliente su balance o se da de baja. La letra chica de abajo es una
+ * promesa verificable: un cliente la puede reclamar en el mostrador.
  */
 
 /* ==========================================================================
@@ -104,7 +106,7 @@ get_header(); ?>
         $tm_steps = array(
           array('Sign up in twenty seconds', 'Name, email, and the shop you visit most. That is it.'),
           array('Order direct and earn points on every order', 'In the shop or on this site. Both count.'),
-          array('Redeem for food, drinks and birthday rewards', 'A free torta on your birthday, and specials before anyone else.'),
+          array('Redeem for food, drinks and birthday rewards', '$5 off on your birthday, a free torta once you hit 150 points, and specials before anyone else.'),
         );
 
         foreach ($tm_steps as $tm_index => $tm_step) : ?>
@@ -191,6 +193,14 @@ get_header(); ?>
         array(
           'Do app orders earn points?',
           'No. Only direct orders count, in the shop or on this site.',
+        ),
+        array(
+          'What do I get on my birthday?',
+          '$5 off your order.',
+        ),
+        array(
+          'How do I earn a free torta?',
+          'You earn a free torta every time you reach 150 points.',
         ),
         array(
           'Can I use my points at any location?',

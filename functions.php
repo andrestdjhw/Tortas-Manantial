@@ -41,7 +41,7 @@ function tm_media() {
 function tm_brand() {
   return array(
     // Correo publico de contacto. Vacio = no se pinta en ningun lado.
-    'email'  => 'info@tortasmanantial.com',
+    'email'  => 'hello@tortasmanantial.com',
 
     'social' => array(
       // Tomados del sitio actual, pendientes de confirmar con el cliente.
@@ -141,6 +141,27 @@ function tm_locations() {
 }
 
 
+
+/* ==========================================================================
+   EMAILJS
+   Envio de los formularios de Careers y Catering. El public key de EmailJS
+   esta pensado para vivir en el navegador (no es un secreto: EmailJS filtra
+   el abuso por dominio permitido y limite de envios desde su panel, no
+   ocultando esta clave), asi que sale por wp_localize_script igual que el
+   resto de tmData. Cada formulario sigue guardando tambien una copia
+   privada en WordPress (ver SOLICITUDES DE EMPLEO / CATERING mas abajo);
+   ese guardado es best-effort y no bloquea el envio del correo, que es la
+   notificacion que de verdad le llega al cliente.
+   ========================================================================== */
+
+function tm_emailjs() {
+  return array(
+    'serviceId'          => 'service_t0fhzsc',
+    'publicKey'          => 'jAQ2M8-MeMH4_GEUF',
+    'careersTemplateId'  => 'template_a7dw2rb',
+    'cateringTemplateId' => 'template_t8o5q3p',
+  );
+}
 
 /**
  * Enlace de pedido por defecto, el que usan el CTA del navbar y el item
@@ -284,6 +305,7 @@ function tm_load_assets() {
     'logoLight'      => $tm_img['logo_neg'],
     'brand'          => tm_brand(),
     'locations'      => tm_locations(),
+    'emailjs'        => tm_emailjs(),
     'orderUrl'       => tm_default_order_url(),
     'lang'           => substr(get_locale(), 0, 2) === 'es' ? 'es' : 'en',
     'altLangUrl'     => '',
