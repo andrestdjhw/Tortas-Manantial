@@ -48,13 +48,17 @@
        * Reserva de altura para las plantillas que no traen su propio
        * padding-top: el navbar es fixed (sale del flujo), asi que sin
        * esto su primer bloque de contenido queda tapado debajo de la
-       * barra. Su alto es una sola fila (--tm-header-h, 5rem) desde que
-       * se quito la fila superior que colapsaba con el scroll. Se suma
-       * el offset de la admin bar para que el calculo sirva tambien con
-       * sesion iniciada.
+       * barra. Su alto es una sola fila (--tm-header-h, 5rem), mas la
+       * franja de contacto de arriba (--tm-topbar-h) cuando esta
+       * visible: en reposo (scroll 0) las dos filas estan montadas, asi
+       * que hay que reservar las dos aunque la franja se esconda despues
+       * al hacer scroll. --tm-topbar-h ya vale 0 en movil (ver
+       * index.css), asi que ahi el calculo no cambia. Se suma el offset
+       * de la admin bar para que el calculo sirva tambien con sesion
+       * iniciada.
        */
       if (!$tm_has_hero) : ?>
-      <div style="height: calc(var(--tm-admin-h, 0px) + 5rem);" aria-hidden="true"></div>
+      <div style="height: calc(var(--tm-admin-h, 0px) + var(--tm-topbar-h, 0px) + 5rem);" aria-hidden="true"></div>
     <?php endif; ?>
 
     <main id="main">

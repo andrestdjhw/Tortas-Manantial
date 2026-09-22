@@ -12,6 +12,7 @@ import {
   IconFacebook,
   IconGoogle,
   IconInstagram,
+  IconMail,
   IconMenu,
   IconMoped,
   IconPhone,
@@ -53,6 +54,7 @@ const COPY = {
     openMenu: "Open menu",
     closeMenu: "Close menu",
     tagline: "Family owned in Phoenix since 2000.",
+    servingTagline: "Serving Phoenix, AZ",
     otherLang: "Español",
     otherLangAria: "Ver este sitio en español",
     emailAria: "Email us",
@@ -89,6 +91,7 @@ const COPY = {
     openMenu: "Abrir menú",
     closeMenu: "Cerrar menú",
     tagline: "Negocio de familia en Phoenix desde el 2000.",
+    servingTagline: "Sirviendo a Phoenix, AZ",
     otherLang: "English",
     otherLangAria: "View this site in English",
     emailAria: "Escríbenos",
@@ -165,6 +168,53 @@ function useScrollLock(active) {
       document.body.style.overflow = previous;
     };
   }, [active]);
+}
+
+/**
+ * Esconde la franja de contacto (.tm-topbar) al bajar y la vuelve a
+ * mostrar al subir, sin importar donde este el scroll -- no es el mismo
+ * criterio que el "showTopRow" viejo (que solo miraba si se habian
+ * pasado los primeros 80px). Un umbral de 4px filtra el jitter de los
+ * trackpads y del rebote de iOS, que si no dispara esto en cada frame.
+ * Siempre visible en los primeros 8px para que no parpadee apenas carga
+ * la pagina.
+ */
+function useHideOnScrollDown() {
+  const [hidden, setHidden] = useState(false);
+
+  useEffect(() => {
+    let lastY = window.scrollY;
+    let frame = null;
+
+    function evaluate() {
+      const y = window.scrollY;
+      const delta = y - lastY;
+
+      if (y <= 8) {
+        setHidden(false);
+      } else if (delta > 4) {
+        setHidden(true);
+      } else if (delta < -4) {
+        setHidden(false);
+      }
+
+      lastY = y;
+      frame = null;
+    }
+
+    function onScroll() {
+      if (frame) return;
+      frame = window.requestAnimationFrame(evaluate);
+    }
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      if (frame) window.cancelAnimationFrame(frame);
+    };
+  }, []);
+
+  return hidden;
 }
 
 /* ------------------------------------------------------------------ */
@@ -392,6 +442,7 @@ export default function Navbar() {
   const deliveryCtaRef = useRef(null);
 
   useScrollLock(menuOpen || Boolean(activePanel));
+  const topbarHidden = useHideOnScrollDown();
 
   /* Geolocalizacion: solo se pide cuando el usuario abre el panel, nunca al cargar. */
   const requestLocation = useCallback(() => {
@@ -455,6 +506,11 @@ export default function Navbar() {
   const hasLocations = ordered.length > 0;
   const nearestId = coords && hasLocations ? ordered[0].id : null;
 
+  /* Telefono fijo de la franja de contacto: siempre el de McDowell, sin
+     importar cercania. A diferencia de utilityLocation (que rota segun
+     el local mas cerca o el que este abierto), este numero no cambia. */
+  const mcdowell = LOCATIONS.find((location) => location.id === "mcdowell") || null;
+
   /* El local de la franja de utilidad: el mas cercano si hay permiso,
      si no, el primero que este abierto ahora mismo. */
   const utilityLocation = hasLocations
@@ -494,14 +550,85 @@ export default function Navbar() {
         {t.skip}
       </a>
 
+      {/* Franja de contacto, de vuelta por pedido del cliente. Solo
+          desde lg: en movil el telefono, el correo y las redes ya viven
+          en el menu de pantalla completa y no hay sitio para una fila
+          mas arriba de la barra principal. Fija y siempre pegada arriba
+          (mismo top que el header, ver .tm-topbar en index.css), pero se
+          esconde deslizandose hacia arriba al bajar y vuelve a aparecer
+          al subir -- ver useHideOnScrollDown. El header principal de
+          abajo se corre hacia abajo con translate-y mientras esta
+          franja esta visible, y vuelve a pegarse arriba cuando se
+          esconde, para no dejar un hueco vacio. */}
+      <div
+        className={`tm-topbar fixed inset-x-0 z-40 hidden h-10 items-center justify-between gap-4 border-b border-white/10 bg-carbon-400 px-4 text-xs text-hueso-100 transition-transform duration-300 lg:flex lg:px-6 ${
+          topbarHidden ? "-translate-y-full" : "translate-y-0"
+        }`}
+      >
+        <div className="flex min-w-0 items-center gap-4">
+          {mcdowell && (
+            <a
+              href={`tel:${mcdowell.phone}`}
+              data-tm-phone={mcdowell.id}
+              className="flex shrink-0 items-center gap-1.5 transition-colors hover:text-accent-hover-soft"
+            >
+              <IconPhone size={13} />
+              {mcdowell.phoneLabel}
+            </a>
+          )}
+
+          {brand.email && (
+            <a
+              href={`mailto:${brand.email}`}
+              aria-label={t.emailAria}
+              className="flex min-w-0 items-center gap-1.5 transition-colors hover:text-accent-hover-soft"
+            >
+              <IconMail size={13} />
+              <span className="truncate">{brand.email}</span>
+            </a>
+          )}
+        </div>
+
+        <p className="tm-eyebrow shrink-0 text-carbon-100">{t.servingTagline}</p>
+
+        {socialLinks.length > 0 ? (
+          <ul className="flex shrink-0 items-center gap-3" aria-label={t.social}>
+            {socialLinks.map((item) => (
+              <li key={item.key}>
+                <a
+                  href={item.href}
+                  target="_blank"
+                  rel="noopener"
+                  aria-label={item.label}
+                  className="block transition-colors hover:text-accent-hover-soft"
+                >
+                  <item.Icon size={14} />
+                </a>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <span aria-hidden="true" />
+        )}
+      </div>
+
       {/* Una sola fila, siempre solida y siempre pegada arriba: sin la
           transparencia que llevaba sobre el hero, sin la fila superior
           que colapsaba al hacer scroll y sin la insignia animada que
           bajaba al centro (esas tres cosas se quitaron por pedido del
           cliente). El logo pasa a la izquierda, al lugar que antes
           ocupaba el geotag; el geotag se saco de aca, pero sigue
-          disponible en el menu movil. */}
-      <header className="tm-header tm-header-solid fixed inset-x-0 z-50 shadow-lg">
+          disponible en el menu movil.
+
+          translate-y-0 mas lg:translate-y-[var(--tm-topbar-h)] condicional
+          es lo que la corre hacia abajo mientras la franja de contacto
+          esta visible: en movil --tm-topbar-h vale 0 (ver index.css), asi
+          que ahi el translate no mueve nada. */}
+      <header
+        className={`tm-header tm-header-solid fixed inset-x-0 z-50 translate-y-0 shadow-lg transition-transform duration-300 ${
+          topbarHidden ? "" : "lg:translate-y-(--tm-topbar-h)"
+        }`}
+      >
         {/* Elementos de apoyo, mismas graficas del footer, no hacia
             falta pedir mas URLs. */}
         {cfg.footerGraphics[0] && (
@@ -726,15 +853,15 @@ export default function Navbar() {
               {t.cta}
             </a>
 
-            {utilityLocation && (
+            {mcdowell && (
               <a
-                href={`tel:${utilityLocation.phone}`}
-                data-tm-phone={utilityLocation.id}
+                href={`tel:${mcdowell.phone}`}
+                data-tm-phone={mcdowell.id}
                 onClick={() => setMenuOpen(false)}
                 className="flex items-center gap-2 text-sm text-hueso-100 transition-colors hover:text-accent-hover-soft"
               >
                 <IconPhone size={16} />
-                {utilityLocation.phoneLabel}
+                {mcdowell.phoneLabel}
               </a>
             )}
 
@@ -771,10 +898,10 @@ export default function Navbar() {
           barras pegadas al fondo se pisaban. */}
       {!menuOpen && (
         <div className="tm-mobile-cta-bar fixed inset-x-0 bottom-0 z-30 grid grid-cols-2 lg:hidden">
-          {utilityLocation && (
+          {mcdowell && (
             <a
-              href={`tel:${utilityLocation.phone}`}
-              data-tm-phone={utilityLocation.id}
+              href={`tel:${mcdowell.phone}`}
+              data-tm-phone={mcdowell.id}
               className="flex items-center justify-center gap-2 border-r border-carbon-400/10 bg-hueso-100 py-4 text-sm font-bold text-carbon-400"
             >
               <IconPhone size={16} />

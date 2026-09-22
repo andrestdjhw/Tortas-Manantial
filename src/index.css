@@ -121,6 +121,17 @@
                      Por eso ahi el offset vuelve a 0. */
   :root {
     --tm-admin-h: 0px;
+    /* La franja de contacto solo existe desde lg (ver .tm-topbar en
+       @layer components): en movil vale 0 para que el espaciador de
+       header.php y el translate-y del header principal no reserven un
+       hueco que ahi no hace falta. */
+    --tm-topbar-h: 0px;
+  }
+
+  @media (min-width: 1024px) {
+    :root {
+      --tm-topbar-h: 2.5rem; /* 40px, mismo alto que el h-10 de .tm-topbar */
+    }
   }
 
   .admin-bar {
@@ -214,6 +225,12 @@
   /* Las tres capas fijas del navbar arrancan justo debajo de la admin bar.
      Con la barra oculta, --tm-admin-h vale 0 y quedan pegadas arriba. */
   .tm-header {
+    top: var(--tm-admin-h);
+  }
+
+  /* Franja de contacto, encima del header principal. Mismo criterio de
+     offset que .tm-header: arranca debajo de la admin bar de WordPress. */
+  .tm-topbar {
     top: var(--tm-admin-h);
   }
 

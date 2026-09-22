@@ -64,7 +64,6 @@ function tm_brand() {
    lo recibe por wp_localize_script y no mantiene su propia copia.
 
    TODO: verificar uno por uno los enlaces de Toast y de Uber Eats.
-   TODO: reemplazar los telefonos por los reales.
    ========================================================================== */
 
 function tm_locations() {
@@ -76,8 +75,8 @@ function tm_locations() {
       'city'          => 'Phoenix, AZ 85035',
       'lat'           => 33.4644,
       'lng'           => -112.1846,
-      'phone'         => '+16025550000',
-      'phoneLabel'    => '(602) 555-0000',
+      'phone'         => '+16238730664',
+      'phoneLabel'    => '(623) 873-0664',
       'orderUrl'      => 'https://order.toasttab.com/online/tortas-manantial-phoenix-5950-west-mcdowell-road/',
       'uberUrl'       => 'https://www.ubereats.com/store/tortas-manantial/QmSpagP0XnuilVUt3Scqvg?diningMode=PICKUP',
       'grubhubUrl'    => 'https://www.grubhub.com/restaurant/tortas-manantial-5950-w-mcdowell-rd-phoenix/14707008?pickup=true',
@@ -93,8 +92,8 @@ function tm_locations() {
       'city'          => 'Avondale, AZ 85392',
       'lat'           => 33.4948,
       'lng'           => -112.2895,
-      'phone'         => '+16235550000',
-      'phoneLabel'    => '(623) 555-0000',
+      'phone'         => '+16233223377',
+      'phoneLabel'    => '(623) 322-3377',
       'orderUrl'      => 'https://order.toasttab.com/online/tortas-manantial-indian-school-rd-10665-west-indian-school-road/',
       'uberUrl'       => 'https://www.ubereats.com/store/tortas-manantial/kPb19xCRXEOPrwa4B7G-VA?diningMode=PICKUP',
       'grubhubUrl'    => 'https://www.grubhub.com/restaurant/tortas-manantial-10665-w-indian-school-rd-avondale/14713368?pickup=true',
@@ -110,8 +109,8 @@ function tm_locations() {
       'city'          => 'Avondale, AZ 85323',
       'lat'           => 33.4256,
       'lng'           => -112.3086,
-      'phone'         => '+16235550001',
-      'phoneLabel'    => '(623) 555-0001',
+      'phone'         => '+16234401030',
+      'phoneLabel'    => '(623) 440-1030',
       'orderUrl'      => 'https://order.toasttab.com/online/tortas-manantial-buckeye-rd-11435-west-buckeye-road/',
       'uberUrl'       => 'https://www.ubereats.com/store/tortas-manantial/C406Hme-VCGz7xJerlFQQA?diningMode=PICKUP',
       'grubhubUrl'    => 'https://www.grubhub.com/restaurant/tortas-manantial-11435-w-buckeye-rd-105-avondale/14722184?pickup=true',
@@ -127,8 +126,8 @@ function tm_locations() {
       'city'          => 'Laveen Village, AZ 85339',
       'lat'           => 33.3771,
       'lng'           => -112.1697,
-      'phone'         => '+16025550001',
-      'phoneLabel'    => '(602) 555-0001',
+      'phone'         => '+16026333039',
+      'phoneLabel'    => '(602) 633-3039',
       'orderUrl'      => 'https://order.toasttab.com/online/tortas-manantial-laveen-5185-west-baseline-road/',
       'uberUrl'       => 'https://www.ubereats.com/store/tortas-manantial/n7AHrZzhUWa48cZKy4Kcng?diningMode=PICKUP',
       'grubhubUrl'    => 'https://www.grubhub.com/restaurant/tortas-manantial-5185-w-baseline-rd-laveen-village-phoenix/14719112?pickup=true',
